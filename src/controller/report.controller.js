@@ -1712,14 +1712,14 @@ async function _getStatusReportKas(req, res){
         var invoice = "";
          for (let i = 0; i < getJumlahInvoice.length; i++) {
            nilaiInvoice.totalKamar = nilaiInvoice.totalKamar + getJumlahInvoice[i].Total_Kamar;
-           console.log(`cekulang ${nilaiInvoice.totalKamar}`)
+           nilaiInvoice.totalPenjualan = nilaiInvoice.totalPenjualan + getJumlahInvoice[i].Total_Penjualan;
            invoice = getJumlahInvoice[i].Transfer;
-           console.log(`cekinvoice ${invoice}`)
            if(invoice != ""){
              do{
               var transfer = await new Report().getTransferKamar(db, invoice);
               nilaiInvoice.totalKamar = nilaiInvoice.totalKamar + transfer[0].total_transfer;
-              invoice = transfer[0].Transfer
+              nilaiInvoice.totalPenjualan = nilaiInvoice.totalPenjualan + transfer[0].Total_Penjualan;
+              invoice = transfer[0].Transfer;
              } while(invoice != "")
             }
          }
