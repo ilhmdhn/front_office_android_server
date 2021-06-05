@@ -1,6 +1,5 @@
 var sql = require("mssql");
 var logger = require ('../util/logger');
-var reportController = require  ('../controller/report.controller')
 var db;
 var isiQuery;
 var dateFormat = require('dateformat');
@@ -1678,7 +1677,7 @@ class Report{
                 isiQuery = `Set 
                     dateformat dmy 
                   Select 
-                  isnull(Total_all,0) as Total_Kamar, 
+                  isnull(Total_Kamar + Total_Extend,0) as Total_Kamar, 
                   isnull(Total_Penjualan,0) as Total_Penjualan, 
                   Reception, 
                   Transfer 
@@ -1746,7 +1745,8 @@ class Report{
                 var jumlah = 0;
     
                     isiQuery = `Select 
-                    isnull(total_all,0) as total_transfer, 
+                    isnull(total_all,0) as total_transfer,
+                    isnull(Total_Penjualan,0) as total_penjualan, 
                     Transfer from IHP_Ivc 
                     where Invoice = '${invoice}'`
     
