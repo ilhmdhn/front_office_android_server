@@ -1881,7 +1881,7 @@ async function _getStatusReportKas(req, res){
 
       res.send(new ResponseFormat(true, response))
 
-    } catch{
+    } catch(error){
       res.send(new ResponseFormat(false, null, "Error"))
       logger.error(error);
       logger.error(error.message);
@@ -1961,7 +1961,7 @@ exports.postCashDetail = async function(req, res){
         }
       }
     })
-  } catch{
+  } catch(error){
     logger.error(error);
     logger.error(error.message);
     dataResponse = new ResponseFormat(false, null, error.message);
@@ -2026,7 +2026,7 @@ exports.updateCashDetail = async function(req, res){
         }
       }
     })
-  } catch{
+  } catch(error){
     logger.error(error);
     logger.error(error.message);
     dataResponse = new ResponseFormat(false, null, error.message);
@@ -2102,7 +2102,7 @@ exports.getCashDetail =  async function(req, res){
       }
   })
 
-  } catch{
+  } catch(error){
     logger.error(error);
     logger.error(error.message);
     dataResponse = new ResponseFormat(false, null, error.message);

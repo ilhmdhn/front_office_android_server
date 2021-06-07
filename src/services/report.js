@@ -60,7 +60,7 @@ class Report{
                     }
                 }
             })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -133,7 +133,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -196,7 +196,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -269,7 +269,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -319,7 +319,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -367,7 +367,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -416,7 +416,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -465,7 +465,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -514,7 +514,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -562,7 +562,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -611,7 +611,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -659,7 +659,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -707,7 +707,7 @@ class Report{
                       }
                   }
               })
-          } catch{
+          } catch(error){
               console.log(error);
               logger.error(error.message);
               logger.error('Catch Error prosesQuery ');
@@ -756,7 +756,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -804,7 +804,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -851,7 +851,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -900,7 +900,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -953,7 +953,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -1005,7 +1005,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -1073,7 +1073,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -1149,7 +1149,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -1190,7 +1190,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -1247,7 +1247,7 @@ class Report{
                       }
                   }
               })
-          } catch{
+          } catch(error){
               console.log(error);
               logger.error(error.message);
               logger.error('Catch Error prosesQuery ');
@@ -1317,7 +1317,7 @@ class Report{
                       }
                   }
               })
-          } catch{
+          } catch(error){
               console.log(error);
               logger.error(error.message);
               logger.error('Catch Error prosesQuery ');
@@ -1371,7 +1371,7 @@ class Report{
                     }
                 }
             })
-        } catch{
+        } catch(error){
             console.log(error);
             logger.error(error.message);
             logger.error('Catch Error prosesQuery ');
@@ -1420,7 +1420,7 @@ class Report{
                       }
                   }
               })
-          } catch{
+          } catch(error){
               console.log(error);
               logger.error(error.message);
               logger.error('Catch Error prosesQuery ');
@@ -1497,7 +1497,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -1574,7 +1574,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -1651,7 +1651,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -1728,7 +1728,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');
@@ -1784,7 +1784,7 @@ class Report{
                         }
                     }
                 })
-            } catch{
+            } catch(error){
                 console.log(error);
                 logger.error(error.message);
                 logger.error('Catch Error prosesQuery ');

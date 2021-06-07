@@ -23,9 +23,9 @@ exports.getMySalesWeekly = async function(req, res){
             SUM([Total_Penjualan]) as total_penjualan
         FROM IHP_Ivc
         WHERE
-            convert(char, Date_Trans, 111) >= convert(char, GETDATE(), 111)
+            convert(char, Date_Trans, 111) <= convert(char, GETDATE(), 111)
             AND
-            convert(char, Date_Trans, 111) < convert(char, DATEADD(day, 7, GETDATE()), 111)
+            convert(char, Date_Trans, 111) > convert(char, DATEADD(day, -7, GETDATE()), 111)
         group by convert(char, Date_Trans, 111)
         order by convert(char, Date_Trans, 111) asc
         `
@@ -46,7 +46,7 @@ exports.getMySalesWeekly = async function(req, res){
                 }
             }
         })
-    } catch{
+    } catch(error){
         logger.error(error);
         logger.error(error.message);
         dataResponse = new ResponseFormat(false, null, error.message);
@@ -89,7 +89,7 @@ exports.getMySalesToday = async function(req, res){
                 }
             }
         })
-    } catch{
+    } catch(error){
         logger.error(error);
         logger.error(error.message);
         dataResponse = new ResponseFormat(false, null, error.message);
@@ -133,7 +133,7 @@ exports.getMySalesMonthly = async function(req, res){
                 }
             }
         })
-    } catch{
+    } catch(error){
         logger.error(error);
         logger.error(error.message);
         dataResponse = new ResponseFormat(false, null, error.message);
@@ -155,11 +155,12 @@ exports.getSalesItem = async function (req, res){
     if(duration == 'dialy'){
         time = `convert(char, sol.Date_Trans, 111) = CONVERT(char, GETDATE(), 111)` 
     } else if(duration == 'weekly'){
-        time = ` convert(char, sol.Date_Trans, 111) >= convert(char, GETDATE(), 111)
+        time = 
+        `convert(char, sol.Date_Trans, 111) <= convert(char, GETDATE(), 111)
         AND
-        convert(char, sol.Date_Trans, 111) < convert(char, DATEADD(day, 7, GETDATE()), 111)` 
+        convert(char, sol.Date_Trans, 111) > convert(char, DATEADD(day, -7, GETDATE()), 111)` 
     } else if(duration == 'monthly'){
-        time = `convert(varchar(4), Date_Trans, 111) = convert(varchar(4), GETDATE(), 111)` 
+        time = `convert(varchar(4), sol.Date_Trans, 111) = convert(varchar(4), GETDATE(), 111)` 
     }
 
     salesItem = await new SalesService().getSales(db, time, chusr);
@@ -171,18 +172,18 @@ exports.getSalesItem = async function (req, res){
                 if(salesItem[j].slip_order == cancelItem[i].slip_order  && salesItem[j].inventory == cancelItem[i].inventory){
                     salesItem[j].Qty = salesItem[j].Qty - cancelItem[i].Qty;
                     salesItem[j].Total = salesItem[j].Total-cancelItem[i].Total;
-                    console.log('ketemu salesnya' +  JSON.stringify(salesItem[j]));
-                    console.log('ketemu cancelnya' +  JSON.stringify(cancelItem[i]));
                 }
             }
         }
     }
 
-    res.send(
-            new ResponseFormat(true, salesItem)
-            )
+    if(salesItem != false){
+        res.send(new ResponseFormat(true, salesItem));
+    } else{
+        res.send(new ResponseFormat(false, null,  "Data Kosong"));
+    }
 
-    }catch{
+    }catch(error){
         logger.error(error);
         logger.error(error.message);
         dataResponse = new ResponseFormat(false, null, error.message);

@@ -29,7 +29,7 @@ exports.submitApproval = async function(req, res){
                 }
             })
         }
-    }catch{
+    }catch(error){
         logger.error(error);
         logger.error(error.message);
         dataResponse = new ResponseFormat(false, null, error.message);

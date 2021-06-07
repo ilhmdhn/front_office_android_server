@@ -16,12 +16,13 @@ class ItemSales {
                 query =  `
                 set dateformat dmy
                 select distinct
-                CONVERT (char, sol.Date_Trans, 120) as DATE,
+                CONVERT (char, sol.Date_Trans, 105) as DATE,
                 sol.SlipOrder as slip_order,
                 okd.inventory as inventory,
                 okd.nama as nama_item, 
                 okd.Qty as Qty, 
-                okd.Total as Total
+                okd.Total as Total,
+                sol.Date_Trans
                 from 
                 hp112.dbo.ihp_sol sol, 
                 hp112.dbo.ihp_okl okl, 
@@ -32,6 +33,7 @@ class ItemSales {
                 sol.SlipOrder = okd.SlipOrder
                 and okl.orderpenjualan = okd.orderpenjualan
 --                and sol.CHusr = '${chusr}'
+                order by sol.Date_Trans desc
                 `
             db.request().query(query, function(err, dataReturn){
                 if(err){
