@@ -1,0 +1,25 @@
+module.exports = {
+    table: "IHP_Sul",
+    
+    Summary: "IHP_Sul.Summary",
+    DATE: "IHP_Sul.DATE",
+    Shift: "IHP_Sul.Shift",
+    Reception: "IHP_Sul.Reception",
+    Member: "IHP_Sul.Member",
+    Nama: "IHP_Sul.Nama",
+    Kamar: "IHP_Sul.Kamar",
+    Total: "IHP_Sul.Total",
+    Chtime: "IHP_Sul.Chtime",
+    Chusr: "IHP_Sul.Chusr",
+    Printed: "IHP_Sul.Printed",
+    Flag: "IHP_Sul.Flag",
+    Posted: "IHP_Sul.Posted",
+    Export: "IHP_Sul.Export",
+    INVOICE: "IHP_Sul.INVOICE",
+    Date_Trans: "IHP_Sul.Date_Trans",
+    Bayar: "IHP_Sul.Bayar",
+    Kembali: "IHP_Sul.Kembali",
+    Number: "IHP_Sul.Number",
+    Flag_Notif: "IHP_Sul.Flag_Notif",
+    Flag_Pos_Invoice_Web: "IHP_Sul.Flag_Pos_Invoice_Web"
+};

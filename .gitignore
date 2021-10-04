@@ -1,0 +1,418 @@
+.DS_STORE
+/node_modules
+/dist
+/src/public
+*.log
+setup.json
+setupLan.json
+PictureBarcode
+PictureFnb
+PictureRoom
+tmp_print
+Video
+compile.txt
+KategoriFnb.txt
+npm.txt
+PenambahanFitur.txt
+setupHp.json
+setupwifi.json
+BarcodeSetup_PosAndroid.png
+*.sql
+*.pdf
+images/setup_android.png
+src/util/src_util_tes_dbtransaksi.js
+192.168.1.80.postman_collection.json
+*.png~origin_ainul_pc_branch
+Rumus_Ihp_Ivc.txt
+Rumus_Ihp_Ivc.txt
+setuph.json
+logs.log
+images/logo.svg
+images/qrcode/setup_android.png
+images/sign_checkin_rcp
+images/setup_android_1_80.png
+list url.txt
+/images/image_fnb
+/images/image_room
+/images/video_iklan
+list url.txt
+/images/member
+/images/qrcode
+/images/Thumbs.db
+package-lock.json
+list url.txt
+images/Item Nasional 210227/Hot Snack/Bakso Sapi Goreng.JPG
+images/Item Nasional 210227/Hot Snack/Cheese Pillow.JPG
+images/Item Nasional 210227/Hot Snack/Chicken Drum Stick.JPG
+images/Item Nasional 210227/Hot Snack/Chicken Stick.JPG
+images/Item Nasional 210227/Hot Snack/Club Sandwch.JPG
+images/Item Nasional 210227/Hot Snack/Edamame.JPG
+images/Item Nasional 210227/Hot Snack/Fish Ball.JPG
+images/Item Nasional 210227/Hot Snack/French Fries Mayonaise.jpg
+images/Item Nasional 210227/Hot Snack/French Fries.JPG
+images/Item Nasional 210227/Hot Snack/Kulit Ayam Goreng.JPG
+images/Item Nasional 210227/Hot Snack/Onion Ring.JPG
+images/Item Nasional 210227/Hot Snack/Snack Ocean.JPG
+images/Item Nasional 210227/Hot Snack/Sosis Goreng.JPG
+images/Item Nasional 210227/Hot Snack/Tahu Crispy.JPG
+images/Item Nasional 210227/Hot Snack/Tahu Kipas - Tahu Isi.JPG
+images/Item Nasional 210227/Main Course/Ayam Goreng Crispy.JPG
+images/Item Nasional 210227/Main Course/Ayam Goreng Mentega.jpg
+images/Item Nasional 210227/Main Course/Ayam Lada Hitam.JPG
+images/Item Nasional 210227/Main Course/Ayam Saos Inggris.JPG
+images/Item Nasional 210227/Main Course/Ayam Sapi Lada Hitam.JPG
+images/Item Nasional 210227/Main Course/Buntut Bakar.JPG
+images/Item Nasional 210227/Main Course/Cap Cay Ayam.JPG
+images/Item Nasional 210227/Main Course/Cap Cay Seafood.JPG
+images/Item Nasional 210227/Main Course/Chicken Cordon Bleu.JPG
+images/Item Nasional 210227/Main Course/Fish & Chips.jpg
+images/Item Nasional 210227/Main Course/Fu Yung Hai.JPG
+images/Item Nasional 210227/Main Course/Kakap Asam Manis.JPG
+images/Item Nasional 210227/Main Course/Nasi Ayam Goreng Crispy.JPG
+images/Item Nasional 210227/Main Course/Nasi Ayam Goreng Mentega.JPG
+images/Item Nasional 210227/Main Course/Nasi Ayam.JPG
+images/Item Nasional 210227/Main Course/Nasi Goreng Garlic.jpg
+images/Item Nasional 210227/Main Course/Nasi Goreng Telur.jpg
+images/Item Nasional 210227/Main Course/Nasi Goreng XO.JPG
+images/Item Nasional 210227/Main Course/Nasi Kakap Asam Manis.JPG
+images/Item Nasional 210227/Main Course/Omelette.JPG
+images/Item Nasional 210227/Main Course/Sapi Lada Hitam.JPG
+images/Item Nasional 210227/Main Course/Scrambled Egg.JPG
+images/Item Nasional 210227/Main Course/Spring Roll.JPG
+images/Item Nasional 210227/Main Course/Telur Dadar.JPG
+images/Item Nasional 210227/Main Course/Udang Goreng Tepung.JPG
+images/Item Nasional 210227/Main Course/Udang Mayonaise.JPG
+images/Item Nasional 210227/Permen/Cadbury.jpg
+images/Item Nasional 210227/Permen/Cha Cha Crispy.jpg
+images/Item Nasional 210227/Permen/Cha Cha Milk Choco.jpg
+images/Item Nasional 210227/Permen/Cha Cha Peanut.jpg
+images/Item Nasional 210227/Permen/Chunky Bar Almond.jpg
+images/Item Nasional 210227/Permen/Chunky Bar Cashew.jpg
+images/Item Nasional 210227/Permen/Chunky Bar Mini.jpg
+images/Item Nasional 210227/Permen/Chunky Dark Chocolate.png
+images/Item Nasional 210227/Permen/Coklat Delfi Golden Almond.jpg
+images/Item Nasional 210227/Permen/Delfi Cashew Chocolate.jpg
+images/Item Nasional 210227/Permen/Delfi Milk Chocolate.jpg
+images/Item Nasional 210227/Permen/Fox Passion Sticks.jpg
+images/Item Nasional 210227/Permen/Foxs Berries Bag.jpeg
+images/Item Nasional 210227/Permen/Foxs Fruit Bag.jpeg
+images/Item Nasional 210227/Permen/Foxs Fruits Sticks.jpg
+images/Item Nasional 210227/Permen/Foxs Mint Bags.jpg
+images/Item Nasional 210227/Permen/Foxs Rolls Berries.png
+images/Item Nasional 210227/Permen/Frozz Barley Mint.jpg
+images/Item Nasional 210227/Permen/Frozz Blackberry Mint.jpg
+images/Item Nasional 210227/Permen/Frozz Blueberry Mint.jpg
+images/Item Nasional 210227/Permen/Frozz Ceri Mint.jpg
+images/Item Nasional 210227/Permen/Frozz Ice Mint Eucalyptus.jpg
+images/Item Nasional 210227/Permen/Frozz Lime Mint.jpg
+images/Item Nasional 210227/Permen/Frozz Mint.jpg
+images/Item Nasional 210227/Permen/Frozz Orange Mint.jpg
+images/Item Nasional 210227/Permen/Frozz Tropical Mango.jpg
+images/Item Nasional 210227/Permen/Happydent White.jpg
+images/Item Nasional 210227/Permen/Hexos Barley Mint.jpg
+images/Item Nasional 210227/Permen/Hexos Lemon Mint.jpg
+images/Item Nasional 210227/Permen/Hexos Mint.jpg
+images/Item Nasional 210227/Permen/Impact Blackcurrant Mints.jpg
+images/Item Nasional 210227/Permen/Impact Freshmints.jpg
+images/Item Nasional 210227/Permen/Impact Honey Lemon Mints.jpg
+images/Item Nasional 210227/Permen/Impact Ice Mints.jpg
+images/Item Nasional 210227/Permen/Impact Mango Mints.jpg
+images/Item Nasional 210227/Permen/Impact Orange Mints.jpg
+images/Item Nasional 210227/Permen/Impact Original Peppermint.jpg
+images/Item Nasional 210227/Permen/Impact Original Spearmint.png
+images/Item Nasional 210227/Permen/Impact Original Strong Mint.jpg
+images/Item Nasional 210227/Permen/Impact Peach Mints.jpg
+images/Item Nasional 210227/Permen/Impact Strawberry Mints.jpg
+images/Item Nasional 210227/Permen/Inspiree.jpg
+images/Item Nasional 210227/Permen/Kitkat.jpg
+images/Item Nasional 210227/Permen/Lotte Acuo.jpg
+images/Item Nasional 210227/Permen/Mentos Buah.jpeg
+images/Item Nasional 210227/Permen/Nano Belimbing.jpg
+images/Item Nasional 210227/Permen/Nano Jeruk.jpg
+images/Item Nasional 210227/Permen/Nano Nanas.jpg
+images/Item Nasional 210227/Permen/Nano Nano.jpg
+images/Item Nasional 210227/Permen/Nano Rujak.jpg
+images/Item Nasional 210227/Permen/Nano Starfruit.jpg
+images/Item Nasional 210227/Permen/Permen Konidin.jpg
+images/Item Nasional 210227/Permen/Polo Peppermint.jpg
+images/Item Nasional 210227/Permen/Relaxa.jpg
+images/Item Nasional 210227/Permen/Ricolas.jpg
+images/Item Nasional 210227/Permen/Silver Queen Almond.jpg
+images/Item Nasional 210227/Permen/Silver Queen Bites Almond.jpg
+images/Item Nasional 210227/Permen/Silver Queen Bites Cashew.jpg
+images/Item Nasional 210227/Permen/Silver Queen Bites Dark.jpg
+images/Item Nasional 210227/Permen/Silver Queen Bites Milk.jpg
+images/Item Nasional 210227/Permen/Silver Queen Caramel.jpg
+images/Item Nasional 210227/Permen/Silver Queen Cashew Kecil.jpg
+images/Item Nasional 210227/Permen/Silver Queen Cashew.jpg
+images/Item Nasional 210227/Permen/Silver Queen Crispy.jpg
+images/Item Nasional 210227/Permen/Silver Queen Dark Coklat.jpg
+images/Item Nasional 210227/Permen/Silver Queen Fruit & Nut.jpg
+images/Item Nasional 210227/Permen/Snickers.jpg
+images/Item Nasional 210227/Permen/Strepsils.jpg
+images/Item Nasional 210227/Permen/Sugus.jpg
+images/Item Nasional 210227/Permen/Toblerone.jpg
+images/Item Nasional 210227/Permen/Xylitol Biru.jpeg
+images/Item Nasional 210227/Permen/Xylitol Breezy Mint Besar.jpg
+images/Item Nasional 210227/Permen/Xylitol Fresh Mint Besar.jpg
+images/Item Nasional 210227/Permen/Xylitol Hijau Besar.jpg
+images/Item Nasional 210227/Permen/Xylitol Hijau.jpg
+images/Item Nasional 210227/Permen/Xylitol Strawberry.jpg
+images/Item Nasional 210227/Permen/Xylitol Ungu Besar.jpg
+images/Item Nasional 210227/Permen/Xylitol Ungu.jpg
+images/Item Nasional 210227/Permen/Yupi.jpg
+images/Item Nasional 210227/Snack/Astor Chocolate.png
+images/Item Nasional 210227/Snack/Beng Beng Maxx.jpg
+images/Item Nasional 210227/Snack/Beng Beng Peanut.jpg
+images/Item Nasional 210227/Snack/Beng Beng.jpg
+images/Item Nasional 210227/Snack/Biskuit Lemonia.jpg
+images/Item Nasional 210227/Snack/Biskuit Togo.jpg
+images/Item Nasional 210227/Snack/Briko Black.jpg
+images/Item Nasional 210227/Snack/Briko Choco.jpg
+images/Item Nasional 210227/Snack/Briko Vanilla.jpg
+images/Item Nasional 210227/Snack/Cheetos American Cheese.jpg
+images/Item Nasional 210227/Snack/Cheetos Ayam Bakar.jpg
+images/Item Nasional 210227/Snack/Cheetos Cheedar Cheese.jpg
+images/Item Nasional 210227/Snack/Cheetos Jagung Bakar.jpg
+images/Item Nasional 210227/Snack/Cheetos Kecil.jpg
+images/Item Nasional 210227/Snack/Cheetos Net BBQ.jpg
+images/Item Nasional 210227/Snack/Cheetos Net Rumput Laut.jpg
+images/Item Nasional 210227/Snack/Cheetos Net.jpg
+images/Item Nasional 210227/Snack/Chic Choc Biskuit.jpg
+images/Item Nasional 210227/Snack/Chiki Balls Coklat.jpg
+images/Item Nasional 210227/Snack/Chiki Balls.jpg
+images/Item Nasional 210227/Snack/Chitato Asia.jpg
+images/Item Nasional 210227/Snack/Chitato Ayam BBQ.jpeg
+images/Item Nasional 210227/Snack/Chitato Ayam Bumbu.jpg
+images/Item Nasional 210227/Snack/Chitato Can.jpg
+images/Item Nasional 210227/Snack/Chitato Indomie Goreng.jpg
+images/Item Nasional 210227/Snack/Chitato Kecil.jpg
+images/Item Nasional 210227/Snack/Chitato Keju.jpg
+images/Item Nasional 210227/Snack/Chitato Sapi Bumbu Bakar.jpg
+images/Item Nasional 210227/Snack/Chitato Sapi Panggang.jpg
+images/Item Nasional 210227/Snack/Chitato Super Cheese.jpg
+images/Item Nasional 210227/Snack/Choco Pie.jpg
+images/Item Nasional 210227/Snack/Chocolatos.jpg
+images/Item Nasional 210227/Snack/Chocomania.jpg
+images/Item Nasional 210227/Snack/Crunchips Barbeque.jpg
+images/Item Nasional 210227/Snack/Crunchips Red Chili.jpg
+images/Item Nasional 210227/Snack/Crunchips Salted.jpg
+images/Item Nasional 210227/Snack/DK Kacang Koro Rasa Pedas.jpg
+images/Item Nasional 210227/Snack/DK Polongku Original.jpg
+images/Item Nasional 210227/Snack/DK Polongmas BBQ.jpg
+images/Item Nasional 210227/Snack/Fit Bar.jpg
+images/Item Nasional 210227/Snack/Fitchips Honey BBQ.jpg
+images/Item Nasional 210227/Snack/Fortune Cookies.jpg
+images/Item Nasional 210227/Snack/French Fries Premiuim 2000.jpg
+images/Item Nasional 210227/Snack/Fried Cookies Monde Biskuit.jpg
+images/Item Nasional 210227/Snack/Funtime Long.jpg
+images/Item Nasional 210227/Snack/Garuda Pilus Original.jpg
+images/Item Nasional 210227/Snack/Garuda Pilus Pedas.jpg
+images/Item Nasional 210227/Snack/Garuda Pilus Sapi Panggang.jpg
+images/Item Nasional 210227/Snack/Garuda Rosta Kacang Panjang.jpg
+images/Item Nasional 210227/Snack/Gerry Brown Brownies.jpg
+images/Item Nasional 210227/Snack/Gerry Salut Donut.jpg
+images/Item Nasional 210227/Snack/Gerry Salut Malkist Choco.jpg
+images/Item Nasional 210227/Snack/Gerry Salut Malkist Keju.jpg
+images/Item Nasional 210227/Snack/Good Time.png
+images/Item Nasional 210227/Snack/Happy Tos Biru.jpg
+images/Item Nasional 210227/Snack/Happy Tos Hijau.jpg
+images/Item Nasional 210227/Snack/Happy Tos Keju.jpg
+images/Item Nasional 210227/Snack/Happy Tos Merah.jpg
+images/Item Nasional 210227/Snack/Hello Panda Cream.jpg
+images/Item Nasional 210227/Snack/Hello Panda Merah.jpg
+images/Item Nasional 210227/Snack/Hello Panda Pink.jpg
+images/Item Nasional 210227/Snack/Jet Z 40gr.jpg
+images/Item Nasional 210227/Snack/Jet Z Paprika.jpg
+images/Item Nasional 210227/Snack/Jet Z Pouch 60gr.jpg
+images/Item Nasional 210227/Snack/Jet Z.jpg
+images/Item Nasional 210227/Snack/Kacang Atm Pedas Garuda.jpeg
+images/Item Nasional 210227/Snack/Kacang Atom Manis Garuda.jpg
+images/Item Nasional 210227/Snack/Kacang Butterfly Mix.jpg
+images/Item Nasional 210227/Snack/Kacang Dua Kelinci.jpg
+images/Item Nasional 210227/Snack/Kacang Kayaking.gif
+images/Item Nasional 210227/Snack/Kacang Kulit Garuda.jpg
+images/Item Nasional 210227/Snack/Kacang Mr P Garlic.jpg
+images/Item Nasional 210227/Snack/Kacang Mr P Honey (Besar).jpg
+images/Item Nasional 210227/Snack/Kacang Mr P Honey.jpg
+images/Item Nasional 210227/Snack/Kacang Telur Garuda.jpg
+images/Item Nasional 210227/Snack/Krip Krip Grilled BBQ.jpg
+images/Item Nasional 210227/Snack/Krip Krip Spicy BBQ.jpg
+images/Item Nasional 210227/Snack/Kusuka Kerupuk.png
+images/Item Nasional 210227/Snack/L'agie Bonanza 70gr.jpg
+images/Item Nasional 210227/Snack/Lagie Alpine 60gr.jpg
+images/Item Nasional 210227/Snack/Layz 75 gr.jpg
+images/Item Nasional 210227/Snack/Layz BBQ Fiesta.jpg
+images/Item Nasional 210227/Snack/Layz BBQ.jpg
+images/Item Nasional 210227/Snack/Layz Kecil.jpg
+images/Item Nasional 210227/Snack/Layz Klasik.jpg
+images/Item Nasional 210227/Snack/Layz Rumput Laut.jpg
+images/Item Nasional 210227/Snack/Layz Salmon Teriyaki.jpg
+images/Item Nasional 210227/Snack/Layz Sapi Panggang.jpg
+images/Item Nasional 210227/Snack/Leo Ayam Original.jpg
+images/Item Nasional 210227/Snack/Leo Keripik Kentang RL.jpg
+images/Item Nasional 210227/Snack/Leo Nugget.png
+images/Item Nasional 210227/Snack/Leo Popcorn Caramel.jpg
+images/Item Nasional 210227/Snack/Leo Popcorn Pedas.png
+images/Item Nasional 210227/Snack/Leo Sapi Panggang.jpg
+images/Item Nasional 210227/Snack/Loacker Wafer Besar.jpg
+images/Item Nasional 210227/Snack/Loacker Wafer.jpeg
+images/Item Nasional 210227/Snack/Lucky Stick Coklat.jpg
+images/Item Nasional 210227/Snack/Lucky Stick Strawberry.jpg
+images/Item Nasional 210227/Snack/Malkist Abon RoMA.jpg
+images/Item Nasional 210227/Snack/Malkist Roma.jpg
+images/Item Nasional 210227/Snack/Mamen Spicy Cheese.jpg
+images/Item Nasional 210227/Snack/Marie Duo Coklat.jpg
+images/Item Nasional 210227/Snack/Marie Duo Vanilla.jpg
+images/Item Nasional 210227/Snack/Marie Regal.jpg
+images/Item Nasional 210227/Snack/Marie Susu Roma.jpeg
+images/Item Nasional 210227/Snack/Mayasi Garlic.jpg
+images/Item Nasional 210227/Snack/Mayasi Hot Senza.jpg
+images/Item Nasional 210227/Snack/Mayasi Kacang Koro keju.jpg
+images/Item Nasional 210227/Snack/Mayasi Kacang Koro Pedas.jpeg
+images/Item Nasional 210227/Snack/Mayasi Original.jpg
+images/Item Nasional 210227/Snack/Mayasi Spicy.jpg
+images/Item Nasional 210227/Snack/Milo Nugget.jpg
+images/Item Nasional 210227/Snack/Mister Potato.jpg
+images/Item Nasional 210227/Snack/Momogi Coklat.jpg
+images/Item Nasional 210227/Snack/Momogi.jpg
+images/Item Nasional 210227/Snack/Monde Bourbon.jpg
+images/Item Nasional 210227/Snack/Monde Butter Cookies.jpg
+images/Item Nasional 210227/Snack/Monde Egg Roll Coklat.png
+images/Item Nasional 210227/Snack/Monde Egg Roll.jpg
+images/Item Nasional 210227/Snack/Monde Genji.jpg
+images/Item Nasional 210227/Snack/Monde Serena.jpg
+images/Item Nasional 210227/Snack/Nissin Crack Crakckers.jpg
+images/Item Nasional 210227/Snack/Nissin Crispy Crackers.jpg
+images/Item Nasional 210227/Snack/Nissin Milk Wafer.jpg
+images/Item Nasional 210227/Snack/Nissin Peanut Wafer.png
+images/Item Nasional 210227/Snack/Nissin Snack Cracker.jpg
+images/Item Nasional 210227/Snack/Nissin Strawberry Wafer.jpg
+images/Item Nasional 210227/Snack/Nissin Vegetable Cracker.jpg
+images/Item Nasional 210227/Snack/Nissin Wafer.jpg
+images/Item Nasional 210227/Snack/Nyam Nyam.jpg
+images/Item Nasional 210227/Snack/O'Garlos.png
+images/Item Nasional 210227/Snack/Oishi Udang Pedas.jpg
+images/Item Nasional 210227/Snack/Oreo Choco.jpg
+images/Item Nasional 210227/Snack/Oreo Double Delight.jpg
+images/Item Nasional 210227/Snack/Oreo Mini Cup Coklat.jpg
+images/Item Nasional 210227/Snack/Oreo Mini Cup Strawberry.jpeg
+images/Item Nasional 210227/Snack/Oreo Mini Cup Vanilla.jpg
+images/Item Nasional 210227/Snack/Oreo Sachet (Isi 3).jpg
+images/Item Nasional 210227/Snack/Oreo Sandwich Ice Cream Blueberry.jpg
+images/Item Nasional 210227/Snack/Oreo Sandwich Ice Cream Orange.jpg
+images/Item Nasional 210227/Snack/Oreo Sandwich Strawberry Cream.jpg
+images/Item Nasional 210227/Snack/Oreo Vanilla.jpg
+images/Item Nasional 210227/Snack/Papatonk Regular.jpg
+images/Item Nasional 210227/Snack/Pepero.jpg
+images/Item Nasional 210227/Snack/Piattos Sapi Panggang.jpg
+images/Item Nasional 210227/Snack/Pocky.jpg
+images/Item Nasional 210227/Snack/Pop Corn Blast O Butter.jpg
+images/Item Nasional 210227/Snack/Pop Corn Butter Licious.jpg
+images/Item Nasional 210227/Snack/Pop Corn Fun Mania.jpg
+images/Item Nasional 210227/Snack/Pop Corn Mellow Magic.jpg
+images/Item Nasional 210227/Snack/Pop Corn Sassy Salsa.jpg
+images/Item Nasional 210227/Snack/Pop Corn The Big Cheez.jpg
+images/Item Nasional 210227/Snack/Pop Mie Ayam Bawang.jpg
+images/Item Nasional 210227/Snack/Pop Mie Ayam.jpg
+images/Item Nasional 210227/Snack/Pop Mie Baso.jpg
+images/Item Nasional 210227/Snack/Pop Mie Goreng Pedas.jpg
+images/Item Nasional 210227/Snack/Pop Mie Kari Ayam.jpg
+images/Item Nasional 210227/Snack/Pop Mie Soto.jpg
+images/Item Nasional 210227/Snack/Pops Cookies & Cream.jpg
+images/Item Nasional 210227/Snack/Pops Dairy Milk.jpg
+images/Item Nasional 210227/Snack/Pops Take It.jpg
+images/Item Nasional 210227/Snack/Porpcorn Cheddar Riffic.jpg
+images/Item Nasional 210227/Snack/Potabee Chip BBQ.jpg
+images/Item Nasional 210227/Snack/Potabee Chip Grilled Seaweed.jpg
+images/Item Nasional 210227/Snack/Potabee Chip Salted Egg.jpg
+images/Item Nasional 210227/Snack/Potabee Chip Salted Melted Cheese.jpg
+images/Item Nasional 210227/Snack/Pringles BBQ.jpg
+images/Item Nasional 210227/Snack/Pringles Keju.jpg
+images/Item Nasional 210227/Snack/Pringles Mini.jpg
+images/Item Nasional 210227/Snack/Pringles Original.jpg
+images/Item Nasional 210227/Snack/Pringles Sour Cream.jpg
+images/Item Nasional 210227/Snack/Qtela Kerupuk Keriting.jpg
+images/Item Nasional 210227/Snack/Qtela Kerupuk Udang.png
+images/Item Nasional 210227/Snack/Qtela Opak BBQ.jpg
+images/Item Nasional 210227/Snack/Qtela Opak Cabai.jpg
+images/Item Nasional 210227/Snack/Qtela Singkong Balado Besar.jpg
+images/Item Nasional 210227/Snack/Qtela Singkong BBQ 185 gr.jpg
+images/Item Nasional 210227/Snack/Qtela Singkong Original.jpg
+images/Item Nasional 210227/Snack/Qtela Tempe Cabai Rawit.jpeg
+images/Item Nasional 210227/Snack/Qtela Tempe Daun Jeruk.jpeg
+images/Item Nasional 210227/Snack/Qtela Tempe Original.jpg
+images/Item Nasional 210227/Snack/Qtela Tempe Rumput Laut.jpg
+images/Item Nasional 210227/Snack/Qtela Ubi Ungu.jpg
+images/Item Nasional 210227/Snack/Richeese Nabati.jpg
+images/Item Nasional 210227/Snack/Ritz Cracker Cheese.jpg
+images/Item Nasional 210227/Snack/Roma Cracker Cream.jpg
+images/Item Nasional 210227/Snack/Roma Sari Gandum Sandwich.jpg
+images/Item Nasional 210227/Snack/Roma Sari Gandum.jpg
+images/Item Nasional 210227/Snack/Selamat  Biscuit Golden Coklat.jpg
+images/Item Nasional 210227/Snack/Selamat Biscuit Black Vanilla.jpg
+images/Item Nasional 210227/Snack/Selamat Biscuit Choco.jpg
+images/Item Nasional 210227/Snack/Selamat Biscuit Mocca.jpg
+images/Item Nasional 210227/Snack/Selamat Chocolish.jpg
+images/Item Nasional 210227/Snack/Selamat Wafer Cappuccino.jpg
+images/Item Nasional 210227/Snack/SMAX Ring Cheese.png
+images/Item Nasional 210227/Snack/SMAX Ring Chicken BBQ.jpg
+images/Item Nasional 210227/Snack/Snack Kingkong BBQ.jpg
+images/Item Nasional 210227/Snack/Snack Kingkong Keju.jpg
+images/Item Nasional 210227/Snack/Snack Kingkong Original.jpg
+images/Item Nasional 210227/Snack/Snipsnaps Sandwich Cappuccino.jpg
+images/Item Nasional 210227/Snack/Snipsnaps Sandwich Coklat.jpg
+images/Item Nasional 210227/Snack/Soyjoy.jpg
+images/Item Nasional 210227/Snack/Sukro Dua Kelinci.jpg
+images/Item Nasional 210227/Snack/Sukro Kacang Polong Dua Kelinci.jpg
+images/Item Nasional 210227/Snack/Tango Crunch Cake.jpg
+images/Item Nasional 210227/Snack/Tango Wafer Fusion Choco.jpg
+images/Item Nasional 210227/Snack/Tango Wafer Strawberry Jam.jpg
+images/Item Nasional 210227/Snack/Tango Wafer Susu Vanilla.jpg
+images/Item Nasional 210227/Snack/Tango Wafer Tiramisu.jpg
+images/Item Nasional 210227/Snack/Taro 3D Potato.jpg
+images/Item Nasional 210227/Snack/Taro Cowboy Steak.jpg
+images/Item Nasional 210227/Snack/Taro Curly Fries.jpg
+images/Item Nasional 210227/Snack/Taro Kecil.jpg
+images/Item Nasional 210227/Snack/Taro Potato BBQ.jpg
+images/Item Nasional 210227/Snack/Taro Seaweed.jpg
+images/Item Nasional 210227/Snack/Tic Tac Mix.jpg
+images/Item Nasional 210227/Snack/Tic Tac Rasa Pedas.jpg
+images/Item Nasional 210227/Snack/Tic Tac Sapi Panggang.jpg
+images/Item Nasional 210227/Snack/Tim Tam.jpg
+images/Item Nasional 210227/Snack/Top Black and White.png
+images/Item Nasional 210227/Snack/TOP Triple Choc.jpg
+images/Item Nasional 210227/Snack/Trenz Crispy.jpg
+images/Item Nasional 210227/Snack/Trenz Peanut.jpg
+images/Item Nasional 210227/Snack/Trenz.jpg
+images/Item Nasional 210227/Snack/Turbo Puff Corn Hijau Keju.jpg
+images/Item Nasional 210227/Snack/Turbo Puff Corn Pedas Manis.jpg
+images/Item Nasional 210227/Snack/Twisko BBQ Flavour.jpg
+images/Item Nasional 210227/Snack/Twisko Jagung Bakar.jpg
+images/Item Nasional 210227/Snack/Twister Black 140gr.jpg
+images/Item Nasional 210227/Snack/Twister Black.jpg
+images/Item Nasional 210227/Snack/Twister Choco.jpg
+images/Item Nasional 210227/Snack/Twister Minis Black.jpg
+images/Item Nasional 210227/Snack/Twister Minis Choco.jpg
+images/Item Nasional 210227/Snack/Wafer Tango Choco.jpg
+images/Item Nasional 210227/Snack/Yoichi Balado.jpg
+images/Item Nasional 210227/Snack/Yoichi BBQ.jpg
+images/Item Nasional 210227/Snack/Yoichi Cheese.jpeg
+images/Item Nasional 210227/Snack/Yoichi Garlic.jpg
+images/Item Nasional 210227.zip
+font-roboto/Apache License.txt
+setup_bak.json
+<<<<<<< HEAD
+images/font-courier/*
+=======
+images/font-courier/courier_bold_italic.ttf
+images/font-courier/courier_bold.ttf
+images/font-courier/courier_italic.ttf
+images/font-courier/courier_medium.otf
+images/font-courier/courier_normal_regular.ttf
+images/font-courier/courier.ttf
+images/font-courier/courier2.ttf
+images/font-courier/courier3.ttf
+>>>>>>> origin/ainul_pc_branch
+query_sql/detail_promo_extend_kamar_per_jam_getTotalPromoExtendRoom/urutan_kondisi.txt
+query_sql/promo_extend_kamar/urutan_kondisi.txt

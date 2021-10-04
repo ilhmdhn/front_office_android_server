@@ -1,0 +1,58 @@
+{
+  "name": "server-pos",
+  "version": "1.0.0",
+  "description": "This is a light weight integration of the express framework, with an electron application.",
+  "main": "main.js",
+  "scripts": {
+    "pack": "electron-builder --dir",
+    "dist-32": "electron-builder --ia32",
+    "dist-64": "electron-builder --x64",
+    "install-npm": "npm install",
+    "start": "electron ."
+  },
+  "build": {
+    "appId": "livs.ain.code",
+    "productName": "server-android",
+    "icon": "member.png"
+  },
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "dependencies": {
+    "admin-lte": "^3.0.5",
+    "cookie-parser": "^1.4.5",
+    "dateformat": "^4.3.1",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "express-form-data": "^2.0.14",
+    "jquery": "^3.5.1",
+    "morgan": "^1.9.1",
+    "mssql": "^6.2.3",
+    "multer": "^1.4.2",
+    "node-cron": "^2.0.3",
+    "nodemailer": "^6.5.0",
+    "otp-generator": "^2.0.0",
+    "pdfkit": "^0.11.0",
+    "qrcode": "^1.4.4",
+    "serve-favicon": "^2.5.0",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0",
+    "winston": "^2.4.4",
+    "dgram": "^1.0.1"
+  },
+  "standard": {
+    "globals": [
+      "$"
+    ]
+  },
+  "devDependencies": {
+    "electron": "^11.1.1",
+    "electron-builder": "^22.9.1"
+  }
+}

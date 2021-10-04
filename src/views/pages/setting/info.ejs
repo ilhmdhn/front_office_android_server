@@ -1,0 +1,109 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Konfigurasi Server</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Konfigurasi Server</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Server Info</h3>
+                    </div>
+                    <div class="card-body">
+                        <strong><i class="fas fa-cloud mr-1"></i> Base URL</strong>
+                        <p class="text-muted">
+                            <%= baseURL %>
+                        </p>
+                        <hr>
+                        <strong><i class="fas fa-cloud mr-1"></i> Server IP</strong>
+                        <p class="text-muted">
+                            <%= info.ip_server %>
+                        </p>
+                        <hr>
+
+                        <strong><i class="fas fa-cloud mr-1"></i> Server Port</strong>
+                        <p class="text-muted">
+                            <%= info.port_server %>
+                        </p>
+                        <hr>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-3">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Database Info</h3>
+                    </div>
+                    <div class="card-body">
+                        <strong><i class="fas fa-cloud mr-1"></i> Server DB</strong>
+                        <p class="text-muted">
+                            <%= info.db_server %>
+                        </p>
+                        <hr>
+                        <strong><i class="fas fa-cloud mr-1"></i> Name DB</strong>
+                        <p class="text-muted">
+                            <%= info.db_name %>
+                        </p>
+                        <hr>
+                        <strong><i class="fas fa-cloud mr-1"></i> State Connection</strong>
+                        <p class="text-muted">
+                            <%= info.message %>
+                        </p>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+
+                <!-- Post -->
+                <div class="post">
+                    <div class="user-block">
+                        <img class="img-circle img-bordered-sm"
+                            src="<%= baseURL %>/images-server/<%= info.img_qr_code %>" alt="User Image">
+                        <span class="username">
+                            <a href="#">QRCode Config Android</a>
+                            <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a>
+                        </span>
+                        <span class="description">Scan untuk konfigurasi - fo android</span>
+                    </div>
+                    <!-- /.user-block -->
+                    <div class="row mb-3">
+                        <div class="col-sm-6">
+                            <img class="img-fluid" src="<%= baseURL %>/images-server/<%= info.img_qr_code %>"
+                                alt="Photo">
+                        </div>
+
+                        <!-- /.col -->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="/io-client/dist/socket.io.js"></script>
+<script>
+    /* var server='<%= baseURL %>'+'/fo-rtc';
+    var socket = io(server);
+    socket.on('socketToMe', function (data) {
+        console.log(data);
+    }); */
+</script>
+
+<!-- /.content -->

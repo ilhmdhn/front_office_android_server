@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include ('../layout/header.ejs') %>
+</head>
+
+<body class="hold-transition sidebar-mini">
+  <!-- Site wrapper -->
+  <div class="wrapper">
+    <%- include ('../layout/navbar.ejs') %>
+    <%- include ('../layout/sidebar.ejs') %>
+
+    <!-- start ./main page tempat data di render -->
+    <div class="content-wrapper">
+      <%- include(page); %>
+    </div>
+    <!-- end ./main page tempat data di render -->
+
+    <%- include ('../layout/footer.ejs') %>
+  </div>
+  <!-- ./wrapper -->
+  <%- include ('../layout/js.ejs') %>
+</body>
+</html>

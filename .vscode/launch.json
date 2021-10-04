@@ -1,0 +1,40 @@
+{
+    "version": "0.2.0",
+    "console": "integratedTerminal",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Electron",
+            "protocol": "inspector",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+            "program": "${workspaceFolder}/main.js",
+            "windows": {
+                "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
+            },
+            "outputCapture": "std"
+        },
+        {
+            "name": "Electron Debug Main Process ",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+            "program": "${workspaceFolder}/main.js",
+            "windows": {
+                "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+            },
+            "args": [
+                "."
+            ],
+            "outputCapture": "std"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run AppOnDebug",
+            "program": "${workspaceRoot}/appOnDebug.js",
+            "outputCapture": "std"
+        }
+    ]
+}

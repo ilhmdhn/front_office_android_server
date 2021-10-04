@@ -1,0 +1,26 @@
+module.exports = {
+    table: "IHP_Okl",
+    
+    OrderPenjualan: "IHP_Okl.OrderPenjualan",
+    DATE: "IHP_Okl.DATE",
+    Shift: "IHP_Okl.Shift",
+    Reception: "IHP_Okl.Reception",
+    Kamar: "IHP_Okl.Kamar",
+    Member: "IHP_Okl.Member",
+    Nama: "IHP_Okl.Nama",
+    Keterangan: "IHP_Okl.Keterangan",
+    Total: "IHP_Okl.Total",
+    Discount: "IHP_Okl.Discount",
+    Service: "IHP_Okl.Service",
+    Tax: "IHP_Okl.Tax",
+    TotalValue: "IHP_Okl.TotalValue",
+    Status: "IHP_Okl.Status",
+    Chtime: "IHP_Okl.Chtime",
+    CHusr: "IHP_Okl.CHusr",
+    Posted: "IHP_Okl.Posted",
+    Printed: "IHP_Okl.Printed",
+    Export: "IHP_Okl.Export",
+    Penjualan: "IHP_Okl.Penjualan",
+    Date_Trans: "IHP_Okl.Date_Trans",
+    Flag: "IHP_Okl.Flag"
+};
