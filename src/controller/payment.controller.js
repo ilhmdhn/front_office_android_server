@@ -1578,7 +1578,7 @@ function formatTanggel(tanggal_) {
         bulannya = "September";
       }
       else if (bulan == 9) {
-        isinya2 = "October";
+        bulannya = "October";
       }
       else if (bulan == 10) {
         bulannya = "November";
