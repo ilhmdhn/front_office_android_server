@@ -5,6 +5,9 @@ var paymentCtrl = require('./../controller/payment.controller');
 router.route('/add')
     .post(paymentCtrl.submitPayment);
 
+router.route('/print')
+    .post(paymentCtrl.submitPrint);
+
 router.route('/email-invoice/:room')
     .get(paymentCtrl.submitEmail);
 
