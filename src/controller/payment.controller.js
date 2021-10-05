@@ -28,6 +28,10 @@ var tgl_pembayaran = "";
 var nomor_pembayaran = "";
 var hasil_order_penjualan;
 var hasil_nilai_invoice;
+var pesan;
+var ip_address;
+var port;
+var panjang_pesan;
 
 //variable model
 var InvoiceModel = require('./../model/IHP_InvoiceModel');
@@ -47,11 +51,43 @@ var tableSol = require('./../model/variabledb/IHP_Sol');
 var tableConfig3 = require('./../model/variabledb/IHP_Config3');
 const formatRupiah = require('../util/format-rupiah.js');
 
-exports.submitPayment = async function (req, res) {
+exports.submitPrint = async function (req, res) {
   db = await new DBConnection().getPoolConnection();
   logger = req.log;
-  _procSubmit(req, res);
+  _procSubmitPrint(req, res);
 };
+
+async function _procSubmitPrint(req, res) {
+    //pesan print Slip Invoice Pos Lorong
+  var client_pos = dgram.createSocket('udp4');
+  pesan = "PRINT_SUMMARY_POINT_OF_SALES_LORONG";
+  ip_address = req.config.ip_address_pos;
+  port = await new IpAddressService().getUdpPort(db, "POINT OF SALES");
+  if ((ip_address !== false) && (port !== false)) {
+    port = port.recordset[0].server_udp_port;
+    port = parseInt(port);
+    panjang_pesan = pesan.length;
+    panjang_pesan = parseInt(panjang_pesan);
+    logger.info("Send Sinyal PRINT_SUMMARY_POINT_OF_SALES_LORONG to POINT OF SALES " + ip_address);
+    client_pos.send(pesan, 0, panjang_pesan, port, ip_address, function (err, bytes) {
+      if (error) {
+        client.close();
+        dataResponse = new ResponseFormat(false, error.message);
+        res.send(dataResponse);
+      } else {
+        client_pos.close();
+        console.log('Data sent !!!');
+        formResponseData = {
+          room: room,
+          Kamar: room
+        };        
+        dataResponse = new ResponseFormat(true, formResponseData);
+        res.send(dataResponse);
+
+      }
+    });
+  }
+}
 
 //Fungsi untuk cek room
 function checkRoom(room) {
@@ -62,6 +98,12 @@ function checkRoom(room) {
 
   return ErrorMsg;
 }
+
+exports.submitPayment = async function (req, res) {
+  db = await new DBConnection().getPoolConnection();
+  logger = req.log;
+  _procSubmit(req, res);
+};
 
 async function _procSubmit(req, res) {
   db = await new DBConnection().getPoolConnection();
@@ -290,7 +332,7 @@ async function _procSubmit(req, res) {
         UMNonCashDet.approval_code_credit = UMNonCash.Input4;
         UMNonCashDet.edc_credit = UMNonCash.EDC_Machine;
       }
-      //DEBIT CARD
+      //DEBET CARD
       else if (UMNonCash.Nama_Payment.toUpperCase() == "DEBET CARD") {
         UMNonCashDet.payment_type = UMNonCash.Nama_Payment;
         UMNonCashDet.nominal = UMNonCash.Pay_Value;
@@ -378,10 +420,11 @@ async function _procSubmit(req, res) {
           paymentValueDet.push(listPayment[a].approval_code_credit); //Input4
           paymentValueDet.push("");
           paymentValueDet.push("");
-          paymentValueDet.push(listPayment[a].type_edc.nomor_edc); //EDC_Machine          
+          //paymentValueDet.push(listPayment[a].type_edc.nomor_edc); //EDC_Machine          
+          paymentValueDet.push(listPayment[a].edc_credit); //EDC_Machine          
           paymentValueDet.push(0); //Status
         }
-        //DEBIT CARD
+        //DEBET CARD
         else if (listPayment[a].payment_type.toUpperCase() == "DEBET CARD") {
           if (listPayment[a].edc_debet == "") ErrorMsg = "EDC Machine, tidak boleh kosong";
           else if (listPayment[a].card_debet == "") ErrorMsg = "Jenis Kartu, tidak boleh kosong";
@@ -404,7 +447,8 @@ async function _procSubmit(req, res) {
           paymentValueDet.push(listPayment[a].approval_code_debet); //Input4
           paymentValueDet.push("");
           paymentValueDet.push("");
-          paymentValueDet.push(listPayment[a].type_edc.nomor_edc);
+          //paymentValueDet.push(listPayment[a].type_edc.nomor_edc);
+          paymentValueDet.push(listPayment[a].edc_debet);
           paymentValueDet.push(0); //Status
         }
 
@@ -1512,7 +1556,6 @@ function formatJam(tanggal_) {
   });
 }
 
-
 function formatTanggel(tanggal_) {
   return new Promise((resolve, reject) => {
     try {
@@ -1594,7 +1637,6 @@ function formatTanggel(tanggal_) {
     }
   });
 }
-
 
 function createPdf(
   fileName_,
@@ -2209,7 +2251,6 @@ function getSulSud(ivc_) {
     }
   });
 }
-
 
 function getAddRewardTambahanPoint(summary_) {
   return new Promise((resolve, reject) => {

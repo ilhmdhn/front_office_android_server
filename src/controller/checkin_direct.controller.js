@@ -4935,8 +4935,6 @@ async function _procPrintTagihanRoom(req, res) {
         var slip_order_nggantung = await new CheckinProses().getSlipOrderBelumDiProses(db, isProsesGetReception);
 
         if (slip_order_nggantung != false) {
-            /* dataResponse = new ResponseFormat(false, null, "Ada Slip Order Yang belum di proses" +
-                slip_order_nggantung[0].Qty + " X " + slip_order_nggantung[0].Nama); */
             dataResponse = new ResponseFormat(false, null, "Ada pesanan yang belum di proses!");
             logger.info("Ada Slip Order Yang belum di proses");
             res.send(dataResponse);
@@ -4966,28 +4964,30 @@ async function _procPrintTagihanRoom(req, res) {
                     panjang_pesan = pesan.length;
                     panjang_pesan = parseInt(panjang_pesan);
                     logger.info("Send Sinyal PRINT_INVOICE_POINT_OF_SALES_LORONG to POINT OF SALES");
+                    
                     client_pos.send(pesan, 0, panjang_pesan, port, ip_address, function (error, bytes) {
                         if (error) {
                             client.close();
                             dataResponse = new ResponseFormat(false, error.message);
                             res.send(dataResponse);
-                        } else {
-                            console.log('Data sent !!!');
-                            formResponseData = {
+                        } else { 
+                            console.log('Data sent !!!');                         
+                             formResponseData = {
                                 room: room,
                                 Kamar: room
                             };
                             // TODO :: print tagihan
                             dataResponse = new ResponseFormat(true, formResponseData);
-                            res.send(dataResponse);
+                            res.send(dataResponse); 
+                            
                         }
-                    });
+                    });                 
                 }
-
             } else if (isProsesUpdateIhpIvc == false) {
                 dataResponse = new ResponseFormat(false, null, " Room Gagal isProsesUpdateIhpIvc");
                 res.send(dataResponse);
-            }
+            }           
+
         } else {
             dataResponse = new ResponseFormat(false, null, room + " Room Belum di Checkin");
             res.send(dataResponse);
