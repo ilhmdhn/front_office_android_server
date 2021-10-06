@@ -850,7 +850,8 @@ async function _procSubmitPayment(req, res) {
         );
 
         if (create_file_pdf != false) {
-          await updateIhpSulKirimEmail(invoice,email_address);
+          var invoice__ = invoice[0][0].invoice;
+          await updateIhpSulKirimEmail(invoice__, email_address);
           let transporter = nodemailer.createTransport({
             //host: "smtp.ethereal.email",
             host: "mail.blackholektv.com",
@@ -898,6 +899,23 @@ async function _procSubmitPayment(req, res) {
               logger.error(error);
             } else {
               logger.info("Send Email Sukses");
+
+              try {
+                var SulSudQuery = " " +
+                  "Update IHP_Sul set Emailed_Success='1'" +
+                  " where IHP_Sul.Invoice='" + invoice__ + "'";
+
+                db.request().query(SulSudQuery, function (err, dataReturn) {
+                  if (err) {
+                    logger.error(err.message);
+                  } else {
+                    logger.info("Update IHP_Sul Emailed_Success Send Email Sukses");
+                  }
+                });
+              } catch (err) {
+                logger.error(err.message);
+              }
+
             }
           });
 
