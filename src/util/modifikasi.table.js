@@ -1334,7 +1334,7 @@ class ModifikasiTable {
           " [Diskon_Persen] [int] NULL," +
           " [Diskon_Rp] [Float] NULL, " +
           " [Menit_Yang_Digunakan] [int] NULL," +
-          " [Promo_Yang_Didapatkan] [Float] NULL " +         
+          " [Promo_Yang_Didapatkan] [Float] NULL " +
           " ) " +
           " END ";
         db.request().query(isiQuery, function (err, dataReturn) {
@@ -1384,7 +1384,7 @@ class ModifikasiTable {
           " [Diskon_Persen] [int] NULL," +
           " [Diskon_Rp] [Float] NULL, " +
           " [Menit_Yang_Digunakan] [int] NULL," +
-          " [Promo_Yang_Didapatkan] [Float] NULL " +          
+          " [Promo_Yang_Didapatkan] [Float] NULL " +
           " ) " +
           " END ";
         db.request().query(isiQuery, function (err, dataReturn) {
@@ -1462,6 +1462,117 @@ class ModifikasiTable {
             sql.close();
             console.log(" Sukses melebarkanKolomPrintedIhpIvcHistory");
             logger.info(" Sukses melebarkanKolomPrintedIhpIvcHistory");
+            resolve(true);
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        logger.error(error.message);
+        logger.error('Catch Error prosesQuery ');
+        resolve(false);
+      }
+    });
+  }
+
+  penambahanKolomEmailedIhpSul(db_) {
+    return new Promise((resolve, reject) => {
+      try {
+        db = db_;
+
+        var isiQuery = " " +
+          " IF NOT EXISTS (SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS " +
+          " WHERE TABLE_NAME='IHP_Sul'" +
+          " AND COLUMN_NAME ='Emailed')" +
+          " BEGIN  " +
+          " ALTER TABLE IHP_Sul ADD Emailed nvarchar(2) " +
+          " END ";
+        db.request().query(isiQuery, function (err, dataReturn) {
+          if (err) {
+            sql.close();
+            logger.error(err);
+            console.log(err);
+            logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+            console.log(" Gagal penambahanKolomEmailedIhpSul");
+            logger.info(" Gagal penambahanKolomEmailedIhpSul");
+            resolve(false);
+          } else {
+            sql.close();
+            console.log(" Sukses penambahanKolomEmailedIhpSul");
+            logger.info(" Sukses penambahanKolomEmailedIhpSul");
+            resolve(true);
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        logger.error(error.message);
+        logger.error('Catch Error prosesQuery ');
+        resolve(false);
+      }
+    });
+  }
+
+  penambahanKolomEmailedSuccessIhpSul(db_) {
+    return new Promise((resolve, reject) => {
+      try {
+        db = db_;
+
+        var isiQuery = " " +
+          " IF NOT EXISTS (SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS " +
+          " WHERE TABLE_NAME='IHP_Sul'" +
+          " AND COLUMN_NAME ='Emailed_Success')" +
+          " BEGIN  " +
+          " ALTER TABLE IHP_Sul ADD Emailed_Success nvarchar(2) " +
+          " END ";
+        db.request().query(isiQuery, function (err, dataReturn) {
+          if (err) {
+            sql.close();
+            logger.error(err);
+            console.log(err);
+            logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+            console.log(" Gagal penambahanKolomEmailedSuccessIhpSul");
+            logger.info(" Gagal penambahanKolomEmailedSuccessIhpSul");
+            resolve(false);
+          } else {
+            sql.close();
+            console.log(" Sukses penambahanKolomEmailedSuccessIhpSul");
+            logger.info(" Sukses penambahanKolomEmailedSuccessIhpSul");
+            resolve(true);
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        logger.error(error.message);
+        logger.error('Catch Error prosesQuery ');
+        resolve(false);
+      }
+    });
+  }
+
+  penambahanKolomEmailedAddressIhpSul(db_) {
+    return new Promise((resolve, reject) => {
+      try {
+        db = db_;
+
+        var isiQuery = " " +
+          " IF NOT EXISTS (SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS " +
+          " WHERE TABLE_NAME='IHP_Sul'" +
+          " AND COLUMN_NAME ='Emailed_Address')" +
+          " BEGIN  " +
+          " ALTER TABLE IHP_Sul ADD Emailed_Address nvarchar(100) " +
+          " END ";
+        db.request().query(isiQuery, function (err, dataReturn) {
+          if (err) {
+            sql.close();
+            logger.error(err);
+            console.log(err);
+            logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+            console.log(" Gagal penambahanKolomEmailedAddressIhpSul");
+            logger.info(" Gagal penambahanKolomEmailedAddressIhpSul");
+            resolve(false);
+          } else {
+            sql.close();
+            console.log(" Sukses penambahanKolomEmailedAddressIhpSul");
+            logger.info(" Sukses penambahanKolomEmailedAddressIhpSul");
             resolve(true);
           }
         });

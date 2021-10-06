@@ -213,6 +213,9 @@ module.exports = function (callback) {
                         new ModifikasiTable().createTableIhpDetailDiskonSewaKamarExtend(db);
                         new ModifikasiTable().melebarkanKolomPrintedIhpSulHistory(db);
                         new ModifikasiTable().melebarkanKolomPrintedIhpIvcHistory(db);
+                        new ModifikasiTable().penambahanKolomEmailedIhpSul(db);
+                        new ModifikasiTable().penambahanKolomEmailedSuccessIhpSul(db);
+                        new ModifikasiTable().penambahanKolomEmailedAddressIhpSul(db);
                     }
                 });
 
