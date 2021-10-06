@@ -1847,9 +1847,12 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text("Date", batas_kiri_halaman, (top + (4 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text("Cashier", batas_kiri_halaman, (top + (5 * spasiAntarBaris)));
 
-          //doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].kamar + " " + invoice[n][0].jenis_kamar, left2, (top + (0 * spasiAntarBaris)));
-          doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].kamar_alias, left2, (top + (0 * spasiAntarBaris)));
-
+          if(invoice_[0][0].kamar_alias==""){            
+            doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].kamar, left2, (top + (0 * spasiAntarBaris)));
+          }else{
+            doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].kamar_alias, left2, (top + (0 * spasiAntarBaris)));
+          }
+          
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].nama_member, left2, (top + (1 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].member, left2, (top + (2 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].invoice, left2, (top + (3 * spasiAntarBaris)));
