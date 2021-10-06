@@ -58,7 +58,7 @@ exports.submitPrint = async function (req, res) {
 };
 
 async function _procSubmitPrint(req, res) {
-    //pesan print Slip Invoice Pos Lorong
+  //pesan print Slip Invoice Pos Lorong
   var client_pos = dgram.createSocket('udp4');
   pesan = "PRINT_SUMMARY_POINT_OF_SALES_LORONG";
   ip_address = req.config.ip_address_pos;
@@ -80,7 +80,7 @@ async function _procSubmitPrint(req, res) {
         formResponseData = {
           room: room,
           Kamar: room
-        };        
+        };
         dataResponse = new ResponseFormat(true, formResponseData);
         res.send(dataResponse);
 
@@ -758,156 +758,156 @@ async function _procSubmitPayment(req, res) {
     try {
       isEmailSend = bodyParam.is_send_email_invoice;
     } catch (err) {
-      isEmailSend = false;      
+      isEmailSend = false;
     }
 
     //if (isEmailSend) {
-      hasil_order_penjualan = [];
-      hasil_nilai_invoice = [];
-      var email_bcc="adm.blackholektvsub@gmail.com";
-      var email_to="adm.blackholektvsub@gmail.com";
-      //var email_to="mochammad.ainul@happypuppy.id";
+    hasil_order_penjualan = [];
+    hasil_nilai_invoice = [];
+    var email_bcc = "adm.blackholektvsub@gmail.com";
+    var email_to = "adm.blackholektvsub@gmail.com";
+    //var email_to="mochammad.ainul@happypuppy.id";
 
-      var nama_penerima;
-      var nomor_member;
-      var room__ = SulBean.Kamar;
-      var total_menit_extend = parseInt(0);
-      var room_ = await new RoomService().getRoom(db, room__);
-      var extend = await new RoomService().getExtendRoomList(db, room__);
-      if (extend != false) {
-        for (n = 0; n < extend.recordset.length; n++) {
-          total_menit_extend = total_menit_extend + parseInt(extend.recordset[n].total_menit_extend);
-        }
+    var nama_penerima;
+    var nomor_member;
+    var room__ = SulBean.Kamar;
+    var total_menit_extend = parseInt(0);
+    var room_ = await new RoomService().getRoom(db, room__);
+    var extend = await new RoomService().getExtendRoomList(db, room__);
+    if (extend != false) {
+      for (n = 0; n < extend.recordset.length; n++) {
+        total_menit_extend = total_menit_extend + parseInt(extend.recordset[n].total_menit_extend);
       }
-      var invoice = await getNilaiInvoice(room_.recordset[0].room_ivc);
-      var pembayaran = await getSulSud(room_.recordset[0].room_ivc);
-      var outlet = await new TarifKamar().getJamOperasionalOutlet(db);
-      var order_penjualan = await getOrderPenjualan(room_.recordset[0].room_ivc);
+    }
+    var invoice = await getNilaiInvoice(room_.recordset[0].room_ivc);
+    var pembayaran = await getSulSud(room_.recordset[0].room_ivc);
+    var outlet = await new TarifKamar().getJamOperasionalOutlet(db);
+    var order_penjualan = await getOrderPenjualan(room_.recordset[0].room_ivc);
 
-      if (room_.recordset[0].member_rev == '') {       
+    if (room_.recordset[0].member_rev == '') {
+      if (isEmailSend) {
+        email_address = room_.recordset[0].email;
+      } else {
+        email_address = email_to;
+      }
+      nama_penerima = room_.recordset[0].nama_member;
+      nomor_member = room_.recordset[0].kode_member;
+    }
+    else {
+      var cek_member = await new CheckinProses().getDataMember(db, room_.recordset[0].member_rev);
+      if (cek_member !== false) {
         if (isEmailSend) {
-          email_address = room_.recordset[0].email;
-        }else{
-          email_address=email_to;
-        }     
-        nama_penerima = room_.recordset[0].nama_member;
-        nomor_member = room_.recordset[0].kode_member;
-      }
-      else {
-        var cek_member = await new CheckinProses().getDataMember(db, room_.recordset[0].member_rev);
-        if (cek_member !== false) {
-          if (isEmailSend) {
-            email_address = cek_member.recordset[0].email;
-          }else{
-            email_address=email_to;
-          }          
-          nama_penerima = cek_member.recordset[0].nama_member;
-          nomor_member = room_.recordset[0].member_rev;
+          email_address = cek_member.recordset[0].email;
+        } else {
+          email_address = email_to;
         }
+        nama_penerima = cek_member.recordset[0].nama_member;
+        nomor_member = room_.recordset[0].member_rev;
       }
-      logger.info("Send email  to " + email_address);
-      nomor_pembayaran = room_.recordset[0].summary;
-      var total_point = await getAddRewardTambahanPoint(nomor_pembayaran);
-      if (total_point == false) {
-        total_point = 0;
+    }
+    logger.info("Send email  to " + email_address);
+    nomor_pembayaran = room_.recordset[0].summary;
+    var total_point = await getAddRewardTambahanPoint(nomor_pembayaran);
+    if (total_point == false) {
+      total_point = 0;
+    }
+    var total_pembayaran = room_.recordset[0].total_pembayaran;
+    tgl_pembayaran = room_.recordset[0].summary_date;
+    var hari = await harinya(tgl_pembayaran);
+    var bulan = await bulannya(tgl_pembayaran);
+    var jam = await formatJam(tgl_pembayaran);
+    var tanggal = await formatTanggel(tgl_pembayaran);
+
+    if (email_address == "") {
+    }
+    else if (room_.recordset[0].status_kamar != 4) {
+      logger.info("Kamar Belum Dibayar");
+      dataResponse = new ResponseFormat(true, null, "Kamar Belum Dibayar");
+      res.send(dataResponse);
+    }
+    else if (email_address != "") {
+      if ((email_address.includes("@") == false) ||
+        (email_address.includes(".") == false) ||
+        (email_address == email_address.toUpperCase())) {
       }
-      var total_pembayaran = room_.recordset[0].total_pembayaran;
-      tgl_pembayaran = room_.recordset[0].summary_date;
-      var hari = await harinya(tgl_pembayaran);
-      var bulan = await bulannya(tgl_pembayaran);
-      var jam = await formatJam(tgl_pembayaran);
-      var tanggal = await formatTanggel(tgl_pembayaran);
+      else if ((email_address.includes("@") == true) ||
+        (email_address.includes(".") == true) ||
+        (email_address == email_address.toLowerCase())) {
+        fullPathSendFile = process.cwd() + "\\temp_summary_pdf\\" + invoice[0][0].invoice + ".pdf";
+        namaSendFile = invoice[0][0].invoice + ".pdf";
 
-      if (email_address == "") {
-      }
-      else if (room_.recordset[0].status_kamar != 4) {
-        logger.info("Kamar Belum Dibayar");
-        dataResponse = new ResponseFormat(true, null, "Kamar Belum Dibayar");
-        res.send(dataResponse);
-      }
-      else if (email_address != "") {
-        if ((email_address.includes("@") == false) ||
-          (email_address.includes(".") == false) ||
-          (email_address == email_address.toUpperCase())) {
-        }
-        else if ((email_address.includes("@") == true) ||
-          (email_address.includes(".") == true) ||
-          (email_address == email_address.toLowerCase())) {
-          fullPathSendFile = process.cwd() + "\\temp_summary_pdf\\" + invoice[0][0].invoice + ".pdf";
-          namaSendFile = invoice[0][0].invoice + ".pdf";
+        var create_file_pdf = await createPdf(
+          fullPathSendFile,
+          tanggal,
+          jam,
+          outlet,
+          room_,
+          invoice,
+          order_penjualan,
+          pembayaran,
+          total_point,
+          total_menit_extend
+        );
 
-          var create_file_pdf = await createPdf(
-            fullPathSendFile,
-            tanggal,
-            jam,
-            outlet,
-            room_,
-            invoice,
-            order_penjualan,
-            pembayaran,
-            total_point,
-            total_menit_extend
-          );
-
-          if (create_file_pdf != false) {
-
-            let transporter = nodemailer.createTransport({
-              //host: "smtp.ethereal.email",
-              host: "mail.blackholektv.com",
-              port: 587,
-              secure: false, // true for 465, false for other ports
-              auth: {
-                user: "noreply.receipt@blackholektv.id", // generated ethereal user
-                pass: "Masainul123", // generated ethereal password
-              },
-              tls: {
-                rejectUnauthorized: false
-              },
-              logger: true,
-              debug: false // include SMTP traffic in the logs
-            });
-            let info = await transporter.sendMail({
-              from: '"Blackhole KTV Receipts " <noreply.receipt@blackholektv.id>',
-              to: email_address,
-              bcc: email_bcc,
-              subject: "Your E-Receipt at Blackhole KTV  (" + invoice[0][0].invoice + ")",
-              text:
-                "Dear " + nama_penerima + "\n" +
-                "Member ID : " + nomor_member + "\n\n" +
-                "Thank you for visiting Blackhole KTV.\n\n" +
-                "Attached e-receipt in this email is a summary of your recent visit on  " +
-                tanggal + " at " + jam + " " +
-                "with invoice number " + invoice[0][0].invoice + ".\n\n" +
-                "Please note that it could take 24-48 hours for points to be added to your PuppyClub Account. PuppyClub app can be downloaded from the Apple App Store or Google Play Store for a better experience.\n\n" +
-                "Any further information, please contact +62881-1338-833\n\n" +
-                "Regards,\n" +
-                "BLACKHOLE KTV\n",
-              attachments: [
-                {
-                  filename: namaSendFile,
-                  content: 'Some notes about this e-mail',
-                  path: fullPathSendFile,
-                  contentType: 'application/pdf' // optional, would be detected from the filename 
-                }
-
-              ]
-
-            }, function (error) {
-              if (error) {
-                console.log("Email Error", error);
-                logger.error(error);
-              } else {
-                logger.info("Send Email Sukses");
+        if (create_file_pdf != false) {
+          await updateIhpSulKirimEmail(invoice,email_address);
+          let transporter = nodemailer.createTransport({
+            //host: "smtp.ethereal.email",
+            host: "mail.blackholektv.com",
+            port: 587,
+            secure: false, // true for 465, false for other ports
+            auth: {
+              user: "noreply.receipt@blackholektv.id", // generated ethereal user
+              pass: "Masainul123", // generated ethereal password
+            },
+            tls: {
+              rejectUnauthorized: false
+            },
+            logger: true,
+            debug: false // include SMTP traffic in the logs
+          });
+          let info = await transporter.sendMail({
+            from: '"Blackhole KTV Receipts " <noreply.receipt@blackholektv.id>',
+            to: email_address,
+            bcc: email_bcc,
+            subject: "Your E-Receipt at Blackhole KTV  (" + invoice[0][0].invoice + ")",
+            text:
+              "Dear " + nama_penerima + "\n" +
+              "Member ID : " + nomor_member + "\n\n" +
+              "Thank you for visiting Blackhole KTV.\n\n" +
+              "Attached e-receipt in this email is a summary of your recent visit on  " +
+              tanggal + " at " + jam + " " +
+              "with invoice number " + invoice[0][0].invoice + ".\n\n" +
+              "Please note that it could take 24-48 hours for points to be added to your PuppyClub Account. PuppyClub app can be downloaded from the Apple App Store or Google Play Store for a better experience.\n\n" +
+              "Any further information, please contact +62881-1338-833\n\n" +
+              "Regards,\n" +
+              "BLACKHOLE KTV\n",
+            attachments: [
+              {
+                filename: namaSendFile,
+                content: 'Some notes about this e-mail',
+                path: fullPathSendFile,
+                contentType: 'application/pdf' // optional, would be detected from the filename 
               }
-            });
 
-          } else {
-            logger.info("Gagal Create File Pdf");
-          }
+            ]
+
+          }, function (error) {
+            if (error) {
+              console.log("Email Error", error);
+              logger.error(error);
+            } else {
+              logger.info("Send Email Sukses");
+            }
+          });
+
+        } else {
+          logger.info("Gagal Create File Pdf");
         }
-        //send email
-
       }
+      //send email
+
+    }
 
     //} //end send email
 
@@ -2522,6 +2522,32 @@ function getNilaiInvoice(ivc_) {
         }
       });
 
+    } catch (err) {
+      logger.error(err.message);
+      reject(err.message);
+    }
+  });
+}
+
+function updateIhpSulKirimEmail(ivc_, email_) {
+  return new Promise((resolve, reject) => {
+    try {
+      var ivc = ivc_;
+      var email = email_;
+
+      var SulSudQuery = " " +
+        "Update IHP_Sul set Emailed='1', Emailed_Address='" + email + "'" +
+        " where IHP_Sul.Invoice='" + ivc + "'";
+
+      db.request().query(SulSudQuery, function (err, dataReturn) {
+        if (err) {
+          logger.error(err.message);
+          reject(err.message);
+          resolve(false);
+        } else {
+          resolve(true);
+        }
+      });
     } catch (err) {
       logger.error(err.message);
       reject(err.message);
