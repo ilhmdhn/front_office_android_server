@@ -102,10 +102,10 @@ function checkRoom(room) {
 exports.submitPayment = async function (req, res) {
   db = await new DBConnection().getPoolConnection();
   logger = req.log;
-  _procSubmit(req, res);
+  _procSubmitPayment(req, res);
 };
 
-async function _procSubmit(req, res) {
+async function _procSubmitPayment(req, res) {
   db = await new DBConnection().getPoolConnection();
 
   //1--------------------------------------
@@ -754,15 +754,20 @@ async function _procSubmit(req, res) {
 
     //TODO send email invoice
     let isEmailSend = false;
+    var email_address;
     try {
       isEmailSend = bodyParam.is_send_email_invoice;
     } catch (err) {
-      isEmailSend = false;
+      isEmailSend = false;      
     }
-    if (isEmailSend) {
+
+    //if (isEmailSend) {
       hasil_order_penjualan = [];
       hasil_nilai_invoice = [];
-      var email_address;
+      var email_bcc="adm.blackholektvsub@gmail.com";
+      var email_to="adm.blackholektvsub@gmail.com";
+      //var email_to="mochammad.ainul@happypuppy.id";
+
       var nama_penerima;
       var nomor_member;
       var room__ = SulBean.Kamar;
@@ -779,15 +784,23 @@ async function _procSubmit(req, res) {
       var outlet = await new TarifKamar().getJamOperasionalOutlet(db);
       var order_penjualan = await getOrderPenjualan(room_.recordset[0].room_ivc);
 
-      if (room_.recordset[0].member_rev == '') {
-        email_address = room_.recordset[0].email;
+      if (room_.recordset[0].member_rev == '') {       
+        if (isEmailSend) {
+          email_address = room_.recordset[0].email;
+        }else{
+          email_address=email_to;
+        }     
         nama_penerima = room_.recordset[0].nama_member;
         nomor_member = room_.recordset[0].kode_member;
       }
       else {
         var cek_member = await new CheckinProses().getDataMember(db, room_.recordset[0].member_rev);
         if (cek_member !== false) {
-          email_address = cek_member.recordset[0].email;
+          if (isEmailSend) {
+            email_address = cek_member.recordset[0].email;
+          }else{
+            email_address=email_to;
+          }          
           nama_penerima = cek_member.recordset[0].nama_member;
           nomor_member = room_.recordset[0].member_rev;
         }
@@ -856,7 +869,7 @@ async function _procSubmit(req, res) {
             let info = await transporter.sendMail({
               from: '"Blackhole KTV Receipts " <noreply.receipt@blackholektv.id>',
               to: email_address,
-              bcc: 'adm.blackholektvsub@gmail.com',
+              bcc: email_bcc,
               subject: "Your E-Receipt at Blackhole KTV  (" + invoice[0][0].invoice + ")",
               text:
                 "Dear " + nama_penerima + "\n" +
@@ -896,8 +909,7 @@ async function _procSubmit(req, res) {
 
       }
 
-    }
-    //end send email
+    //} //end send email
 
     if ((room.Jenis_Kamar == "LOBBY") ||
       (room.Jenis_Kamar == "TABLE") ||
