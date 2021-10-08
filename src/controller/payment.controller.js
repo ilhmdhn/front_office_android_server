@@ -766,7 +766,6 @@ async function _procSubmitPayment(req, res) {
     hasil_nilai_invoice = [];
     var email_bcc = "adm.blackholektvsub@gmail.com";
     var email_to = "adm.blackholektvsub@gmail.com";
-    //var email_to="mochammad.ainul@happypuppy.id";
 
     var nama_penerima;
     var nomor_member;
@@ -1816,7 +1815,10 @@ function createPdf(
           total_sales = invoice[n][0].total_all + total_room_transfer;
 
           checkin = invoice[0][0].jam_checkin;
-          checkout = invoice[0][0].jam_checkout;
+          //checkout = invoice[0][0].jam_checkout;
+          //ditambah langsung extend
+          checkout = invoice[0][0].jam_checkout_plus_extend;
+
           jam_checkin = checkin.getUTCHours();
           if (jam_checkin.toString().length == 1) {
             jam_checkin = "0" + jam_checkin;
@@ -1847,12 +1849,12 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text("Date", batas_kiri_halaman, (top + (4 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text("Cashier", batas_kiri_halaman, (top + (5 * spasiAntarBaris)));
 
-          if(invoice_[0][0].kamar_alias==""){            
+          if (invoice_[0][0].kamar_alias == "") {
             doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].kamar, left2, (top + (0 * spasiAntarBaris)));
-          }else{
+          } else {
             doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].kamar_alias, left2, (top + (0 * spasiAntarBaris)));
           }
-          
+
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].nama_member, left2, (top + (1 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].member, left2, (top + (2 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].invoice, left2, (top + (3 * spasiAntarBaris)));
@@ -1871,11 +1873,11 @@ function createPdf(
             batas_kiri_halaman, (top + (8 * spasiAntarBaris)));
 
 
-          if (total_menit_extend > 0) {
+         /*  if (total_menit_extend > 0) {
             doc.font(fontpath).fontSize(fontSize).text("Extend " + total_jam_extend + ":" + total_menit_extend_,
               (4 * batasKiriKolom), (top + (8 * spasiAntarBaris)));
           }
-
+ */
           doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(sewa_kamar, (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
 
@@ -2436,91 +2438,112 @@ function getNilaiInvoice(ivc_) {
       var ivc = ivc_;
 
       var isiQuery = "" +
-        " set dateformat dmy  " +
-        " SELECT " +
-        "  [IHP_Ivc].[Invoice] as invoice " +
-        "  ,[IHP_Ivc].[DATE] as date" +
-        "  ,[IHP_Ivc].[Shift] as shift" +
-        "  ,[IHP_Ivc].[Reception] as reception" +
-        "  ,[IHP_Ivc].[Member] as member" +
-        "  ,[IHP_Ivc].[Nama] as nama" +
-        "  ,[IHP_Ivc].[Kamar] as kamar" +
-        "  ,[IHP_Ivc].[Sewa_Kamar] as sewa_kamar" +
-        "  ,[IHP_Ivc].[Total_Extend] as total_extend" +
-        "  ,[IHP_Ivc].[Overpax] as overpax" +
-        "  ,[IHP_Ivc].[Discount_Kamar] as discount_kamar" +
-        "  ,[IHP_Ivc].[Surcharge_Kamar] as surcharge_kamar" +
-        "  ,[IHP_Ivc].[Service_Kamar] as service_kamar" +
-        "  ,[IHP_Ivc].[Tax_Kamar] as tax_kamar" +
-        "  ,[IHP_Ivc].[Total_Kamar] as total_kamar" +
-        "  ,[IHP_Ivc].[Charge_Penjualan] as charge_penjualan" +
-        "  ,[IHP_Ivc].[Total_Cancelation] as total_cancelation" +
-        "  ,[IHP_Ivc].[Discount_Penjualan] as discount_penjualan" +
-        "  ,[IHP_Ivc].[Service_Penjualan] as service_penjualan" +
-        "  ,[IHP_Ivc].[Tax_Penjualan] as tax_penjualan" +
-        "  ,[IHP_Ivc].[Total_Penjualan] as total_penjualan" +
-        "  ,[IHP_Ivc].[Charge_Lain] as charge_lain" +
-        "  ,[IHP_Ivc].[Uang_Muka] as uang_muka" +
-        "  ,[IHP_Ivc].[Uang_Voucher] as uang_voucher" +
-        "  ,[IHP_Ivc].[Total_All] as total_all" +
-        "  ,[IHP_Ivc].[Transfer] as invoice_transfer" +
-        "  ,[IHP_Ivc].[Status] as status" +
-        "  ,[IHP_Ivc].[Chtime] as chtime" +
-        "  ,[IHP_Ivc].[Chusr] as chusr" +
-        "  ,[IHP_Ivc].[Printed] as printed" +
-        "  ,[IHP_Ivc].[Date_Trans] as date_trans" +
-
-        " ,IHP_Ivc.Jenis_Kamar as jenis_kamar" +
-        " ,IHP_Rcp.[Member] as kode_member" +
-        " ,IHP_Rcp.[Nama] as nama_member" +
-        " ,IHP_Rcp.[Checkin] as checkin" +
-        " ,IHP_Rcp.[Jam_Sewa] as jam_sewa" +
-        " ,IHP_Rcp.[Menit_Sewa] as menit_sewa" +
-        " ,IHP_Rcp.[Checkout] as checkout" +
-        " ,IHP_Rcp.Checkin as jam_checkin " +
-        " ,IHP_Rcp.Checkout as jam_checkout " +
-        " ,IHP_Rcp.[QM1] as qm1" +
-        " ,IHP_Rcp.[QM2] as qm2" +
-        " ,IHP_Rcp.[QM3] as qm3" +
-        " ,IHP_Rcp.[QM4] as qm4" +
-        " ,IHP_Rcp.[QF1] as qf1" +
-        " ,IHP_Rcp.[QF2] as qf2" +
-        " ,IHP_Rcp.[QF3] as qf3" +
-        " ,IHP_Rcp.[QF4] as qf4" +
-        " ,IHP_Rcp.[PAX] as pax" +
-        " ,IHP_Rcp.[Keterangan] as hp" +
-        " ,IHP_Rcp.[Chtime] chtime" +
-        " ,IHP_Rcp.[MBL] as malam_besok_libur" +
-        " ,IHP_Rcp.[Surcharge] as surcharge" +
-        " ,IHP_Rcp.[Reservation] as reservation" +
-        " ,IHP_Rcp.[Summary] as summary" +
-        " ,IHP_Rcp.[KMS] as Keterangan" +
-        " ,IHP_Rcp.[Date_Trans] as date_trans" +
-        " ,IHP_Rcp.[Status_Promo] as status_promo" +
-
-        " ,case when IHP_Rcp.[Status_Promo]=1  then 'NORMAL DISKON MEMBER'" +
-        " when IHP_Rcp.[Status_Promo]=2  then 'PROMOSI NON MEMBER'" +
-        " when IHP_Rcp.[Status_Promo]=3  then 'PROMOSI + DISKON MEMBER' end" +
-        " as keterangan_status_promo" +
-
-        " ,IHP_Rcp.[Id_Payment] as id_payment_uang_muka" +
-
-        " ,case when IHP_Rcp.[Id_Payment]=0  then 'CASH'" +
-        " when IHP_Rcp.[Id_Payment]=1 then 'CREDIT'" +
-        " when IHP_Rcp.[Id_Payment]=2  then 'DEBET' end" +
-        " as keterangan_payment_uang_muka" +
-        " ,isnull(IHP_Room.Kamar_Alias,'') as kamar_alias" +
-
-        "  FROM " +
-        " [dbo].[IHP_Ivc] " +
-        " ,[dbo].[IHP_Rcp] " +
-        " ,[dbo].[IHP_Room] " +
-        " where " +
-        " [IHP_Ivc].[Invoice]='" + ivc + "'" +
-        " and [IHP_Ivc].[Invoice]=[IHP_Rcp].[Invoice]" +
-        " and [IHP_Ivc].[Reception]=[IHP_Rcp].[Reception]" +
-        " and [IHP_Ivc].[Kamar]=[IHP_Rcp].[Kamar]" +
-        " and [IHP_Ivc].[Kamar]=[IHP_Room].[Kamar]";
+        `
+        set
+   dateformat dmy 
+   SELECT
+      [IHP_Ivc].[Invoice] as invoice,
+      [IHP_Ivc].[DATE] as date,
+      [IHP_Ivc].[Shift] as shift,
+      [IHP_Ivc].[Reception] as reception,
+      [IHP_Ivc].[Member] as member,
+      [IHP_Ivc].[Nama] as nama,
+      [IHP_Ivc].[Kamar] as kamar,
+      [IHP_Ivc].[Sewa_Kamar] as sewa_kamar,
+      [IHP_Ivc].[Total_Extend] as total_extend,
+      [IHP_Ivc].[Overpax] as overpax,
+      [IHP_Ivc].[Discount_Kamar] as discount_kamar,
+      [IHP_Ivc].[Surcharge_Kamar] as surcharge_kamar,
+      [IHP_Ivc].[Service_Kamar] as service_kamar,
+      [IHP_Ivc].[Tax_Kamar] as tax_kamar,
+      [IHP_Ivc].[Total_Kamar] as total_kamar,
+      [IHP_Ivc].[Charge_Penjualan] as charge_penjualan,
+      [IHP_Ivc].[Total_Cancelation] as total_cancelation,
+      [IHP_Ivc].[Discount_Penjualan] as discount_penjualan,
+      [IHP_Ivc].[Service_Penjualan] as service_penjualan,
+      [IHP_Ivc].[Tax_Penjualan] as tax_penjualan,
+      [IHP_Ivc].[Total_Penjualan] as total_penjualan,
+      [IHP_Ivc].[Charge_Lain] as charge_lain,
+      [IHP_Ivc].[Uang_Muka] as uang_muka,
+      [IHP_Ivc].[Uang_Voucher] as uang_voucher,
+      [IHP_Ivc].[Total_All] as total_all,
+      [IHP_Ivc].[Transfer] as invoice_transfer,
+      [IHP_Ivc].[Status] as status,
+      [IHP_Ivc].[Chtime] as chtime,
+      [IHP_Ivc].[Chusr] as chusr,
+      [IHP_Ivc].[Printed] as printed,
+      [IHP_Ivc].[Date_Trans] as date_trans,
+      IHP_Ivc.Jenis_Kamar as jenis_kamar,
+      IHP_Rcp.[Member] as kode_member,
+      IHP_Rcp.[Nama] as nama_member,
+      IHP_Rcp.[Checkin] as checkin,
+      IHP_Rcp.[Jam_Sewa] as jam_sewa,
+      IHP_Rcp.[Menit_Sewa] as menit_sewa,
+      IHP_Rcp.[Checkout] as checkout,
+      IHP_Rcp.Checkin as jam_checkin,
+      IHP_Rcp.Checkout as jam_checkout,
+      IHP_Rcp.[QM1] as qm1,
+      IHP_Rcp.[QM2] as qm2,
+      IHP_Rcp.[QM3] as qm3,
+      IHP_Rcp.[QM4] as qm4,
+      IHP_Rcp.[QF1] as qf1,
+      IHP_Rcp.[QF2] as qf2,
+      IHP_Rcp.[QF3] as qf3,
+      IHP_Rcp.[QF4] as qf4,
+      IHP_Rcp.[PAX] as pax,
+      IHP_Rcp.[Keterangan] as hp,
+      IHP_Rcp.[Chtime] as chtime,
+      IHP_Rcp.[MBL] as malam_besok_libur,
+      IHP_Rcp.[Surcharge] as surcharge,
+      IHP_Rcp.[Reservation] as reservation,
+      IHP_Rcp.[Summary] as summary,
+      IHP_Rcp.[KMS] as Keterangan,
+      IHP_Rcp.[Date_Trans] as date_trans,
+      IHP_Rcp.[Status_Promo] as status_promo,
+      case
+         when
+            IHP_Rcp.[Status_Promo] = 1 
+         then
+            'NORMAL DISKON MEMBER' 
+         when
+            IHP_Rcp.[Status_Promo] = 2 
+         then
+            'PROMOSI NON MEMBER' 
+         when
+            IHP_Rcp.[Status_Promo] = 3 
+         then
+            'PROMOSI + DISKON MEMBER' 
+      end
+      as keterangan_status_promo , IHP_Rcp.[Id_Payment] as id_payment_uang_muka , 
+      case
+         when
+            IHP_Rcp.[Id_Payment] = 0 
+         then
+            'CASH' 
+         when
+            IHP_Rcp.[Id_Payment] = 1 
+         then
+            'CREDIT' 
+         when
+            IHP_Rcp.[Id_Payment] = 2 
+         then
+            'DEBET' 
+      end
+      as keterangan_payment_uang_muka , isnull(IHP_Room.Kamar_Alias, '') as kamar_alias , sum(Jam_Extend*60) + (Menit_Extend) as jam_extend, DATEADD(mi, sum(Jam_Extend*60) + (Menit_Extend), IHP_Rcp.Checkout) as jam_checkout_plus_extend 
+   FROM
+      [dbo].[IHP_Ivc] , [dbo].[IHP_Rcp] 
+      left Join
+         IHP_Ext 
+         on [IHP_Ext].[Reception] = [IHP_Rcp].[Reception] , [dbo].[IHP_Room] 
+   where
+      [IHP_Ivc].[Invoice] = '${ivc}' 
+      and [IHP_Ivc].[Invoice] = [IHP_Rcp].[Invoice] 
+      and [IHP_Ivc].[Reception] = [IHP_Rcp].[Reception] 
+      and [IHP_Ivc].[Kamar] = [IHP_Rcp].[Kamar] 
+      and [IHP_Ivc].[Kamar] = [IHP_Room].[Kamar] 
+   group by
+      [IHP_Ivc].[Invoice], [IHP_Ivc].[DATE], [IHP_Ivc].[Shift] , [IHP_Ivc].[Reception] , [IHP_Ivc].[Member] , [IHP_Ivc].[Nama], [IHP_Ivc].[Kamar], [IHP_Ivc].[Sewa_Kamar] , [IHP_Ivc].[Total_Extend], [IHP_Ivc].[Overpax] , [IHP_Ivc].[Discount_Kamar] , [IHP_Ivc].[Surcharge_Kamar] , [IHP_Ivc].[Service_Kamar], [IHP_Ivc].[Tax_Kamar] , [IHP_Ivc].[Total_Kamar] , [IHP_Ivc].[Charge_Penjualan] , [IHP_Ivc].[Total_Cancelation] , [IHP_Ivc].[Discount_Penjualan] , [IHP_Ivc].[Service_Penjualan] , [IHP_Ivc].[Tax_Penjualan] , [IHP_Ivc].[Total_Penjualan] , [IHP_Ivc].[Charge_Lain] , [IHP_Ivc].[Uang_Muka] , [IHP_Ivc].[Uang_Voucher] , [IHP_Ivc].[Total_All] , [IHP_Ivc].[Transfer] , [IHP_Ivc].[Status] , [IHP_Ivc].[Chtime] , [IHP_Ivc].[Chusr] , [IHP_Ivc].[Printed] , [IHP_Ivc].[Date_Trans] , IHP_Ivc.Jenis_Kamar , IHP_Rcp.[Member] , IHP_Rcp.[Nama] , IHP_Rcp.[Checkin] , IHP_Rcp.[Jam_Sewa] , IHP_Rcp.[Menit_Sewa] , IHP_Rcp.[Checkout] , IHP_Rcp.Checkin , IHP_Rcp.Checkout , IHP_Rcp.[QM1] , IHP_Rcp.[QM2] , IHP_Rcp.[QM3] , IHP_Rcp.[QM4] , IHP_Rcp.[QF1] , IHP_Rcp.[QF2] , IHP_Rcp.[QF3] , IHP_Rcp.[QF4] , IHP_Rcp.[PAX] , IHP_Rcp.[Keterangan], IHP_Rcp.[Chtime] , IHP_Rcp.[MBL] , IHP_Rcp.[Surcharge], IHP_Rcp.[Reservation] , IHP_Rcp.[Summary] , IHP_Rcp.[KMS] , IHP_Rcp.[Date_Trans] , IHP_Rcp.[Status_Promo] , IHP_Rcp.Id_Payment, IHP_Room.Kamar_Alias, IHP_Ext.Menit_Extend
+        `;
 
       db.request().query(isiQuery, function (err, dataReturn) {
         if (err) {
