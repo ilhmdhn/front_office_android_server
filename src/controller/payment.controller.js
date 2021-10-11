@@ -812,10 +812,13 @@ async function _procSubmitPayment(req, res) {
     }
     var total_pembayaran = room_.recordset[0].total_pembayaran;
     tgl_pembayaran = room_.recordset[0].summary_date;
+    var checkin = room_.recordset[0].jam_checkin;
     var hari = await harinya(tgl_pembayaran);
     var bulan = await bulannya(tgl_pembayaran);
     var jam = await formatJam(tgl_pembayaran);
     var tanggal = await formatTanggel(tgl_pembayaran);
+    var jam_checkin = await formatJam(checkin);
+    var tanggal_checkin = await formatTanggel(checkin);
 
     if (email_address == "") {
     }
@@ -845,7 +848,9 @@ async function _procSubmitPayment(req, res) {
           order_penjualan,
           pembayaran,
           total_point,
-          total_menit_extend
+          total_menit_extend,
+          tanggal_checkin,
+          jam_checkin
         );
 
         if (create_file_pdf != false) {
@@ -1321,10 +1326,13 @@ async function _pocSubmitEmail(req, res) {
   }
   var total_pembayaran = room_.recordset[0].total_pembayaran;
   tgl_pembayaran = room_.recordset[0].summary_date;
+  var checkin = room_.recordset[0].jam_checkin;
   var hari = await harinya(tgl_pembayaran);
   var bulan = await bulannya(tgl_pembayaran);
   var jam = await formatJam(tgl_pembayaran);
   var tanggal = await formatTanggel(tgl_pembayaran);
+  var jam_checkin = await formatJam(checkin);
+  var tanggal_checkin = await formatTanggel(checkin);
 
   if (email_address == "") {
   }
@@ -1354,7 +1362,9 @@ async function _pocSubmitEmail(req, res) {
         order_penjualan,
         pembayaran,
         total_point,
-        total_menit_extend
+        total_menit_extend,
+        tanggal_checkin,
+        jam_checkin
       );
 
       //----------
@@ -1677,7 +1687,9 @@ function createPdf(
   order_penjualan_,
   pembayaran_,
   total_point_,
-  total_menit_extend__
+  total_menit_extend__,
+  tanggal_checkin_,
+  jam_checkin_
 ) {
   return new Promise((resolve, reject) => {
     try {
@@ -1686,8 +1698,8 @@ function createPdf(
       var n;
       var total_point = total_point_;
       var fileName = fileName_;
-      var tanggal = tanggal_;
-      var jam = jam_;
+      var tanggal_pembayaran = tanggal_;
+      var jam_pembayaran = jam_;
       var outlet = outlet_;
       var room = room_;
       var invoice = invoice_;
@@ -1696,6 +1708,8 @@ function createPdf(
       var total_menit_extend = total_menit_extend__;
       var total_jam_extend = parseInt(0);
       var total_menit_extend_ = parseInt(0);
+      var tanggal_checkin = tanggal_checkin_;
+      var jam_checkin__ = jam_checkin_;
 
       if (total_menit_extend > 0) {
 
@@ -1717,6 +1731,7 @@ function createPdf(
 
 
       var fontSize = parseInt(10);
+      var fontSizeFooter = parseInt(8);
       //pengaturan gambar
       var lebar_gambar = parseInt(50);
       var batas_atas_gambar = 10;
@@ -1759,7 +1774,7 @@ function createPdf(
       //tinggi header invoice
       tinggi_kertas = tinggi_kertas + (13 * spasiAntarBaris);
       //tinggi pembayaran
-      tinggi_kertas = tinggi_kertas + (pembayaran.length * spasiAntarBaris + 1);
+      tinggi_kertas = tinggi_kertas + (pembayaran.length * spasiAntarBaris + 2);
 
       for (n = 0; n < invoice.length; n++) {
         if (n > 0) {
@@ -1858,7 +1873,8 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].nama_member, left2, (top + (1 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].member, left2, (top + (2 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].invoice, left2, (top + (3 * spasiAntarBaris)));
-          doc.font(fontpath).fontSize(fontSize).text(": " + tanggal + ",  " + jam,
+     
+          doc.font(fontpath).fontSize(fontSize).text(": " + tanggal_checkin + ",  " + jam_checkin__,
             left2, (top + (4 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + room.recordset[0].chusr, left2, (top + (5 * spasiAntarBaris)));
 
@@ -1873,11 +1889,11 @@ function createPdf(
             batas_kiri_halaman, (top + (8 * spasiAntarBaris)));
 
 
-         /*  if (total_menit_extend > 0) {
-            doc.font(fontpath).fontSize(fontSize).text("Extend " + total_jam_extend + ":" + total_menit_extend_,
-              (4 * batasKiriKolom), (top + (8 * spasiAntarBaris)));
-          }
- */
+          /*  if (total_menit_extend > 0) {
+             doc.font(fontpath).fontSize(fontSize).text("Extend " + total_jam_extend + ":" + total_menit_extend_,
+               (4 * batasKiriKolom), (top + (8 * spasiAntarBaris)));
+           }
+  */
           doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(sewa_kamar, (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
 
@@ -2041,7 +2057,11 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text((room.recordset[0].point_reward + total_point),
             (9 * batasKiriKolom), (batasAtas + (2 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
 
-          batasAtas = batasAtas + (3 * spasiAntarBaris);
+                   doc.font(fontpath).fontSize(fontSizeFooter).text(tanggal_pembayaran + ",  " + jam_pembayaran+
+                   " "+room.recordset[0].summary_chusr,
+                   (7* batasKiriKolom), (batasAtas + (4 * spasiAntarBaris))); 
+
+          batasAtas = batasAtas + (5 * spasiAntarBaris);
 
         }
         //kamar transfer
@@ -2092,7 +2112,7 @@ function createPdf(
           //  left2, (batasAtas + (1 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].kamar_alias, left2, (batasAtas + (1 * spasiAntarBaris)));
 
-          doc.font(fontpath).fontSize(fontSize).text(": " + tanggal + ",  " + jam,
+          doc.font(fontpath).fontSize(fontSize).text(": " + tanggal_pembayaran + ",  " + jam_pembayaran,
             left2, (batasAtas + (2 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + room.recordset[0].chusr, left2, (batasAtas + (3 * spasiAntarBaris)));
 
@@ -2529,7 +2549,8 @@ function getNilaiInvoice(ivc_) {
          then
             'DEBET' 
       end
-      as keterangan_payment_uang_muka , isnull(IHP_Room.Kamar_Alias, '') as kamar_alias , sum(Jam_Extend*60) + (Menit_Extend) as jam_extend, DATEADD(mi, sum(Jam_Extend*60) + (Menit_Extend), IHP_Rcp.Checkout) as jam_checkout_plus_extend 
+      as keterangan_payment_uang_muka , isnull(IHP_Room.Kamar_Alias, '') as kamar_alias , sum(Jam_Extend*60) + (Menit_Extend) as jam_extend, 
+      DATEADD(mi, isnull(sum(Jam_Extend*60) + (Menit_Extend),0), IHP_Rcp.Checkout) as jam_checkout_plus_extend 
    FROM
       [dbo].[IHP_Ivc] , [dbo].[IHP_Rcp] 
       left Join
