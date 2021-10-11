@@ -1772,9 +1772,9 @@ function createPdf(
 
       //ukuran tinggi kertas
       //tinggi header invoice
-      tinggi_kertas = tinggi_kertas + (13 * spasiAntarBaris);
+      tinggi_kertas = tinggi_kertas + (15 * spasiAntarBaris);
       //tinggi pembayaran
-      tinggi_kertas = tinggi_kertas + (pembayaran.length * spasiAntarBaris + 2);
+      tinggi_kertas = tinggi_kertas + (pembayaran.length * spasiAntarBaris + 1);
 
       for (n = 0; n < invoice.length; n++) {
         if (n > 0) {
@@ -2409,7 +2409,7 @@ function getOrderPenjualan(ivc_) {
         " , IHP_Okd.Nama" +
         " , IHP_Okd.Price" +
         " , IHP_Okd_Promo.Harga_Promo" +
-        " ,  IHP_Okd.Qty" +
+        " , IHP_Okd.Qty" +
         " , IHP_Okd.Total" +
         " , IHP_Okd.Location" +
         " , IHP_Okd.Printed" +
@@ -2421,7 +2421,8 @@ function getOrderPenjualan(ivc_) {
         " , IHP_Ivc.Invoice" +
         " , IHP_Ivc.[Transfer]" +
         " , IHP_Ivc.[Status]" +
-        " , IHP_Ocd.[OrderCancelation]";
+        " , IHP_Ocd.[OrderCancelation]"+
+        " order by IHP_Okd.Nama asc";
 
 
       db.request().query(cekOrderPenjualanQuery, function (err, dataReturn) {
