@@ -21,6 +21,7 @@ status=5 checkout=repaired
 */
 
 var getRoomQuery = `
+SET DATEFORMAT DMY
   SELECT IHP_Room.Kamar as kamar
    ,IHP_Ivc.Reception as room_rcp
    ,IHP_Ivc.Invoice as room_ivc
@@ -149,7 +150,9 @@ var getRoomQuery = `
    ,IHP_Room.Jam_Checkin as jam_checkin
    ,IHP_Room.Jam_Checkout as jam_checkout
    ,isnull(IHP_Sul.Summary,'') as summary
-   ,isnull(IHP_Sul.Date_trans,'') as summary_date
+   ,isnull(IHP_Sul.Date_trans,'') as summary_date_
+   ,isnull(CONVERT(datetime, IHP_Sul.DATE),'') as summary_date
+   ,isnull(IHP_Sul.Chusr,'') as summary_chusr
    ,isnull(IHP_Sul.Total,0) as total_pembayaran
 
    ,IHP_Rcp.QM1 as qm1
