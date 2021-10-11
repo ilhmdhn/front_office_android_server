@@ -1929,7 +1929,7 @@ function createPdf(
                         (1 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarSubjectDiskon, align: 'right' });
                       doc.font(fontpath).fontSize(fontSize).text(":",
                         (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris));
-                      doc.font(fontpath).fontSize(fontSize).text("-" + convertRupiah.convert((order_penjualan[m][i].total_diskon_setelah_cancel).toFixed(0)),
+                      doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((order_penjualan[m][i].total_diskon_setelah_cancel).toFixed(0))+")",
                         (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
 
                       batasAtas = batasAtas + spasiAntarBaris + spasiAntarBaris + spasiAntarBaris;
@@ -1959,7 +1959,7 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text("Total F&B", batas_kiri_halaman, (batasAtas + (2 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
 
           if (invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon > 0) {
-            doc.font(fontpath).fontSize(fontSize).text("Total Disc", batas_kiri_halaman, (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarSubjectDiskon, align: 'right' });
+            doc.font(fontpath).fontSize(fontSize).text("Total Disc F&B", batas_kiri_halaman, (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarSubjectDiskon, align: 'right' });
           }
 
           doc.font(fontpath).fontSize(fontSize).text("Service", batas_kiri_halaman, (batasAtas + (4 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
@@ -1990,8 +1990,8 @@ function createPdf(
           if (invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon > 0) {
             doc.font(fontpath).fontSize(fontSize).text(":",
               (9 * batasKiriKolom), (batasAtas + (3 * spasiAntarBaris)));
-            doc.font(fontpath).fontSize(fontSize).text("-" + convertRupiah.convert((
-              invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon).toFixed(0)),
+            doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((
+              invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon).toFixed(0))+")",
               (9 * batasKiriKolom), (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarAngkaRupiah, align: 'right' });
           }
 
@@ -2174,7 +2174,7 @@ function createPdf(
                         (1 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarSubjectDiskon, align: 'right' });
                       doc.font(fontpath).fontSize(fontSize).text(":",
                         (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris));
-                      doc.font(fontpath).fontSize(fontSize).text("-" + convertRupiah.convert((order_penjualan[m][i].total_diskon_setelah_cancel).toFixed(0)),
+                      doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((order_penjualan[m][i].total_diskon_setelah_cancel).toFixed(0))+")",
                         (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
 
                       batasAtas = batasAtas + spasiAntarBaris + spasiAntarBaris + spasiAntarBaris;
@@ -2204,7 +2204,7 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text("Total Room", batas_kiri_halaman, (batasAtas + (1 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
           doc.font(fontpath).fontSize(fontSize).text("Total F&B", batas_kiri_halaman, (batasAtas + (2 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
           if (invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon > 0) {
-            doc.font(fontpath).fontSize(fontSize).text("Total Disc", batas_kiri_halaman, (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarSubjectDiskon, align: 'right' });
+            doc.font(fontpath).fontSize(fontSize).text("Total Disc F&B ", batas_kiri_halaman, (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarSubjectDiskon, align: 'right' });
           }
           doc.font(fontpath).fontSize(fontSize).text("Service", batas_kiri_halaman, (batasAtas + (4 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
           doc.font(fontpath).fontSize(fontSize).text("Tax", batas_kiri_halaman, (batasAtas + (5 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
@@ -2230,8 +2230,8 @@ function createPdf(
           if (invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon > 0) {
             doc.font(fontpath).fontSize(fontSize).text(":",
               (9 * batasKiriKolom), (batasAtas + (3 * spasiAntarBaris)));
-            doc.font(fontpath).fontSize(fontSize).text("-" + convertRupiah.convert((
-              invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon).toFixed(0)),
+            doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((
+              invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon).toFixed(0))+")",
               (9 * batasKiriKolom), (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarAngkaRupiah, align: 'right' });
           }
 
