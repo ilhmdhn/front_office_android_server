@@ -386,7 +386,9 @@ async function _procSubmitPayment(req, res) {
         //Cek Pembayaran
         if (listPayment[a].nominal <= 0) {
           if (UMNonCashDet.nominal < TotalInvoice) {
-            ErrorMsg = "Nilai harus lebih besar dari 0";
+            if(TotalInvoice>0){
+              ErrorMsg = "Nilai harus lebih besar dari 0";
+            }            
           }
         }
         else {
@@ -640,6 +642,8 @@ async function _procSubmitPayment(req, res) {
         ErrorMsg = "Gagal insert data IHP_Sul";
       }
     }
+
+  }else{
 
   }
 

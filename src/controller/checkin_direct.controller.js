@@ -1135,19 +1135,27 @@ async function _procDirectEditCheckInRoom(req, res) {
                             console.log(kode_rcp + " Sudah Di beri Promo Room");
                             logger.info(kode_rcp + " Sudah Di beri Promo Room");
                         }
+
+                        var check_apakah_sudah_extend = await new CheckinProses().getInfoExtendRoom(db, kode_rcp);
+
                         if (promo_ != '') {
                             for (a = 0; a < promo.length; a++) {
                                 promo_ = promo[a];
                                 var isgetPromoRoom = await new PromoRoom().getPromoRoomByRcpCheckin(db, promo_, totalDurasiCekinMenit, jenis_kamar, kode_rcp);
                                 if (isgetPromoRoom.state == true) {
                                     if ((isgetPromoRoom.data[0].hasil_start_promo !== null) && (isgetPromoRoom.data[0].hasil_end_promo !== null)) {
-                                        await new PromoRoom().getDeleteInsertIhpPromoRcpRoomByRcpCheckin(db, promo_, totalDurasiCekinMenit, jenis_kamar, kode_rcp);
+                                        if (check_apakah_sudah_extend = false) {
+                                            await new PromoRoom().getDeleteInsertIhpPromoRcpRoomByRcpCheckin(db, promo_, totalDurasiCekinMenit, jenis_kamar, kode_rcp);
+                                        } else {
+                                            console.log(kode_rcp + " Room Sudah Di Extend tidak bisa di beri Promo");
+                                            logger.info(kode_rcp + " Room Sudah Di Extend tidak bisa di beri Promo");
+                                        }
                                     }
                                 }
                             }
                         }
 
-                        var check_apakah_sudah_extend = await new CheckinProses().getInfoExtendRoom(db, kode_rcp);
+
                         if (check_apakah_sudah_extend != false) {
                             var check_apakah_sudah_dapat_promo_rcp_food_extend = await new PromoFood().getPromoRcpFood(db, kode_rcp, 1);
                             if (check_apakah_sudah_dapat_promo_rcp_food_extend != false) {
@@ -1274,7 +1282,7 @@ async function _procDirectEditCheckInRoom(req, res) {
                                                     for (a = 0; a < get_order_cancelation.recordset.length; a++) {
                                                         await new PromoFood().updateIhpOclAfterEditPromoFood(db, get_order_cancelation.recordset[a].order_cancelation);
                                                     }
-                                                }                                              
+                                                }
                                             }
                                         }
                                     }
@@ -2544,7 +2552,7 @@ async function _procExtendRoom(req, res) {
                 console.log(room + " Ready untuk Extend, Durasi Extend " + totalDurasiCekinMenit + " Menit");
                 logger.info(room + " Ready untuk  Extend, Durasi Extend " + totalDurasiCekinMenit + " Menit");
 
-                dateTambahan = "DATEADD(minute," + totalDurasiCekinMenit + ",'" + isgetPengecekanRoomReady.data[0].jam_checkout_+ "')";
+                dateTambahan = "DATEADD(minute," + totalDurasiCekinMenit + ",'" + isgetPengecekanRoomReady.data[0].jam_checkout_ + "')";
                 var isprosesQueryInsertIHP_Ext = await
                     new CheckinProses().insertIhpExt(db, kode_rcp, durasi_jam, durasi_menit, chusr, date_trans_Query, status_promo,
                         isgetPengecekanRoomReady.data[0].jam_checkout_, dateTambahan);
@@ -4964,29 +4972,29 @@ async function _procPrintTagihanRoom(req, res) {
                     panjang_pesan = pesan.length;
                     panjang_pesan = parseInt(panjang_pesan);
                     logger.info("Send Sinyal PRINT_INVOICE_POINT_OF_SALES_LORONG to POINT OF SALES");
-                    
+
                     client_pos.send(pesan, 0, panjang_pesan, port, ip_address, function (error, bytes) {
                         if (error) {
                             client.close();
                             dataResponse = new ResponseFormat(false, error.message);
                             res.send(dataResponse);
-                        } else { 
-                            console.log('Data sent !!!');                         
-                             formResponseData = {
+                        } else {
+                            console.log('Data sent !!!');
+                            formResponseData = {
                                 room: room,
                                 Kamar: room
                             };
                             // TODO :: print tagihan
                             dataResponse = new ResponseFormat(true, formResponseData);
-                            res.send(dataResponse); 
-                            
+                            res.send(dataResponse);
+
                         }
-                    });                 
+                    });
                 }
             } else if (isProsesUpdateIhpIvc == false) {
                 dataResponse = new ResponseFormat(false, null, " Room Gagal isProsesUpdateIhpIvc");
                 res.send(dataResponse);
-            }           
+            }
 
         } else {
             dataResponse = new ResponseFormat(false, null, room + " Room Belum di Checkin");
