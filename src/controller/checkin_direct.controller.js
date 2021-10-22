@@ -1144,7 +1144,7 @@ async function _procDirectEditCheckInRoom(req, res) {
                                 var isgetPromoRoom = await new PromoRoom().getPromoRoomByRcpCheckin(db, promo_, totalDurasiCekinMenit, jenis_kamar, kode_rcp);
                                 if (isgetPromoRoom.state == true) {
                                     if ((isgetPromoRoom.data[0].hasil_start_promo !== null) && (isgetPromoRoom.data[0].hasil_end_promo !== null)) {
-                                        if (check_apakah_sudah_extend = false) {
+                                        if (check_apakah_sudah_extend == false) {
                                             await new PromoRoom().getDeleteInsertIhpPromoRcpRoomByRcpCheckin(db, promo_, totalDurasiCekinMenit, jenis_kamar, kode_rcp);
                                         } else {
                                             console.log(kode_rcp + " Room Sudah Di Extend tidak bisa di beri Promo");
