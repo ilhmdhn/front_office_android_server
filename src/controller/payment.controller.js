@@ -643,9 +643,7 @@ async function _procSubmitPayment(req, res) {
       }
     }
 
-  } else {
-
-  }
+  } 
 
   //Insert IHP_Sud
   StatusProcess = await insertSUD(SulBean.Summary, paymentValue);
