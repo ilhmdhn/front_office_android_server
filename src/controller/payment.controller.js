@@ -386,9 +386,9 @@ async function _procSubmitPayment(req, res) {
         //Cek Pembayaran
         if (listPayment[a].nominal <= 0) {
           if (UMNonCashDet.nominal < TotalInvoice) {
-            if(TotalInvoice>0){
+            if (TotalInvoice > 0) {
               ErrorMsg = "Nilai harus lebih besar dari 0";
-            }            
+            }
           }
         }
         else {
@@ -643,7 +643,7 @@ async function _procSubmitPayment(req, res) {
       }
     }
 
-  }else{
+  } else {
 
   }
 
@@ -662,6 +662,9 @@ async function _procSubmitPayment(req, res) {
   if (UMNonCashDet.nominal > TotalInvoice) {
     await new CheckinProses().updateIhpIvcUangMuka(db, room.Reception, TotalInvoice);
     await new CheckinProses().updateIhpRcpUangMuka(db, room.Reception, TotalInvoice);
+  }
+  if ((TotalInvoice == 0) && (UMNonCashDet.nominal > 0)) {
+    await new CheckinProses().deleteIhpUangMukaNonCash(db,Invoice.Reception);
   }
 
   //Jike member dan punya poin
@@ -1876,7 +1879,7 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].nama_member, left2, (top + (1 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].member, left2, (top + (2 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].invoice, left2, (top + (3 * spasiAntarBaris)));
-     
+
           doc.font(fontpath).fontSize(fontSize).text(": " + tanggal_checkin + ",  " + jam_checkin__,
             left2, (top + (4 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + room.recordset[0].chusr, left2, (top + (5 * spasiAntarBaris)));
@@ -1891,18 +1894,18 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text(jam_checkin + ":" + menit_checkin + " - " + jam_checkout + ":" + menit_checkout,
             batas_kiri_halaman, (top + (8 * spasiAntarBaris)));
 
-            if(invoice[n][0].total_diskon_kamar>0){
+          if (invoice[n][0].total_diskon_kamar > 0) {
             doc.font(fontpath).fontSize(fontSize).text("Promo", batas_kiri_halaman, (top + (9 * spasiAntarBaris)));
-            }
+          }
 
           doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)));
-          doc.font(fontpath).fontSize(fontSize).text( convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)), 
+          doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)),
             (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
 
-          if(invoice[n][0].total_diskon_kamar>0){
-          doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)));
-          doc.font(fontpath).fontSize(fontSize).text("("+convertRupiah.convert(invoice[n][0].total_diskon_kamar.toFixed(0))+")", 
-            (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
+          if (invoice[n][0].total_diskon_kamar > 0) {
+            doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)));
+            doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].total_diskon_kamar.toFixed(0)) + ")",
+              (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
           }
 
           batasAtas = parseInt((top + ((batasHeaderAtas + 2) * spasiAntarBaris)));
@@ -1933,7 +1936,7 @@ function createPdf(
                         (1 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarSubjectDiskon, align: 'right' });
                       doc.font(fontpath).fontSize(fontSize).text(":",
                         (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris));
-                      doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((order_penjualan[m][i].total_diskon_setelah_cancel).toFixed(0))+")",
+                      doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((order_penjualan[m][i].total_diskon_setelah_cancel).toFixed(0)) + ")",
                         (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
 
                       batasAtas = batasAtas + spasiAntarBaris + spasiAntarBaris + spasiAntarBaris;
@@ -1995,7 +1998,7 @@ function createPdf(
             doc.font(fontpath).fontSize(fontSize).text(":",
               (9 * batasKiriKolom), (batasAtas + (3 * spasiAntarBaris)));
             doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((
-              invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon).toFixed(0))+")",
+              invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon).toFixed(0)) + ")",
               (9 * batasKiriKolom), (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarAngkaRupiah, align: 'right' });
           }
 
@@ -2065,9 +2068,9 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text((room.recordset[0].point_reward + total_point),
             (9 * batasKiriKolom), (batasAtas + (2 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
 
-                   doc.font(fontpath).fontSize(fontSizeFooter).text(tanggal_pembayaran + ",  " + jam_pembayaran+
-                   " "+room.recordset[0].summary_chusr,
-                   (7* batasKiriKolom), (batasAtas + (4 * spasiAntarBaris))); 
+          doc.font(fontpath).fontSize(fontSizeFooter).text(tanggal_pembayaran + ",  " + jam_pembayaran +
+            " " + room.recordset[0].summary_chusr,
+            (7 * batasKiriKolom), (batasAtas + (4 * spasiAntarBaris)));
 
           batasAtas = batasAtas + (5 * spasiAntarBaris);
 
@@ -2134,20 +2137,20 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text(jam_checkin + ":" + menit_checkin + " - " + jam_checkout + ":" + menit_checkout,
             batas_kiri_halaman, (batasAtas + (6 * spasiAntarBaris)));
 
-            if(invoice[n][0].total_diskon_kamar>0){
-              doc.font(fontpath).fontSize(fontSize).text("Promo",batas_kiri_halaman, (batasAtas + (7 * spasiAntarBaris)));
-              }
+          if (invoice[n][0].total_diskon_kamar > 0) {
+            doc.font(fontpath).fontSize(fontSize).text("Promo", batas_kiri_halaman, (batasAtas + (7 * spasiAntarBaris)));
+          }
 
-          doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (6 * spasiAntarBaris)));     
-          doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)), 
+          doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (6 * spasiAntarBaris)));
+          doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)),
             (9 * batasKiriKolom), (batasAtas + (6 * spasiAntarBaris)),
             { width: lebarAngkaRupiah, align: 'right' });
 
-            doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)));     
-            doc.font(fontpath).fontSize(fontSize).text("("+convertRupiah.convert(invoice[n][0].total_diskon_kamar.toFixed(0))+")", 
-              (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)),
-              { width: lebarAngkaRupiah, align: 'right' });
-            
+          doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)));
+          doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].total_diskon_kamar.toFixed(0)) + ")",
+            (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)),
+            { width: lebarAngkaRupiah, align: 'right' });
+
 
           batasAtas = batasAtas + (8 * spasiAntarBaris);
 
@@ -2178,7 +2181,7 @@ function createPdf(
                         (1 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarSubjectDiskon, align: 'right' });
                       doc.font(fontpath).fontSize(fontSize).text(":",
                         (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris));
-                      doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((order_penjualan[m][i].total_diskon_setelah_cancel).toFixed(0))+")",
+                      doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((order_penjualan[m][i].total_diskon_setelah_cancel).toFixed(0)) + ")",
                         (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
 
                       batasAtas = batasAtas + spasiAntarBaris + spasiAntarBaris + spasiAntarBaris;
@@ -2235,7 +2238,7 @@ function createPdf(
             doc.font(fontpath).fontSize(fontSize).text(":",
               (9 * batasKiriKolom), (batasAtas + (3 * spasiAntarBaris)));
             doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((
-              invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon).toFixed(0))+")",
+              invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon).toFixed(0)) + ")",
               (9 * batasKiriKolom), (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarAngkaRupiah, align: 'right' });
           }
 
@@ -2440,7 +2443,7 @@ function getOrderPenjualan(ivc_) {
         " , IHP_Ivc.Invoice" +
         " , IHP_Ivc.[Transfer]" +
         " , IHP_Ivc.[Status]" +
-        " , IHP_Ocd.[OrderCancelation]"+
+        " , IHP_Ocd.[OrderCancelation]" +
         " order by IHP_Okd.Nama asc";
 
 

@@ -3779,6 +3779,7 @@ class CheckinProses {
     });
   }
 
+
   updateRecountIhpIvcTotalAll(db_, kode_rcp_) {
     return new Promise((resolve, reject) => {
        try {
