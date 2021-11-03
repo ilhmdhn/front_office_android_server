@@ -7910,10 +7910,11 @@ where
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery getDeleteInsertIhpDetailDiskonSewaKamar ' + isiQuery);
                   resolve(false);
                } else {
                   sql.close();
+                  logger.info(kode_rcp+' Sukses getDeleteInsertIhpDetailDiskonSewaKamar ');
                   resolve(true);
                }
             });
@@ -9924,10 +9925,11 @@ where
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery getDeleteInsertIhpDetailDiskonSewaKamarExtend ' + isiQuery);
                   resolve(false);
                } else {
                   sql.close();
+                  logger.info(kode_rcp+' Sukses getDeleteInsertIhpDetailDiskonSewaKamarExtend ');
                   resolve(true);
                }
             });
@@ -10303,10 +10305,12 @@ where
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery getDeleteInsertIhpPromoRcpRoomByRcpCheckin ' + isiQuery);
                   resolve(false);
                } else {
                   sql.close();
+                  
+                  logger.info(kode_rcp + ' Sukses getDeleteInsertIhpPromoRcpRoomByRcpCheckin');
                   resolve(true);
                }
             });
@@ -10666,10 +10670,11 @@ where
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery getDeleteInsertIhpPromoRcpRoomByJamCheckoutIhpRoom ' + isiQuery);
                   resolve(false);
                } else {
-                  sql.close();
+                  sql.close();                  
+                  logger.error(kode_rcp + ' Sukses prosesQuery getDeleteInsertIhpPromoRcpRoomByJamCheckoutIhpRoom ' + isiQuery);
                   resolve(true);
                }
             });
@@ -11037,10 +11042,11 @@ where
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery getDeleteInsertIhpPromoRcpRoomExtendOldTransferByRcpCheckOut ' + isiQuery);
                   resolve(false);
                } else {
-                  sql.close();
+                  sql.close();                  
+                  logger.info(kode_rcp + ' sukses prosesQuery getDeleteInsertIhpPromoRcpRoomExtendOldTransferByRcpCheckOut ');
                   resolve(true);
                }
             });

@@ -1733,9 +1733,19 @@ class CheckinProses {
           } else {
             sql.close();
             console.log(kode_rcp_ + " Sukses updateIhpIvcNilaiInvoice ");
-            logger.info(kode_rcp_ + " Sukses updateIhpIvcNilaiInvoice ");
             console.log(kode_rcp_ + " total kamar " + total_kamar + " total all " + total_all);
-            logger.info(kode_rcp_ + " total kamar " + total_kamar + " total all " + total_all);
+
+            logger.info(kode_rcp_ + " Sukses updateIhpIvcNilaiInvoice ");
+            logger.info(kode_rcp_ + " Sewa_Kamar = " + total_tarif_kamar);
+            logger.info(kode_rcp_ + " Total_Extend = " + total_extend);
+            logger.info(kode_rcp_ + " Overpax = " + charge_overpax);
+            logger.info(kode_rcp_ + " Discount_Kamar = " + discount_kamar);
+            logger.info(kode_rcp_ + " Service_Kamar = " + nilai_service_room);
+            logger.info(kode_rcp_ + " Tax_Kamar = " + nilai_pajak_room);
+            logger.info(kode_rcp_ + " Total_Kamar = " + total_kamar);
+            logger.info(kode_rcp_ + " Uang_Voucher = " + uang_voucher);
+            logger.info(kode_rcp_ + " Uang_Muka = " + uang_muka);
+            logger.info(kode_rcp_ + " Total_All = " + total_all);
             resolve(true);
           }
         });
@@ -2406,6 +2416,50 @@ class CheckinProses {
             } else {
               console.log(room + " gagal GetReception From IHP_Room");
               logger.info(room + " gagal GetReception From IHP_Room");
+              resolve(false);
+            }
+          }
+        });
+
+      } catch (err) {
+        console.log(err);
+        logger.error(err.message);
+        logger.error('Catch Error prosesQuery ');
+        resolve(false);
+      }
+    });
+  }
+
+  getCekValidIHPRcpDetailsRoom(db_, kode_rcp_) {
+    return new Promise((resolve, reject) => {
+      try {
+        db = db_;
+        var kode_rcp = kode_rcp_;
+        var isiQuery = " " +
+          `
+          select case when Date_Time_Start is null then 'false' else 'true' end
+          as date_time_start 
+          FROM [HP112].[dbo].[IHP_Rcp_DetailsRoom]  where reception='${kode_rcp}'
+          `
+          ;
+
+        db.request().query(isiQuery, function (err, dataReturn) {
+          if (err) {
+            logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+            resolve(false);
+          } else {
+            console.log(kode_rcp + " Sukses getCekIhpDetailRoom ");
+            logger.info(kode_rcp + " Sukses getCekIhpDetailRoom ");
+            if (dataReturn.recordset.length > 0) {
+              var hasil = dataReturn.recordset[0].date_time_start;
+              if (hasil == 'true') {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            } else {
+              console.log(kode_rcp + " gagal getCekIhpDetailRoom From IHP_Room");
+              logger.info(kode_rcp + " gagal getCekIhpDetailRoom From IHP_Room");
               resolve(false);
             }
           }
@@ -3782,13 +3836,13 @@ class CheckinProses {
 
   updateRecountIhpIvcTotalAll(db_, kode_rcp_) {
     return new Promise((resolve, reject) => {
-       try {
-          db = db_;
+      try {
+        db = db_;
 
-          var kode_rcp = kode_rcp_;
+        var kode_rcp = kode_rcp_;
 
-          var isiQuery = "" +
-             `
+        var isiQuery = "" +
+          `
              UPDATE
  IHP_Ivc_ 
 SET
@@ -3823,40 +3877,40 @@ FROM
 WHERE
  IHP_Ivc_.Reception = '${kode_rcp}'`;
 
-          db.request().query(isiQuery, function (err, dataReturn) {
-             if (err) {
-                sql.close();
-                logger.error(err);
-                console.log(err);
-                logger.error(err.message + ' Error prosesQuery ' + isiQuery);
-                resolve(false);
-             } else {
-                sql.close();
-                logger.info(kode_rcp + " sukses updateIhpIvcPromoAfterEditPromoFood");
-                resolve(true);
-             }
-          });
+        db.request().query(isiQuery, function (err, dataReturn) {
+          if (err) {
+            sql.close();
+            logger.error(err);
+            console.log(err);
+            logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+            resolve(false);
+          } else {
+            sql.close();
+            logger.info(kode_rcp + " sukses updateIhpIvcPromoAfterEditPromoFood");
+            resolve(true);
+          }
+        });
 
-       } catch (err) {
-          sql.close();
-          logger.error(err);
-          console.log(err);
-          logger.error(err.message);
-          logger.error('Catch Error prosesQuery ');
-          resolve(false);
-       }
+      } catch (err) {
+        sql.close();
+        logger.error(err);
+        console.log(err);
+        logger.error(err.message);
+        logger.error('Catch Error prosesQuery ');
+        resolve(false);
+      }
     });
- }
+  }
 
- updateRecountIhpIvc(db_, kode_rcp_) {
-  return new Promise((resolve, reject) => {
-     try {
+  updateRecountIhpIvc(db_, kode_rcp_) {
+    return new Promise((resolve, reject) => {
+      try {
         db = db_;
 
         var kode_rcp = kode_rcp_;
 
         var isiQuery = "" +
-           `
+          `
            UPDATE
    IHP_Ivc_ 
 SET
@@ -3986,29 +4040,29 @@ WHERE
    and IHP_Config2.Data = '1'`;
 
         db.request().query(isiQuery, function (err, dataReturn) {
-           if (err) {
-              sql.close();
-              logger.error(err);
-              console.log(err);
-              logger.error(err.message + ' Error prosesQuery ' + isiQuery);
-              resolve(false);
-           } else {
-              sql.close();
-              logger.info(kode_rcp + " sukses updateIhpIvcPromoAfterEditPromoFood");
-              resolve(true);
-           }
+          if (err) {
+            sql.close();
+            logger.error(err);
+            console.log(err);
+            logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+            resolve(false);
+          } else {
+            sql.close();
+            logger.info(kode_rcp + " sukses updateIhpIvcPromoAfterEditPromoFood");
+            resolve(true);
+          }
         });
 
-     } catch (err) {
+      } catch (err) {
         sql.close();
         logger.error(err);
         console.log(err);
         logger.error(err.message);
         logger.error('Catch Error prosesQuery ');
         resolve(false);
-     }
-  });
-}
+      }
+    });
+  }
 
 }
 module.exports = CheckinProses;

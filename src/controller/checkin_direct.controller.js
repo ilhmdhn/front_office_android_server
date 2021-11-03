@@ -15,7 +15,6 @@ var CheckinProses = require('../services/checkin.proses.js');
 var ResetTransaksi = require('../services/reset.transaksi.js');
 var IpAddressService = require('../services/ip.address.service.js');
 var RoomNoService = require('../services/room.no.service.js');
-var OrderController = require('./order.controller.js');
 var ConfigPos = require('../services/config.pos.js');
 
 var moment = require('moment');
@@ -54,6 +53,7 @@ async function _procDirectCheckInRoom(req, res) {
         var kapasitas_kamar;
         var mbl;
         var nomor_hari;
+        var nomor_hari_;
         var date_trans_Query;
         var finalShift;
         var isGetCekAktifKondisiVoucher = false;
@@ -492,13 +492,28 @@ async function _procDirectCheckInRoom(req, res) {
 
                                                             var isGetTarifPerjamRoom = await new TarifKamar().getTarifPerjamRoom(db, jenis_kamar, nomor_hari, checkin, checkout);
                                                             if (isGetTarifPerjamRoom.state == true) {
-
                                                                 for (a = 0; a < isGetTarifPerjamRoom.length; a++) {
                                                                     var overpax_tarif = parseFloat(isGetTarifPerjamRoom.data[a].overpax);
                                                                     var kamar_tarif = parseFloat(isGetTarifPerjamRoom.data[a].tarif);
-
                                                                     await new TarifKamar().insertIHPRcpDetailsRoom(db, kode_rcp, jenis_kamar,
-                                                                        nomor_hari_, overpax_tarif, kamar_tarif, isGetTarifPerjamRoom.data[a].Time_Start_Dmy, isGetTarifPerjamRoom.data[a].Time_Finish_Dmy);
+                                                                        nomor_hari_, overpax_tarif, kamar_tarif,
+                                                                        isGetTarifPerjamRoom.data[a].Time_Start_Dmy, isGetTarifPerjamRoom.data[a].Time_Finish_Dmy);
+                                                                }
+                                                            }
+
+                                                            //cek validitas ihp_rcp_details_room
+                                                            var cek_valid_insert_ihp_rcp_details_room = await new CheckinProses().getCekValidIHPRcpDetailsRoom(db, kode_rcp);
+                                                            if (cek_valid_insert_ihp_rcp_details_room == false) {
+                                                                await new TarifKamar().deleteIhpRcpDetailsRoom(db, kode_rcp);
+                                                                isGetTarifPerjamRoom = await new TarifKamar().getTarifPerjamRoom(db, jenis_kamar, nomor_hari, checkin, checkout);
+                                                                if (isGetTarifPerjamRoom.state == true) {
+                                                                    for (a = 0; a < isGetTarifPerjamRoom.length; a++) {
+                                                                        var overpax_tarif_ = parseFloat(isGetTarifPerjamRoom.data[a].overpax);
+                                                                        var kamar_tarif_ = parseFloat(isGetTarifPerjamRoom.data[a].tarif);
+                                                                        await new TarifKamar().insertIHPRcpDetailsRoom(db, kode_rcp, jenis_kamar,
+                                                                            nomor_hari_, overpax_tarif_, kamar_tarif_,
+                                                                            isGetTarifPerjamRoom.data[a].Time_Start_Dmy, isGetTarifPerjamRoom.data[a].Time_Finish_Dmy);
+                                                                    }
                                                                 }
                                                             }
                                                             if (isGetTarifPerjamRoom.state == true) {
@@ -1520,6 +1535,7 @@ async function _procDirectCheckInRoomMember(req, res) {
 
         var mbl;
         var nomor_hari;
+        var nomor_hari_;
         var date_trans_Query;
         var finalShift;
 
@@ -1757,18 +1773,34 @@ async function _procDirectCheckInRoomMember(req, res) {
 
                                                             var isGetTarifPerjamRoom = await new TarifKamar().getTarifPerjamRoom(db, jenis_kamar, nomor_hari, checkin, checkout);
                                                             if (isGetTarifPerjamRoom.state == true) {
-
                                                                 for (a = 0; a < isGetTarifPerjamRoom.length; a++) {
                                                                     var overpax_tarif = parseFloat(isGetTarifPerjamRoom.data[a].overpax);
                                                                     var kamar_tarif = parseFloat(isGetTarifPerjamRoom.data[a].tarif);
 
                                                                     await new TarifKamar().insertIHPRcpDetailsRoom(db, kode_rcp, jenis_kamar,
-                                                                        nomor_hari_, overpax_tarif, kamar_tarif, isGetTarifPerjamRoom.data[a].Time_Start_Dmy, isGetTarifPerjamRoom.data[a].Time_Finish_Dmy);
-
+                                                                        nomor_hari_, overpax_tarif, kamar_tarif,
+                                                                        isGetTarifPerjamRoom.data[a].Time_Start_Dmy, isGetTarifPerjamRoom.data[a].Time_Finish_Dmy);
                                                                 }
                                                             }
-                                                            if (isGetTarifPerjamRoom.state == true) {
 
+                                                            //cek validitas ihp_rcp_details_room
+                                                            var cek_valid_insert_ihp_rcp_details_room = await new CheckinProses().getCekValidIHPRcpDetailsRoom(db, kode_rcp);
+                                                            if (cek_valid_insert_ihp_rcp_details_room == false) {
+                                                                await new TarifKamar().deleteIhpRcpDetailsRoom(db, kode_rcp);
+                                                                isGetTarifPerjamRoom = await new TarifKamar().getTarifPerjamRoom(db, jenis_kamar, nomor_hari, checkin, checkout);
+                                                                if (isGetTarifPerjamRoom.state == true) {
+                                                                    for (a = 0; a < isGetTarifPerjamRoom.length; a++) {
+                                                                        var overpax_tarif_ = parseFloat(isGetTarifPerjamRoom.data[a].overpax);
+                                                                        var kamar_tarif_ = parseFloat(isGetTarifPerjamRoom.data[a].tarif);
+
+                                                                        await new TarifKamar().insertIHPRcpDetailsRoom(db, kode_rcp, jenis_kamar,
+                                                                            nomor_hari_, overpax_tarif_, kamar_tarif_,
+                                                                            isGetTarifPerjamRoom.data[a].Time_Start_Dmy, isGetTarifPerjamRoom.data[a].Time_Finish_Dmy);
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            if (isGetTarifPerjamRoom.state == true) {
                                                                 var isgetTotalTarifKamarDanOverpax = await new TarifKamar().getTotalTarifKamarDanOverpax(db, kode_rcp, kapasitas_kamar, pax);
                                                                 if (isgetTotalTarifKamarDanOverpax != false) {
                                                                     await new TarifKamar().getDeleteInsertIhpDetailSewaKamar(db, kode_rcp);
@@ -2450,6 +2482,7 @@ async function _procExtendRoom(req, res) {
         var kode_member;
         var apakah_nomor_member;
         var nomor_hari;
+        var nomor_hari_;
         var kapasitas_kamar;
         var kode_rcp;
         var kode_ivc;
@@ -2594,15 +2627,29 @@ async function _procExtendRoom(req, res) {
 
                                 var isGetTarifPerjamRoom = await new TarifKamar().getTarifPerjamRoom(db, jenis_kamar, nomor_hari, checkin, checkout);
                                 if (isGetTarifPerjamRoom.state == true) {
-
                                     for (a = 0; a < isGetTarifPerjamRoom.length; a++) {
                                         var overpax_tarif = parseFloat(isGetTarifPerjamRoom.data[a].overpax);
                                         var kamar_tarif = parseFloat(isGetTarifPerjamRoom.data[a].tarif);
-
                                         await new TarifKamar().insertIHPRcpDetailsRoom(db, kode_rcp, jenis_kamar,
-                                            nomor_hari_, overpax_tarif, kamar_tarif, isGetTarifPerjamRoom.data[a].Time_Start_Dmy, isGetTarifPerjamRoom.data[a].Time_Finish_Dmy);
+                                            nomor_hari_, overpax_tarif, kamar_tarif,
+                                            isGetTarifPerjamRoom.data[a].Time_Start_Dmy, isGetTarifPerjamRoom.data[a].Time_Finish_Dmy);
                                     }
+                                }
 
+                                //cek validitas ihp_rcp_details_room
+                                var cek_valid_insert_ihp_rcp_details_room = await new CheckinProses().getCekValidIHPRcpDetailsRoom(db, kode_rcp);
+                                if (cek_valid_insert_ihp_rcp_details_room == false) {
+                                    await new TarifKamar().deleteIhpRcpDetailsRoom(db, kode_rcp);
+                                    isGetTarifPerjamRoom = await new TarifKamar().getTarifPerjamRoom(db, jenis_kamar, nomor_hari, checkin, checkout);
+                                    if (isGetTarifPerjamRoom.state == true) {
+                                        for (a = 0; a < isGetTarifPerjamRoom.length; a++) {
+                                            var overpax_tarif_ = parseFloat(isGetTarifPerjamRoom.data[a].overpax);
+                                            var kamar_tarif_ = parseFloat(isGetTarifPerjamRoom.data[a].tarif);
+                                            await new TarifKamar().insertIHPRcpDetailsRoom(db, kode_rcp, jenis_kamar,
+                                                nomor_hari_, overpax_tarif_, kamar_tarif_,
+                                                isGetTarifPerjamRoom.data[a].Time_Start_Dmy, isGetTarifPerjamRoom.data[a].Time_Finish_Dmy);
+                                        }
+                                    }
                                 }
 
                                 if (isGetTarifPerjamRoom.state == true) {
@@ -2622,7 +2669,6 @@ async function _procExtendRoom(req, res) {
                                                     await new PromoFood().getDeleteInsertIhpPromoRcpFoodExtendRoomByIhpRoomCheckout(db, promo_, totalDurasiCekinMenit, jenis_kamar, room, kode_rcp);
                                                 }
                                             }
-
                                         }
                                     }
 
@@ -2757,7 +2803,6 @@ async function _procExtendRoom(req, res) {
                                                     });
                                                 }
 
-
                                                 formResponseData = {
                                                     room: room,
                                                     kode_rcp: kode_rcp
@@ -2844,6 +2889,7 @@ async function _procTransferRoom(req, res) {
         var eventAcara;
         var mbl;
         var nomor_hari;
+        var nomor_hari_;
         var sisa_checkin;
         var rcp_sisa_checkin;
         var rcp_sedang_berjalan;
@@ -3213,13 +3259,28 @@ async function _procTransferRoom(req, res) {
 
                                                                     var isGetTarifPerjamRoom = await new TarifKamar().getTarifPerjamRoom(db, jenis_kamar, nomor_hari, checkin, checkout);
                                                                     if (isGetTarifPerjamRoom.state == true) {
-
                                                                         for (a = 0; a < isGetTarifPerjamRoom.length; a++) {
                                                                             var overpax_tarif = parseFloat(isGetTarifPerjamRoom.data[a].overpax);
                                                                             var kamar_tarif = parseFloat(isGetTarifPerjamRoom.data[a].tarif);
-
                                                                             await new TarifKamar().insertIHPRcpDetailsRoom(db, kode_rcp, jenis_kamar,
-                                                                                nomor_hari_, overpax_tarif, kamar_tarif, isGetTarifPerjamRoom.data[a].Time_Start_Dmy, isGetTarifPerjamRoom.data[a].Time_Finish_Dmy);
+                                                                                nomor_hari_, overpax_tarif, kamar_tarif,
+                                                                                isGetTarifPerjamRoom.data[a].Time_Start_Dmy, isGetTarifPerjamRoom.data[a].Time_Finish_Dmy);
+                                                                        }
+                                                                    }
+
+                                                                    //cek validitas ihp_rcp_details_room
+                                                                    var cek_valid_insert_ihp_rcp_details_room = await new CheckinProses().getCekValidIHPRcpDetailsRoom(db, kode_rcp);
+                                                                    if (cek_valid_insert_ihp_rcp_details_room == false) {
+                                                                        await new TarifKamar().deleteIhpRcpDetailsRoom(db, kode_rcp);
+                                                                        isGetTarifPerjamRoom = await new TarifKamar().getTarifPerjamRoom(db, jenis_kamar, nomor_hari, checkin, checkout);
+                                                                        if (isGetTarifPerjamRoom.state == true) {
+                                                                            for (a = 0; a < isGetTarifPerjamRoom.length; a++) {
+                                                                                var overpax_tarif_ = parseFloat(isGetTarifPerjamRoom.data[a].overpax);
+                                                                                var kamar_tarif_ = parseFloat(isGetTarifPerjamRoom.data[a].tarif);
+                                                                                await new TarifKamar().insertIHPRcpDetailsRoom(db, kode_rcp, jenis_kamar,
+                                                                                    nomor_hari_, overpax_tarif_, kamar_tarif_,
+                                                                                    isGetTarifPerjamRoom.data[a].Time_Start_Dmy, isGetTarifPerjamRoom.data[a].Time_Finish_Dmy);
+                                                                            }
                                                                         }
                                                                     }
 
@@ -3760,6 +3821,7 @@ async function _procTransferRoomMember(req, res) {
         var mbl;
         var pax;
         var nomor_hari;
+        var nomor_hari_;
         var sisa_checkin;
         var rcp_sisa_checkin;
         var rcp_sedang_berjalan;
@@ -4121,13 +4183,13 @@ async function _procTransferRoomMember(req, res) {
 
                                                                     var isGetTarifPerjamRoom = await new TarifKamar().getTarifPerjamRoom(db, jenis_kamar, nomor_hari, checkin, checkout);
                                                                     if (isGetTarifPerjamRoom.state == true) {
-
                                                                         for (a = 0; a < isGetTarifPerjamRoom.length; a++) {
                                                                             var overpax_tarif = parseFloat(isGetTarifPerjamRoom.data[a].overpax);
                                                                             var kamar_tarif = parseFloat(isGetTarifPerjamRoom.data[a].tarif);
 
                                                                             await new TarifKamar().insertIHPRcpDetailsRoom(db, kode_rcp, jenis_kamar,
-                                                                                nomor_hari_, overpax_tarif, kamar_tarif, isGetTarifPerjamRoom.data[a].Time_Start_Dmy, isGetTarifPerjamRoom.data[a].Time_Finish_Dmy);
+                                                                                nomor_hari_, overpax_tarif, kamar_tarif,
+                                                                                isGetTarifPerjamRoom.data[a].Time_Start_Dmy, isGetTarifPerjamRoom.data[a].Time_Finish_Dmy);
                                                                         }
                                                                     }
 
