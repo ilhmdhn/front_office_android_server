@@ -643,7 +643,7 @@ async function _procSubmitPayment(req, res) {
       }
     }
 
-  } 
+  }
 
   //Insert IHP_Sud
   StatusProcess = await insertSUD(SulBean.Summary, paymentValue);
@@ -662,7 +662,7 @@ async function _procSubmitPayment(req, res) {
     await new CheckinProses().updateIhpRcpUangMuka(db, room.Reception, TotalInvoice);
   }
   if ((TotalInvoice == 0) && (UMNonCashDet.nominal > 0)) {
-    await new CheckinProses().deleteIhpUangMukaNonCash(db,Invoice.Reception);
+    await new CheckinProses().deleteIhpUangMukaNonCash(db, Invoice.Reception);
   }
 
   //Jike member dan punya poin
@@ -1888,25 +1888,30 @@ function createPdf(
             .lineTo(bataskanan, (top + (6 * spasiAntarBaris)))
             .fill(warna);
 
-          doc.font(fontpath).fontSize(fontSize).text("Room Charge:", batas_kiri_halaman, (top + (7 * spasiAntarBaris)));
-          doc.font(fontpath).fontSize(fontSize).text(jam_checkin + ":" + menit_checkin + " - " + jam_checkout + ":" + menit_checkout,
-            batas_kiri_halaman, (top + (8 * spasiAntarBaris)));
+          if ((invoice_[0][0].jenis_kamar != 'BAR') && (invoice_[0][0].jenis_kamar != 'SOFA')) {
+            doc.font(fontpath).fontSize(fontSize).text("Room Charge:", batas_kiri_halaman, (top + (7 * spasiAntarBaris)));
+            doc.font(fontpath).fontSize(fontSize).text(jam_checkin + ":" + menit_checkin + " - " + jam_checkout + ":" + menit_checkout,
+              batas_kiri_halaman, (top + (8 * spasiAntarBaris)));
 
-          if (invoice[n][0].total_diskon_kamar > 0) {
-            doc.font(fontpath).fontSize(fontSize).text("Promo", batas_kiri_halaman, (top + (9 * spasiAntarBaris)));
+            if (invoice[n][0].total_diskon_kamar > 0) {
+              doc.font(fontpath).fontSize(fontSize).text("Promo", batas_kiri_halaman, (top + (9 * spasiAntarBaris)));
+            }
+
+            doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)));
+            doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)),
+              (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
+
+            if (invoice[n][0].total_diskon_kamar > 0) {
+              doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)));
+              doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].total_diskon_kamar.toFixed(0)) + ")",
+                (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
+            }
+
+            batasAtas = parseInt((top + ((batasHeaderAtas + 2) * spasiAntarBaris)));
+          } else {
+            batasAtas = parseInt((top + ((batasHeaderAtas) * spasiAntarBaris)));
           }
 
-          doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)));
-          doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)),
-            (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
-
-          if (invoice[n][0].total_diskon_kamar > 0) {
-            doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)));
-            doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].total_diskon_kamar.toFixed(0)) + ")",
-              (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
-          }
-
-          batasAtas = parseInt((top + ((batasHeaderAtas + 2) * spasiAntarBaris)));
 
           for (m = 0; m < order_penjualan.length; m++) {
             for (i = 0; i < order_penjualan[m].length; i++) {
