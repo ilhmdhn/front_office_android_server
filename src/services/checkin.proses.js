@@ -3848,7 +3848,7 @@ class CheckinProses {
 SET
  IHP_Ivc_.Total_All = 
  (
-    IHP_Ivc__.Total_Kamar - IHP_Ivc__.Uang_Voucher
+    IHP_Ivc__.Total_Kamar
  )
   + IHP_Ivc__.Total_Penjualan + IHP_Ivc__.Charge_Lain 
 FROM
@@ -3886,7 +3886,7 @@ WHERE
             resolve(false);
           } else {
             sql.close();
-            logger.info(kode_rcp + " sukses updateIhpIvcPromoAfterEditPromoFood");
+            logger.info(kode_rcp + " sukses updateRecountIhpIvcTotalAll");
             resolve(true);
           }
         });
@@ -4048,7 +4048,7 @@ WHERE
             resolve(false);
           } else {
             sql.close();
-            logger.info(kode_rcp + " sukses updateIhpIvcPromoAfterEditPromoFood");
+            logger.info(kode_rcp + " sukses updateRecountIhpIvc");
             resolve(true);
           }
         });
