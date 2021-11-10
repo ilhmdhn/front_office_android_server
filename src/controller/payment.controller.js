@@ -706,6 +706,7 @@ async function _procSubmitPayment(req, res) {
 
 
   if (ErrorMsg == "") {
+    
     //pesan print Slip Invoice Pos Lorong
     var client_pos = dgram.createSocket('udp4');
     pesan = "PRINT_SUMMARY_POINT_OF_SALES_LORONG";
@@ -722,7 +723,7 @@ async function _procSubmitPayment(req, res) {
       });
     }
 
-    var member_client = dgram.createSocket('udp4');
+    /* var member_client = dgram.createSocket('udp4');
     //pesan print Slip Order Pos Lorong
     pesan = "UPLOAD_DATA_PEMBAYARAN";
     ip_address = await new IpAddressService().getIpAddress(db, "MEMBER CLIENT");
@@ -737,7 +738,7 @@ async function _procSubmitPayment(req, res) {
       member_client.send(pesan, 0, panjang_pesan, port, ip_address, function (err, bytes) {
         member_client.close();
       });
-    }
+    } */
 
     var client_timer_vod2b = dgram.createSocket('udp4');
     //pesan print Slip Order Pos Lorong
