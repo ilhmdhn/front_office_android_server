@@ -1898,14 +1898,23 @@ function createPdf(
             if (invoice[n][0].total_diskon_kamar > 0) {
               doc.font(fontpath).fontSize(fontSize).text("Promo", batas_kiri_halaman, (top + (9 * spasiAntarBaris)));
             }
+            if (invoice[n][0].uang_voucher > 0) {
+              doc.font(fontpath).fontSize(fontSize).text("Voucher", batas_kiri_halaman, (top + (9 * spasiAntarBaris)));
+            }
 
             doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)));
-            doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)-invoice[n][0].uang_voucher),
+            doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)),
               (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
 
             if (invoice[n][0].total_diskon_kamar > 0) {
               doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)));
               doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].total_diskon_kamar.toFixed(0)) + ")",
+                (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
+            }
+
+            if (invoice[n][0].uang_voucher > 0) {
+              doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)));
+              doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].uang_voucher.toFixed(0)) + ")",
                 (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
             }
 
@@ -2146,16 +2155,28 @@ function createPdf(
           if (invoice[n][0].total_diskon_kamar > 0) {
             doc.font(fontpath).fontSize(fontSize).text("Promo", batas_kiri_halaman, (batasAtas + (7 * spasiAntarBaris)));
           }
+          if (invoice[n][0].uang_voucher > 0) {
+            doc.font(fontpath).fontSize(fontSize).text("Voucher", batas_kiri_halaman, (batasAtas + (7 * spasiAntarBaris)));
+          }
 
           doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (6 * spasiAntarBaris)));
-          doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)-invoice[n][0].uang_voucher),
+          doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)),
             (9 * batasKiriKolom), (batasAtas + (6 * spasiAntarBaris)),
             { width: lebarAngkaRupiah, align: 'right' });
 
+            if (invoice[n][0].total_diskon_kamar > 0) {
           doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].total_diskon_kamar.toFixed(0)) + ")",
             (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)),
             { width: lebarAngkaRupiah, align: 'right' });
+            }
+
+            if (invoice[n][0].total_diskon_kamar > 0) {
+              doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)));
+              doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].uang_voucher.toFixed(0)) + ")",
+                (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)),
+                { width: lebarAngkaRupiah, align: 'right' });
+                }
 
 
           batasAtas = batasAtas + (8 * spasiAntarBaris);
