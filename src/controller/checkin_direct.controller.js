@@ -628,10 +628,20 @@ async function _procDirectCheckInRoom(req, res) {
 
                                                                     total_kamar = total_kamar.toFixed(0);
 
-                                                                    var isProsesQueryUpdateIhp_ivc = await new CheckinProses().updateIhpIvcNilaiInvoice(db,
-                                                                        total_tarif_kamar, 0, charge_overpax, discount_member_kamar,
-                                                                        nilai_service_room, nilai_pajak_room,
-                                                                        total_kamar, total_kamar, kode_rcp, uang_muka, nilai_uang_voucher);
+                                                                    var isProsesQueryUpdateIhp_ivc = await new CheckinProses().updateIhpIvcNilaiInvoice(
+                                                                        db,
+                                                                        total_tarif_kamar,
+                                                                        0,
+                                                                        charge_overpax,
+                                                                        discount_member_kamar,
+                                                                        nilai_service_room,
+                                                                        nilai_pajak_room,
+                                                                        total_kamar,
+                                                                        total_kamar,
+                                                                        kode_rcp,
+                                                                        uang_muka,
+                                                                        nilai_uang_voucher
+                                                                    );
                                                                     if (isProsesQueryUpdateIhp_ivc != false) {
 
                                                                         if (nilai_uang_voucher > 0) {
@@ -1336,14 +1346,18 @@ async function _procDirectEditCheckInRoom(req, res) {
                                     if (isGetCekAktifKondisiVoucher.data[0].jenis_voucher == 0) {
                                         nilai_uang_voucher = await new Voucher().getTotalNilaiPotonganVoucher(db, kode_rcp, voucher);
                                         uang_voucher = nilai_uang_voucher;
+                                        logger.info(kode_rcp + " free voucher uang_voucher " + uang_voucher);
                                     }
                                     //gift voucher
                                     else if (isGetCekAktifKondisiVoucher.data[0].jenis_voucher == 1) {
                                         uang_voucher = isGetCekAktifKondisiVoucher.data[0].nilai;
+                                        logger.info(kode_rcp + "gift voucher uang_voucher " + uang_voucher);
                                     }
+
                                     await new CheckinProses().updateIhpVcrSedangDipakaiCheckin(db, voucher, 2);
                                 }
                             }
+
                             await new TarifKamar().getDeleteInsertIhpDetailSewaKamar(db, kode_rcp);
                             var tarif_overpax = parseFloat(isgetTotalTarifKamarDanOverpax.overpax);
                             total_tarif_kamar = parseFloat(isgetTotalTarifKamarDanOverpax.sewa_kamar);
@@ -1357,6 +1371,7 @@ async function _procDirectEditCheckInRoom(req, res) {
                                 await new PromoRoom().insertIhpDetailPromo(db, kode_rcp, kode_ivc, isgetTotalPromoRoom);
                                 await new PromoRoom().getDeleteInsertIhpDetailDiskonSewaKamar(db, kode_rcp);
                                 total_tarif_kamar = total_tarif_kamar - isgetTotalPromoRoom;
+
                                 console.log(kode_rcp + " total_tarif_kamar " + total_tarif_kamar);
                                 logger.info(kode_rcp + " total_tarif_kamar " + total_tarif_kamar);
                             }
@@ -1373,12 +1388,23 @@ async function _procDirectEditCheckInRoom(req, res) {
                             console.log(kode_rcp + " total_tarif_kamar+charge_overpax " + kamar_plus_overpax);
                             logger.info(kode_rcp + " total_tarif_kamar+charge_overpax " + kamar_plus_overpax);
 
-                            var isgetNilaiServiceRoom = await new Service().getNilaiServiceRoom(db, total_tarif_kamar + charge_overpax - nilai_uang_voucher - discount_member_kamar);
+                            var isgetNilaiServiceRoom = await new Service().getNilaiServiceRoom(
+                                db,
+                                total_tarif_kamar +
+                                charge_overpax -
+                                nilai_uang_voucher -
+                                discount_member_kamar);
+
                             if (isgetNilaiServiceRoom != false) {
                                 nilai_service_room = parseFloat(isgetNilaiServiceRoom);
                             }
 
-                            var sewa_kamar_plus_service = parseFloat(isgetNilaiServiceRoom + total_tarif_kamar + charge_overpax - nilai_uang_voucher - discount_member_kamar);
+                            var sewa_kamar_plus_service = parseFloat(
+                                isgetNilaiServiceRoom +
+                                total_tarif_kamar +
+                                charge_overpax -
+                                nilai_uang_voucher -
+                                discount_member_kamar);
 
                             var isgetNilaiPajakRoom = await new Pajak().getNilaiPajakRoom(db, sewa_kamar_plus_service);
                             if (isgetNilaiPajakRoom != false) {
@@ -1386,13 +1412,28 @@ async function _procDirectEditCheckInRoom(req, res) {
                             }
 
                             total_tarif_kamar = parseFloat(total_tarif_kamar);
-                            var total_kamar = parseFloat(total_tarif_kamar + charge_overpax + nilai_service_room + nilai_pajak_room - nilai_uang_voucher - discount_member_kamar);
+                            var total_kamar = parseFloat(
+                                total_tarif_kamar +
+                                charge_overpax +
+                                nilai_service_room +
+                                nilai_pajak_room -
+                                nilai_uang_voucher -
+                                discount_member_kamar);
                             total_kamar = total_kamar.toFixed(0);
 
-                            var isProsesQueryUpdateIhp_ivc = await new CheckinProses().updateIhpIvcNilaiInvoice(db,
-                                total_tarif_kamar, 0, charge_overpax, discount_member_kamar,
-                                nilai_service_room, nilai_pajak_room,
-                                total_kamar, total_kamar, kode_rcp, uang_muka, nilai_uang_voucher);
+                            var isProsesQueryUpdateIhp_ivc = await new CheckinProses().updateIhpIvcNilaiInvoice(
+                                db,
+                                total_tarif_kamar,
+                                0,
+                                charge_overpax,
+                                discount_member_kamar,
+                                nilai_service_room,
+                                nilai_pajak_room,
+                                total_kamar,
+                                total_kamar,
+                                kode_rcp,
+                                uang_muka,
+                                nilai_uang_voucher);
                             if (isProsesQueryUpdateIhp_ivc != false) {
 
                                 if (nilai_uang_voucher > 0) {
@@ -2315,10 +2356,20 @@ async function _procDirectCheckInLobbyMember(req, res) {
                                                             total_tarif_kamar, 0, charge_overpax, discount_member_kamar,
                                                             nilai_service_room, nilai_pajak_room,
                                                             total_kamar, total_kamar, kode_rcp, uang_muka, uang_voucher);*/
-                                                        var isProsesQueryUpdateIhp_ivc = await new CheckinProses().updateIhpIvcNilaiInvoice(db,
-                                                            0, 0, 0, 0,
-                                                            0, 0,
-                                                            0, 0, 0, 0, 0);
+                                                        var isProsesQueryUpdateIhp_ivc = await new CheckinProses().updateIhpIvcNilaiInvoice(
+                                                            db,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                        );
                                                         if (isProsesQueryUpdateIhp_ivc != false) {
 
                                                             var isProsesinsertHistory = await new History().insertIHPEventTransaction(db, room, chusr, date_trans_Query, "checkin");
@@ -2741,12 +2792,14 @@ async function _procExtendRoom(req, res) {
                                             nilai_ivc_uang_voucher = parseFloat(isgetNilaiInvoice.data[0].uang_voucher);
                                         }
 
-                                        var total_sewa_kamar_plus_extend_plus_overpax =
-                                            (nilai_ivc_sewa_kamar +
-                                                charge_overpax +
-                                                total_tarif_kamar_extend +
-                                                charge_overpax_extend +
-                                                nilai_ivc_surcharge_kamar) -
+                                        var total_sewa_kamar_plus_extend_plus_overpax = (
+                                            nilai_ivc_sewa_kamar +
+                                            charge_overpax +
+                                            total_tarif_kamar_extend +
+                                            charge_overpax_extend +
+                                            nilai_ivc_surcharge_kamar
+                                        ) -
+                                            nilai_ivc_uang_voucher -
                                             discount_member_kamar;
 
                                         console.log(kode_rcp + " total_sewa_kamar_plus_extend_plus_overpax  " + total_sewa_kamar_plus_extend_plus_overpax);
@@ -2776,10 +2829,20 @@ async function _procExtendRoom(req, res) {
                                         var total_kamar = total_kamar_.toFixed(0);
 
                                         var isProsesQueryUpdateIhp_ivc = await
-                                            new CheckinProses().updateIhpIvcNilaiInvoice(db,
-                                                nilai_ivc_sewa_kamar, total_tarif_kamar_extend, final_charge_overpax, discount_member_kamar,
-                                                nilai_service_room, nilai_pajak_room, total_kamar, total_All, kode_rcp, nilai_ivc_uang_muka,
+                                            new CheckinProses().updateIhpIvcNilaiInvoice(
+                                                db,
+                                                nilai_ivc_sewa_kamar,
+                                                total_tarif_kamar_extend,
+                                                final_charge_overpax,
+                                                discount_member_kamar,
+                                                nilai_service_room,
+                                                nilai_pajak_room,
+                                                total_kamar,
+                                                total_All,
+                                                kode_rcp,
+                                                nilai_ivc_uang_muka,
                                                 nilai_ivc_uang_voucher);
+
                                         if (isProsesQueryUpdateIhp_ivc != false) {
 
                                             var isProsesinsertHistory = await new History().insertIHPEventTransaction(db, room, chusr, date_trans_Query, "extend");
@@ -3378,10 +3441,20 @@ async function _procTransferRoom(req, res) {
                                                                                 discount_member_kamar);
                                                                             total_kamar = total_kamar.toFixed(0);
 
-                                                                            var isProsesQueryUpdateIhp_ivc = await new CheckinProses().updateIhpIvcNilaiInvoice(db,
-                                                                                total_tarif_kamar, 0, charge_overpax, discount_member_kamar,
-                                                                                nilai_service_room, nilai_pajak_room,
-                                                                                total_kamar, total_kamar, kode_rcp, uang_muka, nilai_uang_voucher);
+                                                                            var isProsesQueryUpdateIhp_ivc = await new CheckinProses().updateIhpIvcNilaiInvoice(
+                                                                                db,
+                                                                                total_tarif_kamar,
+                                                                                0,
+                                                                                charge_overpax,
+                                                                                discount_member_kamar,
+                                                                                nilai_service_room,
+                                                                                nilai_pajak_room,
+                                                                                total_kamar,
+                                                                                total_kamar,
+                                                                                kode_rcp,
+                                                                                uang_muka,
+                                                                                nilai_uang_voucher
+                                                                            );
                                                                             if (isProsesQueryUpdateIhp_ivc != false) {
 
                                                                                 if (nilai_uang_voucher > 0) {
@@ -3600,10 +3673,20 @@ async function _procTransferRoom(req, res) {
                                                                                         total_All = total_All_.toFixed(0);
                                                                                     }
 
-                                                                                    await new CheckinProses().updateIhpIvcNilaiInvoice(db,
-                                                                                        total_tarif_kamar, total_tarif_kamar_extend, final_charge_overpax, discount_member_kamar,
-                                                                                        nilai_service_room, nilai_pajak_room,
-                                                                                        total_kamar, total_All, old_kode_rcp, uang_muka, 0);
+                                                                                    await new CheckinProses().updateIhpIvcNilaiInvoice(
+                                                                                        db,
+                                                                                        total_tarif_kamar,
+                                                                                        total_tarif_kamar_extend,
+                                                                                        final_charge_overpax,
+                                                                                        discount_member_kamar,
+                                                                                        nilai_service_room,
+                                                                                        nilai_pajak_room,
+                                                                                        total_kamar,
+                                                                                        total_All,
+                                                                                        old_kode_rcp,
+                                                                                        uang_muka,
+                                                                                        0
+                                                                                    );
 
                                                                                     if (uang_voucher > 0) {
                                                                                         await new CheckinProses().updateIhpRcpNilaiUangVoucher(db, old_kode_rcp, 0);
@@ -4288,10 +4371,20 @@ async function _procTransferRoomMember(req, res) {
                                                                                 discount_member_kamar);
                                                                             total_kamar = total_kamar.toFixed(0);
 
-                                                                            var isProsesQueryUpdateIhp_ivc = await new CheckinProses().updateIhpIvcNilaiInvoice(db,
-                                                                                total_tarif_kamar, 0, charge_overpax, discount_member_kamar,
-                                                                                nilai_service_room, nilai_pajak_room,
-                                                                                total_kamar, total_kamar, kode_rcp, uang_muka, nilai_uang_voucher);
+                                                                            var isProsesQueryUpdateIhp_ivc = await new CheckinProses().updateIhpIvcNilaiInvoice(
+                                                                                db,
+                                                                                total_tarif_kamar,
+                                                                                0,
+                                                                                charge_overpax,
+                                                                                discount_member_kamar,
+                                                                                nilai_service_room,
+                                                                                nilai_pajak_room,
+                                                                                total_kamar,
+                                                                                total_kamar,
+                                                                                kode_rcp,
+                                                                                uang_muka,
+                                                                                nilai_uang_voucher
+                                                                            );
                                                                             if (isProsesQueryUpdateIhp_ivc != false) {
 
                                                                                 if (nilai_uang_voucher > 0) {
@@ -4515,10 +4608,20 @@ async function _procTransferRoomMember(req, res) {
                                                                                         total_All = total_All_.toFixed(0);
                                                                                     }
 
-                                                                                    await new CheckinProses().updateIhpIvcNilaiInvoice(db,
-                                                                                        total_tarif_kamar, total_tarif_kamar_extend, final_charge_overpax, discount_member_kamar,
-                                                                                        nilai_service_room, nilai_pajak_room,
-                                                                                        total_kamar, total_All, old_kode_rcp, uang_muka, 0);
+                                                                                    await new CheckinProses().updateIhpIvcNilaiInvoice(
+                                                                                        db,
+                                                                                        total_tarif_kamar,
+                                                                                        total_tarif_kamar_extend,
+                                                                                        final_charge_overpax,
+                                                                                        discount_member_kamar,
+                                                                                        nilai_service_room,
+                                                                                        nilai_pajak_room,
+                                                                                        total_kamar,
+                                                                                        total_All,
+                                                                                        old_kode_rcp,
+                                                                                        uang_muka,
+                                                                                        0
+                                                                                    );
 
                                                                                     if (uang_voucher > 0) {
                                                                                         await new CheckinProses().updateIhpRcpNilaiUangVoucher(db, old_kode_rcp, 0);

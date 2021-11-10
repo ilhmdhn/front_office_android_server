@@ -1829,7 +1829,8 @@ function createPdf(
           sewa_kamar = (invoice[n][0].sewa_kamar +
             invoice[n][0].overpax +
             invoice[n][0].total_extend) -
-            invoice[n][0].discount_kamar;
+            invoice[n][0].discount_kamar-
+            invoice[n][0].uang_voucher;
           sewa_kamar = convertRupiah.convert(sewa_kamar.toFixed(0));
 
           total_total = invoice[n][0].sewa_kamar;
@@ -1899,7 +1900,7 @@ function createPdf(
             }
 
             doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)));
-            doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)),
+            doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)-invoice[n][0].uang_voucher),
               (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
 
             if (invoice[n][0].total_diskon_kamar > 0) {
@@ -1970,7 +1971,7 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text("Total F&B", batas_kiri_halaman, (batasAtas + (2 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
 
           if (invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon > 0) {
-            doc.font(fontpath).fontSize(fontSize).text("Total Disc F&B", batas_kiri_halaman, (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarSubjectDiskon, align: 'right' });
+            doc.font(fontpath).fontSize(fontSize).text("Total Disc ", batas_kiri_halaman, (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarSubjectDiskon, align: 'right' });
           }
 
           doc.font(fontpath).fontSize(fontSize).text("Service", batas_kiri_halaman, (batasAtas + (4 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
@@ -2086,7 +2087,8 @@ function createPdf(
           sewa_kamar = (invoice[n][0].sewa_kamar +
             invoice[n][0].overpax +
             invoice[n][0].total_extend) -
-            invoice[n][0].discount_kamar;
+            invoice[n][0].discount_kamar-
+            invoice[n][0].uang_voucher;
           sewa_kamar = convertRupiah.convert(sewa_kamar.toFixed(0));
 
           total_total = invoice[n][0].sewa_kamar;
@@ -2146,7 +2148,7 @@ function createPdf(
           }
 
           doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (6 * spasiAntarBaris)));
-          doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)),
+          doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)-invoice[n][0].uang_voucher),
             (9 * batasKiriKolom), (batasAtas + (6 * spasiAntarBaris)),
             { width: lebarAngkaRupiah, align: 'right' });
 
@@ -2215,7 +2217,7 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text("Total Room", batas_kiri_halaman, (batasAtas + (1 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
           doc.font(fontpath).fontSize(fontSize).text("Total F&B", batas_kiri_halaman, (batasAtas + (2 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
           if (invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon > 0) {
-            doc.font(fontpath).fontSize(fontSize).text("Total Disc F&B ", batas_kiri_halaman, (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarSubjectDiskon, align: 'right' });
+            doc.font(fontpath).fontSize(fontSize).text("Total Disc ", batas_kiri_halaman, (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarSubjectDiskon, align: 'right' });
           }
           doc.font(fontpath).fontSize(fontSize).text("Service", batas_kiri_halaman, (batasAtas + (4 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
           doc.font(fontpath).fontSize(fontSize).text("Tax", batas_kiri_halaman, (batasAtas + (5 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
