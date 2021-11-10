@@ -185,6 +185,9 @@ exports.getWebMembershipFoto = async function (req, res) {
         url_ = url_ + param;
         const path = "./images/member/" + param;
 
+        //disable certificate  https://club.happypuppy.id
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+        
         const download = (url_, path, callback) => {
             request.head(url_, (err, res, body) => {
                 request(url_)
