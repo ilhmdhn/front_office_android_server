@@ -3944,7 +3944,7 @@ where
       });
    }
 
-   getDeleteInsertIhpPromoRcpFoodExtendRoomByIhpRoomCheckout(db_, promo_, durasi_menit_, jenis_kamar_, room_, kode_rcp_) {
+   getInsertIhpPromoRcpFoodExtendRoomByIhpRoomCheckout(db_, promo_, durasi_menit_, jenis_kamar_, room_, kode_rcp_) {
       return new Promise((resolve, reject) => {
          try {
             db = db_;

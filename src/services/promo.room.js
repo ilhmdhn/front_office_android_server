@@ -10324,7 +10324,7 @@ where
       });
    }
 
-   getDeleteInsertIhpPromoRcpRoomByJamCheckoutIhpRoom(db_, promo_, durasi_menit_, jenis_kamar_, kode_rcp_) {
+   getInsertIhpPromoRcpRoomByJamCheckoutIhpRoom(db_, promo_, durasi_menit_, jenis_kamar_, kode_rcp_) {
       return new Promise((resolve, reject) => {
          try {
             db = db_;
