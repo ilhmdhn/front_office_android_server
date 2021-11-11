@@ -204,18 +204,25 @@ class CheckinProses {
         db = db_;
         var kode_rcp = kode_rcp_;
         var isiQuery = "" +
-          " SELECT  [IHP_Ext].[Reception] as reception  " +
-          " ,[IHP_Ext].[Tgl_Extend] as tanggal_extend_" +
-          " ,[IHP_Ext].[Jam_Extend] as jam_extend " +
-          " ,[IHP_Ext].[Menit_Extend] as menit_extend " +
-          " ,([IHP_Ext].[Jam_Extend]*60)+[IHP_Ext].[Menit_Extend] as total_menit_extend" +
-          " ,[IHP_Ext].[Date_Trans] as date_trans" +
-          " ,CONVERT(VARCHAR(24), [IHP_Ext].[Tgl_Extend], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Ext].[Tgl_Extend], 114), 1, 8) as tanggal_extend  " +
-          " ,[IHP_Ext].[Start_Extend] as start_extend" +
-          " ,[IHP_Ext].[End_Extend] as end_extend" +
-          " FROM [IHP_Ext]    " +
-          " where Reception='" + kode_rcp + "'" +
-          " Order by [Tgl_Extend] asc";
+          `
+          SELECT  [IHP_Ext].[Reception] as reception  
+          ,[IHP_Ext].[Tgl_Extend] as tanggal_extend_
+          ,[IHP_Ext].[Jam_Extend] as jam_extend 
+          ,[IHP_Ext].[Menit_Extend] as menit_extend 
+          ,([IHP_Ext].[Jam_Extend]*60)+[IHP_Ext].[Menit_Extend] as total_menit_extend
+          ,[IHP_Ext].[Date_Trans] as date_trans
+          ,CONVERT(VARCHAR(24), [IHP_Ext].[Tgl_Extend], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Ext].[Tgl_Extend], 114), 1, 8) as tanggal_extend  
+          ,[IHP_Ext].[Start_Extend] as start_extend_
+          ,CONVERT(VARCHAR(24), [IHP_Ext].[Start_Extend], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Ext].[Start_Extend], 114), 1, 8) as start_extend  
+          ,[IHP_Ext].[End_Extend] as end_extend_
+          ,CONVERT(VARCHAR(24), [IHP_Ext].[End_Extend], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Ext].[End_Extend], 114), 1, 8) as end_extend  
+          FROM [IHP_Ext]    
+          where Reception='${kode_rcp}'
+          Order by [Tgl_Extend] asc;
+          `
+          ;
+
+
 
 
         db.request().query(isiQuery, function (err, dataReturn) {

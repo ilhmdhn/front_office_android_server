@@ -1193,14 +1193,24 @@ async function _procDirectEditCheckInRoom(req, res) {
                         if (promo_ != '') {
                             for (a = 0; a < promo.length; a++) {
                                 promo_ = promo[a];
-                                //var isgetPromoRoom = await new PromoRoom().getPromoRoomByRcpCheckin(db, promo_, totalDurasiCekinMenit, jenis_kamar, kode_rcp);
-                                var isgetPromoRoomExtend = await new PromoRoom().getPromoRoomByRcpCheckin(db, promo_, totalDurasiCekinMenitRcp, jenis_kamar, kode_rcp);
 
-                                if (isgetPromoRoomExtend.state == true) {
-                                    if ((isgetPromoRoomExtend.data[0].hasil_start_promo !== null) && (isgetPromoRoomExtend.data[0].hasil_end_promo !== null)) {
-                                        if (check_apakah_sudah_extend == false) {
-                                            //await new PromoRoom().getDeleteInsertIhpPromoRcpRoomByRcpCheckin(db, promo_, totalDurasiCekinMenit, jenis_kamar, kode_rcp);
-                                            //await new PromoRoom().getDeleteInsertIhpPromoRcpRoomByRcpCheckin(db, promo_, totalDurasiCekinMenitRcp, jenis_kamar, kode_rcp);
+                                if (check_apakah_sudah_extend != false) {
+                                    for (a = 0; a < check_apakah_sudah_extend.length; a++) {
+                                        var isgetPromoRoomExtend = await new PromoRoom().getPromoRoomExtendByJamStartExtendIhpExt(db,
+                                            promo_,
+                                            check_apakah_sudah_extend.data[a].total_menit_extend,
+                                            kode_rcp,
+                                            jenis_kamar,
+                                            check_apakah_sudah_extend.data[a].start_extend);
+                                        if (isgetPromoRoomExtend.state == true) {
+                                            if ((isgetPromoRoomExtend.data[0].hasil_start_promo !== null) && (isgetPromoRoomExtend.data[0].hasil_end_promo !== null)) {
+                                                await new PromoRoom().getInsertIhpPromoRcpRoomByStartExtendIhpExt(db,
+                                                    promo_,
+                                                    check_apakah_sudah_extend.data[a].total_menit_extend,
+                                                    jenis_kamar,
+                                                    kode_rcp,
+                                                    check_apakah_sudah_extend.data[a].start_extend);
+                                            }
                                         }
                                     }
                                 }
