@@ -168,17 +168,21 @@ async function _procSubmitPayment(req, res) {
     if (Invoice == "") ErrorMsg = "Invoice tidak ditemukan";
     else {
       TotalInvoice = Invoice.Total_All;
+
       TotalInvoice4Point = (
         Invoice.Sewa_Kamar +
         Invoice.Total_Extend +
-        Invoice.Overpax -
-        Invoice.Discount_Kamar +
-        Invoice.Surcharge_Kamar
-      ) + (
+        Invoice.Overpax +
+        Invoice.Surcharge_Kamar-
+        Invoice.Discount_Kamar -
+        Invoice.Uang_Voucher        
+      ) + 
+      (
           Invoice.Charge_Penjualan -
           Invoice.Total_Cancelation -
           Invoice.Discount_Penjualan
-        ) - Invoice.Uang_Voucher;
+        ) ;
+
       InvoiceCodeTransfer = Invoice.Transfer;
 
       //Mencari total pembayaran (loop semua invoice berkaitan dengan adanya kamar transfer)
@@ -186,17 +190,21 @@ async function _procSubmitPayment(req, res) {
         InvoiceTransfer = await InvoiceModel.getInfoByInvoice(InvoiceCodeTransfer, req, db);
         if (InvoiceTransfer != "") {
           TotalInvoice = TotalInvoice + InvoiceTransfer.Total_All;
+          
           TotalInvoice4Point = TotalInvoice4Point + (
             InvoiceTransfer.Sewa_Kamar +
             InvoiceTransfer.Total_Extend +
-            InvoiceTransfer.Overpax -
-            InvoiceTransfer.Discount_Kamar +
-            InvoiceTransfer.Surcharge_Kamar
-          ) + (
+            InvoiceTransfer.Overpax +
+            InvoiceTransfer.Surcharge_Kamar-
+            InvoiceTransfer.Uang_Voucher-
+            InvoiceTransfer.Discount_Kamar
+          ) + 
+          (
               InvoiceTransfer.Charge_Penjualan -
               InvoiceTransfer.Total_Cancelation -
               InvoiceTransfer.Discount_Penjualan
-            ) - InvoiceTransfer.Uang_Voucher;
+            ) ;
+
           InvoiceCodeTransfer = InvoiceTransfer.Transfer;
           loopInvoiceTransfer = true;
         }
@@ -643,6 +651,9 @@ async function _procSubmitPayment(req, res) {
       }
     }
 
+  } else {
+    dataResponse = new ResponseFormat(false, null, ErrorMsg);
+    res.send(dataResponse);
   }
 
   //Insert IHP_Sud
@@ -706,7 +717,7 @@ async function _procSubmitPayment(req, res) {
 
 
   if (ErrorMsg == "") {
-    
+
     //pesan print Slip Invoice Pos Lorong
     var client_pos = dgram.createSocket('udp4');
     pesan = "PRINT_SUMMARY_POINT_OF_SALES_LORONG";
@@ -1829,7 +1840,7 @@ function createPdf(
           sewa_kamar = (invoice[n][0].sewa_kamar +
             invoice[n][0].overpax +
             invoice[n][0].total_extend) -
-            invoice[n][0].discount_kamar-
+            invoice[n][0].discount_kamar -
             invoice[n][0].uang_voucher;
           sewa_kamar = convertRupiah.convert(sewa_kamar.toFixed(0));
 
@@ -2096,7 +2107,7 @@ function createPdf(
           sewa_kamar = (invoice[n][0].sewa_kamar +
             invoice[n][0].overpax +
             invoice[n][0].total_extend) -
-            invoice[n][0].discount_kamar-
+            invoice[n][0].discount_kamar -
             invoice[n][0].uang_voucher;
           sewa_kamar = convertRupiah.convert(sewa_kamar.toFixed(0));
 
@@ -2164,19 +2175,19 @@ function createPdf(
             (9 * batasKiriKolom), (batasAtas + (6 * spasiAntarBaris)),
             { width: lebarAngkaRupiah, align: 'right' });
 
-            if (invoice[n][0].total_diskon_kamar > 0) {
-          doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)));
-          doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].total_diskon_kamar.toFixed(0)) + ")",
-            (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)),
-            { width: lebarAngkaRupiah, align: 'right' });
-            }
+          if (invoice[n][0].total_diskon_kamar > 0) {
+            doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)));
+            doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].total_diskon_kamar.toFixed(0)) + ")",
+              (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)),
+              { width: lebarAngkaRupiah, align: 'right' });
+          }
 
-            if (invoice[n][0].total_diskon_kamar > 0) {
-              doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)));
-              doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].uang_voucher.toFixed(0)) + ")",
-                (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)),
-                { width: lebarAngkaRupiah, align: 'right' });
-                }
+          if (invoice[n][0].total_diskon_kamar > 0) {
+            doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)));
+            doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].uang_voucher.toFixed(0)) + ")",
+              (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)),
+              { width: lebarAngkaRupiah, align: 'right' });
+          }
 
 
           batasAtas = batasAtas + (8 * spasiAntarBaris);
