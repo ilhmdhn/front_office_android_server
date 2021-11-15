@@ -213,17 +213,17 @@ class CheckinProses {
           ,[IHP_Ext].[Date_Trans] as date_trans
           ,CONVERT(VARCHAR(24), [IHP_Ext].[Tgl_Extend], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Ext].[Tgl_Extend], 114), 1, 8) as tanggal_extend  
           ,[IHP_Ext].[Start_Extend] as start_extend_
-          ,CONVERT(VARCHAR(24), [IHP_Ext].[Start_Extend], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Ext].[Start_Extend], 114), 1, 8) as start_extend  
+           ,[IHP_Ext].[Start_Extend] as start_extend__
+          ,CONVERT(VARCHAR(30), [IHP_Ext].[Start_Extend], 121) as start_extend
+          ,CONVERT(VARCHAR(24), [IHP_Ext].[Start_Extend], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Ext].[Start_Extend], 114), 1, 8) as start_extend__
           ,[IHP_Ext].[End_Extend] as end_extend_
-          ,CONVERT(VARCHAR(24), [IHP_Ext].[End_Extend], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Ext].[End_Extend], 114), 1, 8) as end_extend  
+          ,CONVERT(VARCHAR(30), [IHP_Ext].[End_Extend], 121) as end_extend
+          ,CONVERT(VARCHAR(24), [IHP_Ext].[End_Extend], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Ext].[End_Extend], 114), 1, 8) as end_extend__  
           FROM [IHP_Ext]    
           where Reception='${kode_rcp}'
-          Order by [Tgl_Extend] asc;
+          Order by [Tgl_Extend] asc
           `
           ;
-
-
-
 
         db.request().query(isiQuery, function (err, dataReturn) {
           if (err) {

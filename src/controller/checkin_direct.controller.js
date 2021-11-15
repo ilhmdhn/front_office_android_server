@@ -1180,7 +1180,8 @@ async function _procDirectEditCheckInRoom(req, res) {
                         if (promo_ != '') {
                             for (a = 0; a < promo.length; a++) {
                                 promo_ = promo[a];
-                                var isgetPromoRoom = await new PromoRoom().getPromoRoomByRcpCheckin(db, promo_, totalDurasiCekinMenitRcp, jenis_kamar, kode_rcp);
+                                var isgetPromoRoom = await new PromoRoom().getPromoRoomByRcpCheckin(
+                                    db, promo_, totalDurasiCekinMenitRcp, jenis_kamar, kode_rcp);
                                 if (isgetPromoRoom.state == true) {
                                     if ((isgetPromoRoom.data[0].hasil_start_promo !== null) && (isgetPromoRoom.data[0].hasil_end_promo !== null)) {
                                         await new PromoRoom().getDeleteInsertIhpPromoRcpRoomByRcpCheckin(db, promo_, totalDurasiCekinMenitRcp, jenis_kamar, kode_rcp);

@@ -6743,7 +6743,7 @@ where
    end
    as hasil_start_promo 
 FROM
-   IHP_PromoRoom , IHP_Rcp , IHP_Room,IHP_Ext 
+   IHP_PromoRoom, IHP_Ext 
 where
    (
       IHP_PromoRoom.Room = '[NONE]' 
@@ -6756,8 +6756,6 @@ where
    )
    and IHP_PromoRoom.Status = 1 
    and IHP_PromoRoom.Promo_Room = '${promo}' 
-   and IHP_Rcp.Reception = '${kode_rcp}' 
-   and IHP_Room.Reception = '${kode_rcp}'
    and IHP_Ext.Reception = '${kode_rcp}'
    and IHP_Ext.Start_Extend = '${start_extned}'
    `;
