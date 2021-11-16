@@ -11453,7 +11453,7 @@ where
                   resolve(false);
                } else {
                   sql.close();
-                  logger.error(kode_rcp + ' Sukses prosesQuery getDeleteInsertIhpPromoRcpRoomByJamCheckoutIhpRoom ' + isiQuery);
+                  logger.info(kode_rcp + ' Sukses prosesQuery getDeleteInsertIhpPromoRcpRoomByJamCheckoutIhpRoom ');
                   resolve(true);
                }
             });
