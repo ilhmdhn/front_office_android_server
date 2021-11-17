@@ -1037,6 +1037,8 @@ async function _procDirectEditCheckInRoom(req, res) {
             id_payment_uang_muka = parseInt(32);
         }
 
+        var check_apakah_sudah_extend;
+
         if ((voucher != '') && (voucher !== undefined)) {
             isGetCekAktifKondisiVoucher = await new Voucher().getCekAktifKondisiVoucher(db, voucher);
         }
@@ -1061,9 +1063,8 @@ async function _procDirectEditCheckInRoom(req, res) {
             else {
                 apakah_nomor_member = true;
             }
+            check_apakah_sudah_extend = await new CheckinProses().getInfoExtendRoom(db, kode_rcp);
         }
-
-        var check_apakah_sudah_extend = await new CheckinProses().getInfoExtendRoom(db, kode_rcp);
 
         if (eventAcara.length > 50) {
             console.log(room + " Event Acara Tidak Boleh Lebih dari 50 huruf");
@@ -1171,13 +1172,7 @@ async function _procDirectEditCheckInRoom(req, res) {
 
                     if (isprosesQuery == true) {
 
-                        var check_apakah_sudah_dapat_promo_rcp_room = await new PromoRoom().getPromoRcpRoom(db, kode_rcp, 0);
-                        if (check_apakah_sudah_dapat_promo_rcp_room != false) {
-                            console.log(kode_rcp + " Sudah Di beri Promo Room");
-                            logger.info(kode_rcp + " Sudah Di beri Promo Room");
-                        }
-
-                        //promo checkin utama
+                        //pemberian promo checkin utama
                         if (promo_ != '') {
                             for (a = 0; a < promo.length; a++) {
                                 promo_ = promo[a];
@@ -1191,7 +1186,7 @@ async function _procDirectEditCheckInRoom(req, res) {
                             }
                         }
 
-                        //promo room checkin durasi extend
+                        //pemberian room checkin durasi extend
                         if (promo_ != '') {
                             for (a = 0; a < promo.length; a++) {
                                 promo_ = promo[a];
@@ -1371,6 +1366,7 @@ async function _procDirectEditCheckInRoom(req, res) {
                                 edc_machine);
                         }
 
+                        //mengambil nilai sewa kamar
                         var isgetTotalTarifKamarDanOverpax = await new TarifKamar().getTotalTarifKamarDanOverpax(db, kode_rcp, kapasitas_kamar, pax);
                         if (isgetTotalTarifKamarDanOverpax != false) {
 
@@ -1392,7 +1388,6 @@ async function _procDirectEditCheckInRoom(req, res) {
                                         uang_voucher = isGetCekAktifKondisiVoucher.data[0].nilai;
                                         logger.info(kode_rcp + "gift voucher uang_voucher " + uang_voucher);
                                     }
-
                                     await new CheckinProses().updateIhpVcrSedangDipakaiCheckin(db, voucher, 2);
                                 }
                             }
@@ -1404,6 +1399,7 @@ async function _procDirectEditCheckInRoom(req, res) {
 
                             charge_overpax = tarif_overpax;
 
+                            //mengambil nilai promo sewa kamar
                             var isgetTotalPromoRoom = await new PromoRoom().getTotalPromoRoom(db, kode_rcp);
                             if (isgetTotalPromoRoom != false) {
                                 await new CheckinProses().updateIhpIvcNilaiInvoiceDiskonSewaKamar(db, isgetTotalPromoRoom, kode_rcp);
@@ -1419,7 +1415,8 @@ async function _procDirectEditCheckInRoom(req, res) {
                                 await new PromoRoom().insertIhpDetailPromo(db, kode_rcp, kode_ivc, 0);
                             }
 
-                            //extend
+                            //mengambil nilai sewa kamar extend
+                            var final_charge_overpax;
                             var isgetTotalTarifExtendDanOverpax = await new TarifKamar().getTotalTarifExtendDanOverpax(db, kode_rcp, kapasitas_kamar, pax);
                             if (isgetTotalTarifExtendDanOverpax != false) {
                                 await new TarifKamar().getDeleteInsertIhpDetailSewaKamarExtend(db, kode_rcp);
@@ -1428,10 +1425,13 @@ async function _procDirectEditCheckInRoom(req, res) {
                                 charge_overpax_extend = tarif_overpax_extend_kamar;
                                 await new CheckinProses().updateIhpIvcNilaiInvoiceTotalExtendSebelumDiskon(db, total_tarif_kamar_extend, kode_rcp);
 
-                                var final_charge_overpax = charge_overpax_extend + charge_overpax;
+                                final_charge_overpax = charge_overpax_extend + charge_overpax;
+                                final_charge_overpax = parseFloat(final_charge_overpax);
+
                                 console.log(kode_rcp + " total overpax " + final_charge_overpax);
                                 logger.info(kode_rcp + " total overpax " + final_charge_overpax);
 
+                                //mengambil nilai promo sewa kamar extend
                                 var isgetTotalPromoRoomExtend = await new PromoRoom().getTotalPromoExtendRoom(db, kode_rcp);
                                 if (isgetTotalPromoRoomExtend != false) {
                                     await new CheckinProses().updateIhpIvcNilaiInvoiceDiskonExtendKamar(db, isgetTotalPromoRoomExtend, kode_rcp);
@@ -1450,6 +1450,10 @@ async function _procDirectEditCheckInRoom(req, res) {
                             if (apakah_nomor_member == true) {
                                 discount_member_kamar = await new CheckinProses().getDiskonRoomMember(db, kode_member, total_tarif_kamar);
                             }
+                            if (apakah_nomor_member == true) {
+                                discount_member_kamar_extend = await new CheckinProses().getDiskonRoomMember(db, kode_member, total_tarif_kamar_extend);
+                            }
+                            discount_member_kamar = discount_member_kamar + discount_member_kamar_extend;
 
                             var isgetNilaiInvoice = await new CheckinProses().getNilaiInvoice(db, kode_rcp, room);
                             if (isgetNilaiInvoice.state == true) {
@@ -1462,7 +1466,7 @@ async function _procDirectEditCheckInRoom(req, res) {
                                 nilai_ivc_uang_voucher = parseFloat(isgetNilaiInvoice.data[0].uang_voucher);
                             }
 
-                            var kamar_plus_overpax = (
+                            var total_sewa_kamar_plus_extend_plus_overpax = (
                                 total_tarif_kamar +
                                 charge_overpax +
                                 total_tarif_kamar_extend +
@@ -1472,12 +1476,12 @@ async function _procDirectEditCheckInRoom(req, res) {
                                 nilai_ivc_uang_voucher -
                                 discount_member_kamar;
 
-                            console.log(kode_rcp + " total_tarif_kamar+charge_overpax " + kamar_plus_overpax);
-                            logger.info(kode_rcp + " total_tarif_kamar+charge_overpax " + kamar_plus_overpax);
+                            console.log(kode_rcp + " total_tarif_kamar+charge_overpax " + total_sewa_kamar_plus_extend_plus_overpax);
+                            logger.info(kode_rcp + " total_tarif_kamar+charge_overpax " + total_sewa_kamar_plus_extend_plus_overpax);
 
                             var isgetNilaiServiceRoom = await new Service().getNilaiServiceRoom(
                                 db,
-                                kamar_plus_overpax);
+                                total_sewa_kamar_plus_extend_plus_overpax);
 
                             if (isgetNilaiServiceRoom != false) {
                                 nilai_service_room = parseFloat(isgetNilaiServiceRoom);
@@ -1485,9 +1489,10 @@ async function _procDirectEditCheckInRoom(req, res) {
 
                             var sewa_kamar_plus_service = parseFloat(
                                 isgetNilaiServiceRoom +
-                                kamar_plus_overpax);
+                                total_sewa_kamar_plus_extend_plus_overpax);
 
-                            var isgetNilaiPajakRoom = await new Pajak().getNilaiPajakRoom(db, sewa_kamar_plus_service);
+                            var isgetNilaiPajakRoom = await new Pajak().getNilaiPajakRoom(
+                                db, sewa_kamar_plus_service);
                             if (isgetNilaiPajakRoom != false) {
                                 nilai_pajak_room = parseFloat(isgetNilaiPajakRoom);
                             }
@@ -1505,8 +1510,8 @@ async function _procDirectEditCheckInRoom(req, res) {
                             var isProsesQueryUpdateIhp_ivc = await new CheckinProses().updateIhpIvcNilaiInvoice(
                                 db,
                                 total_tarif_kamar,
-                                0,
-                                charge_overpax,
+                                total_tarif_kamar_extend,
+                                final_charge_overpax,
                                 discount_member_kamar,
                                 nilai_service_room,
                                 nilai_pajak_room,
@@ -2664,7 +2669,7 @@ async function _procExtendRoom(req, res) {
 
         var isgetPengecekanRoomReady = await new Room().getPengecekanRoomReady(db, room);
 
-        var check_apakah_sudah_extend = await new CheckinProses().getInfoExtendRoom(db, kode_rcp);
+        var check_apakah_sudah_extend;
 
         if (isgetPengecekanRoomReady != false) {
             jenis_kamar = isgetPengecekanRoomReady.data[0].jenis_kamar;
@@ -2683,6 +2688,7 @@ async function _procExtendRoom(req, res) {
                 apakah_nomor_member = true;
             }
 
+            check_apakah_sudah_extend = await new CheckinProses().getInfoExtendRoom(db, kode_rcp);
             check_apakah_sudah_dapat_promo_rcp_room = await new PromoRoom().getPromoRcpRoom(db, kode_rcp, 0);
             check_apakah_sudah_dapat_promo_rcp_room_extend = await new PromoRoom().getPromoRcpRoom(db, kode_rcp, 1);
 
@@ -2794,8 +2800,9 @@ async function _procExtendRoom(req, res) {
                                     }
                                 }
 
+                                //Pemberian Promo untuk masing masing checkin dan extend
                                 if (isGetTarifPerjamRoom.state == true) {
-
+                                    //Pemberian promo extend yang sedang dilakukan
                                     if (promo_ != '') {
                                         for (a = 0; a < promo.length; a++) {
                                             promo_ = promo[a];
@@ -2809,7 +2816,7 @@ async function _procExtendRoom(req, res) {
                                     }
 
                                     var isgetPromoRoom;
-                                    //jika checkin utama sudah di promo
+                                    //jika saat extend checkin utama sudah di promo
                                     if (check_apakah_sudah_dapat_promo_rcp_room != false) {
                                         promo_ = check_apakah_sudah_dapat_promo_rcp_room.data[0].promo;
                                         isgetPromoRoom = await new PromoRoom().getPromoRoomExtendByJamCheckoutIhpRoom(db, promo_, totalDurasiCekinMenit, kode_rcp, jenis_kamar);
@@ -2819,7 +2826,8 @@ async function _procExtendRoom(req, res) {
                                             }
                                         }
                                     } else {
-                                        //jika checkin utama tidak di promo
+
+                                        //Pemberian promo extend dilakukan saat extend
                                         if (promo_ != '') {
 
                                             for (a = 0; a < promo.length; a++) {
@@ -2832,7 +2840,8 @@ async function _procExtendRoom(req, res) {
                                                 }
                                             }
 
-                                            // jika checkin utama belum di beri promo
+                                            //Pemberian promo extend dilakukan saat extend
+                                            //dan jika saat extend checkin utama belum di beri promo
                                             if (check_apakah_sudah_dapat_promo_rcp_room == false) {
                                                 //promo checkin utama
                                                 if (promo_ != '') {
@@ -2849,7 +2858,8 @@ async function _procExtendRoom(req, res) {
                                                 }
                                             }
 
-                                            //jika extend sebelum nya tidak di promo promo room checkin durasi extend
+                                            //Pemberian promo extend dilakukan saat extend
+                                            //dan jika saat extend, extend sebelum nya tidak di beri promo
                                             if (check_apakah_sudah_dapat_promo_rcp_room_extend == false) {
                                                 if (promo_ != '') {
                                                     for (a = 0; a < promo.length; a++) {
@@ -2886,6 +2896,7 @@ async function _procExtendRoom(req, res) {
                                         dataResponse = new ResponseFormat(false, null, room + " Gagal isprosesQueryUpdateExtend");
                                         res.send(dataResponse);
                                     }
+                                    //menghitung sewa kamar utama
                                     var charge_overpax = parseFloat(0);
                                     var isgetTotalTarifKamarDanOverpax = await new TarifKamar().getTotalTarifKamarDanOverpax(db, kode_rcp, kapasitas_kamar, pax);
                                     if (isgetTotalTarifKamarDanOverpax != false) {
@@ -2896,6 +2907,7 @@ async function _procExtendRoom(req, res) {
                                         charge_overpax = tarif_overpax;
                                     }
 
+                                    //menghitung promo sewa kamar utama
                                     var isgetTotalPromoRoom = await new PromoRoom().getTotalPromoRoom(db, kode_rcp);
 
                                     if (isgetTotalPromoRoom != false) {
@@ -2909,6 +2921,7 @@ async function _procExtendRoom(req, res) {
                                         discount_member_kamar = await new CheckinProses().getDiskonRoomMember(db, kode_member, total_tarif_kamar);
                                     }
 
+                                    //menghitung sewa kamar extend 
                                     var isgetTotalTarifExtendDanOverpax = await new TarifKamar().getTotalTarifExtendDanOverpax(db, kode_rcp, kapasitas_kamar, pax);
                                     if (isgetTotalTarifExtendDanOverpax != false) {
                                         await new TarifKamar().getDeleteInsertIhpDetailSewaKamarExtend(db, kode_rcp);
@@ -2921,6 +2934,7 @@ async function _procExtendRoom(req, res) {
                                         console.log(kode_rcp + " total overpax " + final_charge_overpax);
                                         logger.info(kode_rcp + " total overpax " + final_charge_overpax);
 
+                                        //menghitung promo sewa kamar extend 
                                         var isgetTotalPromoRoomExtend = await new PromoRoom().getTotalPromoExtendRoom(db, kode_rcp);
                                         if (isgetTotalPromoRoomExtend != false) {
                                             await new CheckinProses().updateIhpIvcNilaiInvoiceDiskonExtendKamar(db, isgetTotalPromoRoomExtend, kode_rcp);
@@ -2964,22 +2978,27 @@ async function _procExtendRoom(req, res) {
                                         logger.info(kode_rcp + " total_sewa_kamar_plus_extend_plus_overpax  " + total_sewa_kamar_plus_extend_plus_overpax);
 
                                         var nilai_service_room = parseFloat(0);
-                                        var isgetNilaiServiceRoom = await new Service().getNilaiServiceRoom(db, total_sewa_kamar_plus_extend_plus_overpax);
+                                        var isgetNilaiServiceRoom = await new Service().getNilaiServiceRoom(
+                                            db, total_sewa_kamar_plus_extend_plus_overpax);
                                         if (isgetNilaiServiceRoom != false) {
                                             nilai_service_room = parseFloat(isgetNilaiServiceRoom);
                                         }
                                         var sewa_kamar_plus_service = parseFloat(
-                                            isgetNilaiServiceRoom + total_sewa_kamar_plus_extend_plus_overpax);
+                                            isgetNilaiServiceRoom +
+                                            total_sewa_kamar_plus_extend_plus_overpax);
 
                                         var nilai_pajak_room = parseFloat(0);
-                                        var isgetNilaiPajakRoom = await new Pajak().getNilaiPajakRoom(db, sewa_kamar_plus_service);
+                                        var isgetNilaiPajakRoom = await new Pajak().getNilaiPajakRoom(
+                                            db, sewa_kamar_plus_service);
                                         if (isgetNilaiPajakRoom != false) {
                                             nilai_pajak_room = parseFloat(isgetNilaiPajakRoom);
                                         }
 
                                         total_sewa_kamar_plus_extend_plus_overpax = parseFloat(total_sewa_kamar_plus_extend_plus_overpax);
-                                        var total_kamar_ = parseFloat(total_sewa_kamar_plus_extend_plus_overpax +
-                                            nilai_service_room + nilai_pajak_room);
+                                        var total_kamar_ = parseFloat(
+                                            total_sewa_kamar_plus_extend_plus_overpax +
+                                            nilai_service_room +
+                                            nilai_pajak_room);
 
                                         var total_All_ = total_kamar_ + nilai_ivc_total_penjualan + nilai_ivc_charge_lain;
                                         var total_All = total_All_.toFixed(0);
@@ -4492,6 +4511,7 @@ async function _procTransferRoomMember(req, res) {
                                                                             await new CheckinProses().updateIhpUangMukaNonCash(db, old_kode_rcp, kode_rcp);
                                                                         }
 
+                                                                        //Mengambil nilai sewa kamar baru
                                                                         var isgetTotalTarifKamarDanOverpax = await new TarifKamar().getTotalTarifKamarDanOverpax(db, kode_rcp, kapasitas_kamar, pax);
                                                                         if (isgetTotalTarifKamarDanOverpax != false) {
 
@@ -4518,6 +4538,7 @@ async function _procTransferRoomMember(req, res) {
                                                                             await new CheckinProses().updateIhpIvcNilaiInvoiceSewaKamarSebelumDiskon(db, total_tarif_kamar, kode_rcp);
                                                                             charge_overpax = tarif_overpax;
 
+                                                                            //Mengambil nilai promo kamar sewa kamar baru
                                                                             var isgetTotalPromoRoom = await new PromoRoom().getTotalPromoRoom(db, kode_rcp);
 
                                                                             if (isgetTotalPromoRoom != false) {
@@ -4554,7 +4575,8 @@ async function _procTransferRoomMember(req, res) {
                                                                             }
 
                                                                             total_tarif_kamar = parseFloat(total_tarif_kamar);
-                                                                            var total_kamar = parseFloat(total_tarif_kamar +
+                                                                            var total_kamar = parseFloat(
+                                                                                total_tarif_kamar +
                                                                                 charge_overpax +
                                                                                 nilai_service_room +
                                                                                 nilai_pajak_room -
@@ -4603,8 +4625,12 @@ async function _procTransferRoomMember(req, res) {
 
                                                                                     //jika saat transfer masih menggunakan awal durasi Rcp  tanpa extend
                                                                                     if (rcp_sisa_checkin >= 0) {
-                                                                                        var prosesUpdateDurasiIhpRcp = await new CheckinProses().updateDurasiIhpRcp(db, rcp_sedang_berjalan_jam, rcp_sedang_berjalan_menit,
-                                                                                            checkin_ditambah_rcp_sedang_berjalan, old_kode_rcp, old_room,
+                                                                                        var prosesUpdateDurasiIhpRcp = await new CheckinProses().updateDurasiIhpRcp(
+                                                                                            db,
+                                                                                            rcp_sedang_berjalan_jam,
+                                                                                            rcp_sedang_berjalan_menit,
+                                                                                            checkin_ditambah_rcp_sedang_berjalan,
+                                                                                            old_kode_rcp, old_room,
                                                                                             old_kode_ivc);
 
                                                                                         if (prosesUpdateDurasiIhpRcp != false) {
@@ -4617,20 +4643,41 @@ async function _procTransferRoomMember(req, res) {
                                                                                         //edit promo rcp room lama sebelum extend
                                                                                         if (promo != false) {
                                                                                             for (a = 0; a < promo.length; a++) {
-                                                                                                isgetPromoRoom = await new PromoRoom().getPromoRoomByRcpCheckin(db, promo.data[a].promo, rcp_sedang_berjalan, old_jenis_kamar, old_kode_rcp);
-                                                                                                isgetPromoFood = await new PromoFood().getPromoFoodByRcpCheckin(db, promo.data[a].promo, rcp_sedang_berjalan, old_jenis_kamar, old_room, old_kode_rcp);
+                                                                                                isgetPromoRoom = await new PromoRoom().getPromoRoomByRcpCheckin(
+                                                                                                    db,
+                                                                                                    promo.data[a].promo,
+                                                                                                    rcp_sedang_berjalan,
+                                                                                                    old_jenis_kamar,
+                                                                                                    old_kode_rcp);
+                                                                                                isgetPromoFood = await new PromoFood().getPromoFoodByRcpCheckin(
+                                                                                                    db,
+                                                                                                    promo.data[a].promo,
+                                                                                                    rcp_sedang_berjalan,
+                                                                                                    old_jenis_kamar,
+                                                                                                    old_room,
+                                                                                                    old_kode_rcp);
 
                                                                                                 if (isgetPromoRoom.state == true) {
 
                                                                                                     if ((isgetPromoRoom.data[0].hasil_start_promo !== null) && (isgetPromoRoom.data[0].hasil_end_promo !== null)) {
-                                                                                                        await new PromoRoom().getDeleteInsertIhpPromoRcpRoomByRcpCheckin(db, promo.data[a].promo, rcp_sedang_berjalan, old_jenis_kamar, old_kode_rcp);
+                                                                                                        await new PromoRoom().getDeleteInsertIhpPromoRcpRoomByRcpCheckin(
+                                                                                                            db,
+                                                                                                            promo.data[a].promo,
+                                                                                                            rcp_sedang_berjalan,
+                                                                                                            old_jenis_kamar,
+                                                                                                            old_kode_rcp);
                                                                                                     }
                                                                                                 }
 
                                                                                                 if (isgetPromoFood.state == true) {
                                                                                                     if ((isgetPromoFood.data[0].hasil_start_promo !== null) && (isgetPromoFood.data[0].hasil_end_promo !== null)) {
-                                                                                                        await new PromoFood().getDeleteInsertIhpPromoRcpFoodByRcpChekin(db, promo.data[a].promo, rcp_sedang_berjalan, old_jenis_kamar, old_room, old_kode_rcp);
-
+                                                                                                        await new PromoFood().getDeleteInsertIhpPromoRcpFoodByRcpChekin(
+                                                                                                            db,
+                                                                                                            promo.data[a].promo,
+                                                                                                            rcp_sedang_berjalan,
+                                                                                                            old_jenis_kamar,
+                                                                                                            old_room,
+                                                                                                            old_kode_rcp);
                                                                                                     }
                                                                                                 }
                                                                                             }
@@ -4653,7 +4700,8 @@ async function _procTransferRoomMember(req, res) {
 
                                                                                                     if ((sisa_durasi_extend > 0) && (rcp_ext_sedang_berjalan == 0)) {
                                                                                                         //sisa durasi extend tidak terpakai di delete
-                                                                                                        await new CheckinProses().deleteIhpExtOldRoomTransferBerjalan(db, isgetInfoExtendRoom.data[a].tanggal_extend);
+                                                                                                        await new CheckinProses().deleteIhpExtOldRoomTransferBerjalan(
+                                                                                                            db, isgetInfoExtendRoom.data[a].tanggal_extend);
                                                                                                         console.log(old_kode_rcp + " sisa durasi extend tidak terpakai di delete " + sisa_durasi_extend);
                                                                                                         logger.info(old_kode_rcp + " sisa durasi extend tidak terpakai di delete " + sisa_durasi_extend);
                                                                                                     }
@@ -4664,7 +4712,8 @@ async function _procTransferRoomMember(req, res) {
                                                                                                         var sisa_menit = rcp_ext_sedang_berjalan % 60;
                                                                                                         var sisa_jam = rcp_ext_sedang_berjalan / 60;
                                                                                                         sisa_jam = Math.floor(sisa_jam);
-                                                                                                        await new CheckinProses().updateIhpExtOldRoomTransfer(db, isgetInfoExtendRoom.data[a].tanggal_extend, sisa_jam, sisa_menit);
+                                                                                                        await new CheckinProses().updateIhpExtOldRoomTransfer(
+                                                                                                            db, isgetInfoExtendRoom.data[a].tanggal_extend, sisa_jam, sisa_menit);
                                                                                                         rcp_ext_sedang_berjalan = 0;
                                                                                                     }
                                                                                                     //delete promo rcp extend
@@ -4682,18 +4731,22 @@ async function _procTransferRoomMember(req, res) {
                                                                                         //get promo room  extend lama sebelum nya
                                                                                         if (promo != false) {
                                                                                             for (a = 0; a < promo.length; a++) {
-                                                                                                isgetPromoRoom = await new PromoRoom().getPromoExtendRoomOldTransferByRcpCheckOut(db, promo.data[a].promo, rcp_ext_sedang_berjalan_sebelum_di_reset, old_jenis_kamar, old_kode_rcp);
-                                                                                                isgetPromoFood = await new PromoFood().getPromoFoodExtendRoomOldTranferByRcpCheckOut(db, promo.data[a].promo, rcp_ext_sedang_berjalan_sebelum_di_reset, old_kode_rcp, old_jenis_kamar, old_room);
+                                                                                                isgetPromoRoom = await new PromoRoom().getPromoExtendRoomOldTransferByRcpCheckOut(
+                                                                                                    db, promo.data[a].promo, rcp_ext_sedang_berjalan_sebelum_di_reset, old_jenis_kamar, old_kode_rcp);
+                                                                                                isgetPromoFood = await new PromoFood().getPromoFoodExtendRoomOldTranferByRcpCheckOut(
+                                                                                                    db, promo.data[a].promo, rcp_ext_sedang_berjalan_sebelum_di_reset, old_kode_rcp, old_jenis_kamar, old_room);
+
                                                                                                 if (isgetPromoRoom.state == true) {
                                                                                                     if ((isgetPromoRoom.data[0].hasil_start_promo !== null) && (isgetPromoRoom.data[0].hasil_end_promo !== null)) {
-                                                                                                        await new PromoRoom().getDeleteInsertIhpPromoRcpRoomExtendOldTransferByRcpCheckOut(db, promo.data[a].promo, rcp_ext_sedang_berjalan_sebelum_di_reset, old_jenis_kamar, old_kode_rcp);
+                                                                                                        await new PromoRoom().getDeleteInsertIhpPromoRcpRoomExtendOldTransferByRcpCheckOut(
+                                                                                                            db, promo.data[a].promo, rcp_ext_sedang_berjalan_sebelum_di_reset, old_jenis_kamar, old_kode_rcp);
                                                                                                     }
                                                                                                 }
 
                                                                                                 if (isgetPromoFood.state == true) {
                                                                                                     if ((isgetPromoFood.data[0].hasil_start_promo !== null) && (isgetPromoFood.data[0].hasil_end_promo !== null)) {
-                                                                                                        await new PromoFood().getDeleteInsertIhpPromoRcpFoodExtendRoomOldTranferByRcpCheckOut(db, promo.data[a].promo, rcp_ext_sedang_berjalan_sebelum_di_reset, old_jenis_kamar, old_room, old_kode_rcp);
-
+                                                                                                        await new PromoFood().getDeleteInsertIhpPromoRcpFoodExtendRoomOldTranferByRcpCheckOut(
+                                                                                                            db, promo.data[a].promo, rcp_ext_sedang_berjalan_sebelum_di_reset, old_jenis_kamar, old_room, old_kode_rcp);
                                                                                                     }
                                                                                                 }
                                                                                             }
@@ -4701,7 +4754,9 @@ async function _procTransferRoomMember(req, res) {
                                                                                     }
                                                                                     //checkout edit Room lama                                                                                
 
-                                                                                    var isgetTotalTarifKamarDanOverpaxOldRoom = await new TarifKamar().getTotalTarifKamarDanOverpax(db, old_kode_rcp, old_kapasitas_kamar, old_pax);
+                                                                                    //mengambil nilai sewa kamar sebelum nya
+                                                                                    var isgetTotalTarifKamarDanOverpaxOldRoom = await new TarifKamar().getTotalTarifKamarDanOverpax(
+                                                                                        db, old_kode_rcp, old_kapasitas_kamar, old_pax);
                                                                                     if (isgetTotalTarifKamarDanOverpaxOldRoom != false) {
                                                                                         await new TarifKamar().getDeleteInsertIhpDetailSewaKamar(db, old_kode_rcp);
                                                                                         tarif_overpax = parseFloat(isgetTotalTarifKamarDanOverpaxOldRoom.overpax);
@@ -4710,6 +4765,7 @@ async function _procTransferRoomMember(req, res) {
 
                                                                                         charge_overpax = tarif_overpax;
 
+                                                                                        //mengambil nilai promo kamar sewa kamar sebelum nya
                                                                                         var isgetTotalPromoRoomOldRoom = await new PromoRoom().getTotalPromoRoom(db, old_kode_rcp);
 
                                                                                         if (isgetTotalPromoRoomOldRoom != false) {
@@ -4733,6 +4789,7 @@ async function _procTransferRoomMember(req, res) {
                                                                                         console.log(old_kode_rcp + " total_tarif_kamar+charge_overpax " + kamar_plus_overpax);
                                                                                         logger.info(old_kode_rcp + " total_tarif_kamar+charge_overpax " + kamar_plus_overpax);
 
+                                                                                        //mengambil nilai sewa kamar extend sebelum nya
                                                                                         var isgetTotalTarifExtendDanOverpax = await new TarifKamar().getTotalTarifExtendDanOverpax(db, old_kode_rcp, old_kapasitas_kamar, old_pax);
                                                                                         if (isgetTotalTarifExtendDanOverpax != false) {
                                                                                             await new TarifKamar().getDeleteInsertIhpDetailSewaKamarExtend(db, old_kode_rcp);
@@ -4746,6 +4803,7 @@ async function _procTransferRoomMember(req, res) {
                                                                                             console.log(kode_rcp + " total charge_overpax+charge_overpax_extend " + final_charge_overpax);
                                                                                             logger.info(kode_rcp + " total charge_overpax+charge_overpax_extend " + final_charge_overpax);
 
+                                                                                            //mengambil nilai promo kamar extend sebelum nya
                                                                                             var isgetTotalPromoRoomExtend = await new PromoRoom().getTotalPromoExtendRoom(db, old_kode_rcp);
                                                                                             if (isgetTotalPromoRoomExtend != false) {
                                                                                                 await new CheckinProses().updateIhpIvcNilaiInvoiceDiskonExtendKamar(db, isgetTotalPromoRoomExtend, old_kode_rcp);
@@ -4772,32 +4830,43 @@ async function _procTransferRoomMember(req, res) {
                                                                                             nilai_ivc_surcharge_kamar = parseFloat(isgetNilaiInvoice.data[0].surcharge_kamar);
                                                                                         }
 
-                                                                                        total_sewa_kamar_extend_plus_overpax = total_tarif_kamar +
-                                                                                            total_tarif_kamar_extend +
-                                                                                            final_charge_overpax +
-                                                                                            nilai_ivc_surcharge_kamar -
+                                                                                        total_sewa_kamar_extend_plus_overpax =
+                                                                                            (total_tarif_kamar +
+                                                                                                total_tarif_kamar_extend +
+                                                                                                final_charge_overpax +
+                                                                                                nilai_ivc_surcharge_kamar) -
                                                                                             0 -
                                                                                             discount_member_kamar;
 
                                                                                         console.log(old_kode_rcp + " total_sewa_kamar_extend_plus_overpax  " + total_sewa_kamar_extend_plus_overpax);
                                                                                         logger.info(old_kode_rcp + " total_sewa_kamar_extend_plus_overpax  " + total_sewa_kamar_extend_plus_overpax);
 
-                                                                                        var isgetNilaiServiceRoomOldRoom = await new Service().getNilaiServiceRoom(db, total_sewa_kamar_extend_plus_overpax);
+                                                                                        var isgetNilaiServiceRoomOldRoom = await new Service().getNilaiServiceRoom(
+                                                                                            db, total_sewa_kamar_extend_plus_overpax);
                                                                                         if (isgetNilaiServiceRoomOldRoom != false) {
                                                                                             nilai_service_room = parseFloat(isgetNilaiServiceRoomOldRoom);
                                                                                         }
 
-                                                                                        sewa_kamar_plus_service = parseFloat(isgetNilaiServiceRoomOldRoom + total_sewa_kamar_extend_plus_overpax);
+                                                                                        sewa_kamar_plus_service = parseFloat(
+                                                                                            isgetNilaiServiceRoomOldRoom +
+                                                                                            total_sewa_kamar_extend_plus_overpax);
 
-                                                                                        var isgetNilaiPajakRoomOldPajak = await new Pajak().getNilaiPajakRoom(db, sewa_kamar_plus_service);
+                                                                                        var isgetNilaiPajakRoomOldPajak = await new Pajak().getNilaiPajakRoom(
+                                                                                            db, sewa_kamar_plus_service);
                                                                                         if (isgetNilaiPajakRoomOldPajak != false) {
                                                                                             nilai_pajak_room = parseFloat(isgetNilaiPajakRoomOldPajak);
                                                                                         }
 
                                                                                         total_tarif_kamar = parseFloat(total_tarif_kamar);
-                                                                                        total_kamar = parseFloat(total_sewa_kamar_extend_plus_overpax +
+
+                                                                                        total_kamar = parseFloat(
+                                                                                            total_sewa_kamar_extend_plus_overpax +
                                                                                             nilai_service_room + nilai_pajak_room);
-                                                                                        var total_All_ = total_kamar + nilai_ivc_total_penjualan + nilai_ivc_charge_lain;
+                                                                                        var total_All_ =
+                                                                                            total_kamar +
+                                                                                            nilai_ivc_total_penjualan +
+                                                                                            nilai_ivc_charge_lain;
+
                                                                                         total_All = total_All_.toFixed(0);
                                                                                     }
 
