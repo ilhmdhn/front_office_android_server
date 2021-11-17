@@ -1497,6 +1497,18 @@ async function _procDirectEditCheckInRoom(req, res) {
                                 nilai_pajak_room = parseFloat(isgetNilaiPajakRoom);
                             }
 
+                            var total_kamar_ = parseFloat(
+                                total_sewa_kamar_plus_extend_plus_overpax +
+                                nilai_service_room +
+                                nilai_pajak_room);
+
+                            var total_All_ =
+                                total_kamar_ +
+                                nilai_ivc_total_penjualan +
+                                nilai_ivc_charge_lain;
+
+                            var total_All = total_All_.toFixed(0);
+
                             total_tarif_kamar = parseFloat(total_tarif_kamar);
                             var total_kamar = parseFloat(
                                 total_tarif_kamar +
@@ -1516,7 +1528,7 @@ async function _procDirectEditCheckInRoom(req, res) {
                                 nilai_service_room,
                                 nilai_pajak_room,
                                 total_kamar,
-                                total_kamar,
+                                total_All,
                                 kode_rcp,
                                 uang_muka,
                                 nilai_uang_voucher);
@@ -2994,13 +3006,18 @@ async function _procExtendRoom(req, res) {
                                             nilai_pajak_room = parseFloat(isgetNilaiPajakRoom);
                                         }
 
-                                        total_sewa_kamar_plus_extend_plus_overpax = parseFloat(total_sewa_kamar_plus_extend_plus_overpax);
+                                        total_sewa_kamar_plus_extend_plus_overpax = parseFloat(
+                                            total_sewa_kamar_plus_extend_plus_overpax);
                                         var total_kamar_ = parseFloat(
                                             total_sewa_kamar_plus_extend_plus_overpax +
                                             nilai_service_room +
                                             nilai_pajak_room);
 
-                                        var total_All_ = total_kamar_ + nilai_ivc_total_penjualan + nilai_ivc_charge_lain;
+                                        var total_All_ =
+                                            total_kamar_ +
+                                            nilai_ivc_total_penjualan +
+                                            nilai_ivc_charge_lain;
+
                                         var total_All = total_All_.toFixed(0);
 
                                         var total_kamar = total_kamar_.toFixed(0);
