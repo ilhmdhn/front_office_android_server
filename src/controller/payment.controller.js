@@ -394,7 +394,7 @@ async function _procSubmitPayment(req, res) {
         //Cek Pembayaran
         if (listPayment[a].nominal <= 0) {
           if (UMNonCashDet.nominal < TotalInvoice) {
-            if (TotalInvoice > 0) {
+            if (TotalInvoice > 6) {
               ErrorMsg = "Nilai harus lebih besar dari 0";
             }
           }

@@ -1954,8 +1954,8 @@ class PromoRoom {
             var rcp = rcp_;
             //you must use set dateformat dmy
             var isiQuery = "" +
-
-               `set
+               `
+               set
    dateformat dmy 
    select
 
@@ -3186,7 +3186,7 @@ class PromoRoom {
                )
             )
          then
-            60 
+            DATEDIFF(mi, [IHP_Promo_Rcp].[Start_promo] , [IHP_Promo_Rcp].[End_promo]) 
          when
             (
 ( 
@@ -4061,7 +4061,7 @@ class PromoRoom {
                )
             )
          then
-(([IHP_Rcp_DetailsRoom].[Tarif] / 60) * 60 ) / 100*[IHP_Promo_Rcp].[Diskon_Persen] 
+(([IHP_Rcp_DetailsRoom].[Tarif] / 60) * DATEDIFF(mi, [IHP_Promo_Rcp].[Start_promo] , [IHP_Promo_Rcp].[End_promo]) ) / 100*[IHP_Promo_Rcp].[Diskon_Persen] 
          when
             (
 ( 
@@ -4430,7 +4430,8 @@ class PromoRoom {
       and [IHP_Promo_Rcp].[FlagExtend] = 1 
       and [IHP_Promo_Rcp].[Status_Promo] = 1 
    Group By
-      [IHP_Rcp].[Reception], [IHP_Rcp].[Checkin], [IHP_Rcp].[Jam_Sewa], [IHP_Rcp].[Menit_Sewa], [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[Promo] , [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] , [IHP_Promo_Rcp].[Diskon_Persen] , [IHP_Promo_Rcp].[Diskon_Rp] , [IHP_Rcp_DetailsRoom].[Overpax] , [IHP_Rcp_DetailsRoom].[Tarif] , [IHP_Rcp_DetailsRoom].[Time_Start] , [IHP_Rcp_DetailsRoom].[Time_Finish] `;
+      [IHP_Rcp].[Reception], [IHP_Rcp].[Checkin], [IHP_Rcp].[Jam_Sewa], [IHP_Rcp].[Menit_Sewa], [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[Promo] , [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] , [IHP_Promo_Rcp].[Diskon_Persen] , [IHP_Promo_Rcp].[Diskon_Rp] , [IHP_Rcp_DetailsRoom].[Overpax] , [IHP_Rcp_DetailsRoom].[Tarif] , [IHP_Rcp_DetailsRoom].[Time_Start] , [IHP_Rcp_DetailsRoom].[Time_Finish] 
+      `;
 
             db.request().query(isiQuery, function (err, dataReturn) {
                if (err) {
@@ -8714,7 +8715,8 @@ where
             var kode_rcp = kode_rcp_;
             //you must use set dateformat dmy
             var isiQuery = "" +
-               `set
+               `
+               set
                dateformat dmy 
                 delete from [IHP_Detail_Diskon_Sewa_Kamar_Extend] where Reception = '${kode_rcp}'
               insert into [IHP_Detail_Diskon_Sewa_Kamar_Extend]
@@ -9425,8 +9427,7 @@ where
                            )
                         )
                      then
-                        60
-            
+                        DATEDIFF(mi, [IHP_Promo_Rcp].[Start_promo] , [IHP_Promo_Rcp].[End_promo])            
             
                      when
                         (
@@ -10314,7 +10315,7 @@ where
                         )
                      then
                         (([IHP_Rcp_DetailsRoom].[Tarif] / 60) *
-                     60
+                     DATEDIFF(mi, [IHP_Promo_Rcp].[Start_promo] , [IHP_Promo_Rcp].[End_promo])
                   )/ 100*[IHP_Promo_Rcp].[Diskon_Persen] 
             
                            when
@@ -10697,7 +10698,8 @@ where
                   and [IHP_Promo_Rcp].[FlagExtend] = 1 
                   and [IHP_Promo_Rcp].[Status_Promo] = 1 
                Group By
-                  [IHP_Rcp].[Reception], [IHP_Rcp].[Checkin], [IHP_Rcp].[Jam_Sewa], [IHP_Rcp].[Menit_Sewa], [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[Promo] , [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] , [IHP_Promo_Rcp].[Diskon_Persen] , [IHP_Promo_Rcp].[Diskon_Rp] , [IHP_Rcp_DetailsRoom].[Overpax] , [IHP_Rcp_DetailsRoom].[Tarif] , [IHP_Rcp_DetailsRoom].[Time_Start] , [IHP_Rcp_DetailsRoom].[Time_Finish],[IHP_Rcp_DetailsRoom].[Nama_Kamar],[IHP_Rcp_DetailsRoom].[Hari],[IHP_Rcp_DetailsRoom].[Date_Time_Start],[IHP_Rcp_DetailsRoom].[Date_Time_Finish]`;
+                  [IHP_Rcp].[Reception], [IHP_Rcp].[Checkin], [IHP_Rcp].[Jam_Sewa], [IHP_Rcp].[Menit_Sewa], [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[Promo] , [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] , [IHP_Promo_Rcp].[Diskon_Persen] , [IHP_Promo_Rcp].[Diskon_Rp] , [IHP_Rcp_DetailsRoom].[Overpax] , [IHP_Rcp_DetailsRoom].[Tarif] , [IHP_Rcp_DetailsRoom].[Time_Start] , [IHP_Rcp_DetailsRoom].[Time_Finish],[IHP_Rcp_DetailsRoom].[Nama_Kamar],[IHP_Rcp_DetailsRoom].[Hari],[IHP_Rcp_DetailsRoom].[Date_Time_Start],[IHP_Rcp_DetailsRoom].[Date_Time_Finish]
+                  `;
 
             db.request().query(isiQuery, function (err, dataReturn) {
                if (err) {
