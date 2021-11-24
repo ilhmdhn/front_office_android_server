@@ -173,15 +173,15 @@ async function _procSubmitPayment(req, res) {
         Invoice.Sewa_Kamar +
         Invoice.Total_Extend +
         Invoice.Overpax +
-        Invoice.Surcharge_Kamar-
+        Invoice.Surcharge_Kamar -
         Invoice.Discount_Kamar -
-        Invoice.Uang_Voucher        
-      ) + 
-      (
+        Invoice.Uang_Voucher
+      ) +
+        (
           Invoice.Charge_Penjualan -
           Invoice.Total_Cancelation -
           Invoice.Discount_Penjualan
-        ) ;
+        );
 
       InvoiceCodeTransfer = Invoice.Transfer;
 
@@ -190,20 +190,20 @@ async function _procSubmitPayment(req, res) {
         InvoiceTransfer = await InvoiceModel.getInfoByInvoice(InvoiceCodeTransfer, req, db);
         if (InvoiceTransfer != "") {
           TotalInvoice = TotalInvoice + InvoiceTransfer.Total_All;
-          
+
           TotalInvoice4Point = TotalInvoice4Point + (
             InvoiceTransfer.Sewa_Kamar +
             InvoiceTransfer.Total_Extend +
             InvoiceTransfer.Overpax +
-            InvoiceTransfer.Surcharge_Kamar-
-            InvoiceTransfer.Uang_Voucher-
+            InvoiceTransfer.Surcharge_Kamar -
+            InvoiceTransfer.Uang_Voucher -
             InvoiceTransfer.Discount_Kamar
-          ) + 
-          (
+          ) +
+            (
               InvoiceTransfer.Charge_Penjualan -
               InvoiceTransfer.Total_Cancelation -
               InvoiceTransfer.Discount_Penjualan
-            ) ;
+            );
 
           InvoiceCodeTransfer = InvoiceTransfer.Transfer;
           loopInvoiceTransfer = true;
@@ -674,6 +674,11 @@ async function _procSubmitPayment(req, res) {
   }
   if ((TotalInvoice == 0) && (UMNonCashDet.nominal > 0)) {
     await new CheckinProses().deleteIhpUangMukaNonCash(db, Invoice.Reception);
+  }
+
+  var cek_voucher = await getNomoVoucher(room.Reception);
+  if (cek_voucher != false) {
+    await disableVoucher(cek_voucher);
   }
 
   //Jike member dan punya poin
@@ -2682,6 +2687,60 @@ function updateIhpSulKirimEmail(ivc_, email_) {
           resolve(true);
         }
       });
+    } catch (err) {
+      logger.error(err.message);
+      reject(err.message);
+    }
+  });
+}
+
+function disableVoucher(kode_voucher_) {
+  return new Promise((resolve, reject) => {
+    try {
+      var kode_voucher = kode_voucher_;
+
+      var query = " " +
+        "Update IHP_Vcr set Status='0' where Voucher='" + kode_voucher + "'";
+      db.request().query(query, function (err, dataReturn) {
+        if (err) {
+          logger.error(err.message);
+          reject(err.message);
+          resolve(false);
+        } else {
+          resolve(true);
+        }
+      });
+    } catch (err) {
+      logger.error(err.message);
+      reject(err.message);
+    }
+  });
+}
+
+function getNomoVoucher(kode_rcp_) {
+  return new Promise((resolve, reject) => {
+    try {
+      var kode_rcp = kode_rcp_;
+
+      var isiQuery = "" +
+        `
+        select Voucher from IHP_UangVoucher where Reception= '${kode_rcp}' 
+        `;
+
+      db.request().query(isiQuery, function (err, dataReturn) {
+        if (err) {
+          logger.error(err.message);
+          reject(err.message);
+        } else {
+          if (dataReturn.recordset.length > 0) {
+            var voucher = dataReturn.recordset[0].Voucher;
+            resolve(voucher);
+          } else {
+            resolve(false);
+          }
+        }
+      });
+
     } catch (err) {
       logger.error(err.message);
       reject(err.message);

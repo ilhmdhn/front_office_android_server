@@ -1092,7 +1092,7 @@ async function _procDirectEditCheckInRoom(req, res) {
             dataResponse = new ResponseFormat(false, null, room + " Jumlah tamu Tidak Boleh Nol");
             res.send(dataResponse);
         }
-        else if ((voucher != '') && (voucher !== undefined) &&
+        /*else if ((voucher != '') && (voucher !== undefined) &&
             (isGetCekAktifKondisiVoucher != false) &&
             (isGetCekAktifKondisiVoucher.data[0].status_voucher_expired == "1")) {
             dataResponse = new ResponseFormat(false, null, voucher + " non aktif sudah expired");
@@ -1122,7 +1122,7 @@ async function _procDirectEditCheckInRoom(req, res) {
             (totalDurasiCekinMenit < 120)) {
             dataResponse = new ResponseFormat(false, null, voucher + " non aktif penggunaan voucher minimal Checkin 2 jam");
             res.send(dataResponse);
-        }
+        }*/
         else if ((voucher != '') && (voucher !== undefined) &&
             (isGetCekAktifKondisiVoucher != false) &&
             (isGetCekAktifKondisiVoucher.data[0].status_jam_sekarang_voucher_bisa_digunakan == 0)) {
@@ -1375,7 +1375,10 @@ async function _procDirectEditCheckInRoom(req, res) {
                             if (isGetCekAktifKondisiVoucher != false) {
                                 if (
                                     (isGetCekAktifKondisiVoucher.data[0].status_voucher_expired == 0) &&
-                                    (isGetCekAktifKondisiVoucher.data[0].status_voucher_aktif == "1") &&
+                                    (
+                                        (isGetCekAktifKondisiVoucher.data[0].status_voucher_aktif == "1")||
+                                        (isGetCekAktifKondisiVoucher.data[0].status_voucher_aktif == "2")
+                                     ) &&
                                     (isGetCekAktifKondisiVoucher.data[0].status_jam_sekarang_voucher_bisa_digunakan == 1) &&
                                     (isGetCekAktifKondisiVoucher.data[0].sisa_waktu_voucher_hari_ini_menit >= 60)
                                 ) {
@@ -1544,6 +1547,7 @@ async function _procDirectEditCheckInRoom(req, res) {
                                 nilai_uang_voucher);
                             if (isProsesQueryUpdateIhp_ivc != false) {
 
+                                if (isGetCekAktifKondisiVoucher.data[0].status_voucher_aktif == "1"){
                                 if (nilai_uang_voucher > 0) {
                                     //simpan voucher di ihp_uangVoucher
                                     if (isGetCekAktifKondisiVoucher.data[0].jenis_voucher == 0) {
@@ -1557,6 +1561,7 @@ async function _procDirectEditCheckInRoom(req, res) {
                                         await new CheckinProses().insertIhpUangVoucher(db, kode_rcp, voucher, uang_voucher);
                                     }
                                 }
+                            }
 
                                 await new CheckinProses().updateRecountIhpIvc(db, kode_rcp);
                                 await new CheckinProses().updateRecountIhpIvcTotalAll(db, kode_rcp);
