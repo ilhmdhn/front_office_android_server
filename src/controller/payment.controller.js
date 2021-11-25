@@ -679,6 +679,7 @@ async function _procSubmitPayment(req, res) {
   var cek_voucher = await getNomoVoucher(room.Reception);
   if (cek_voucher != false) {
     await disableVoucher(cek_voucher);
+    await new CheckinProses().updateStatusIhpVcrDisableEnableSedangDipakaiCheckin(db, cek_voucher, 0);
   }
 
   //Jike member dan punya poin
