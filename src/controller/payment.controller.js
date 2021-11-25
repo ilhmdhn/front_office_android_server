@@ -676,9 +676,8 @@ async function _procSubmitPayment(req, res) {
     await new CheckinProses().deleteIhpUangMukaNonCash(db, Invoice.Reception);
   }
 
-  var cek_voucher = await getNomoVoucher(room.Reception);
+  var cek_voucher = await getNomorVoucher(room.Reception);
   if (cek_voucher != false) {
-    await disableVoucher(cek_voucher);
     await new CheckinProses().updateStatusIhpVcrDisableEnableSedangDipakaiCheckin(db, cek_voucher, 0);
   }
 
@@ -2695,30 +2694,7 @@ function updateIhpSulKirimEmail(ivc_, email_) {
   });
 }
 
-function disableVoucher(kode_voucher_) {
-  return new Promise((resolve, reject) => {
-    try {
-      var kode_voucher = kode_voucher_;
-
-      var query = " " +
-        "Update IHP_Vcr set Status='0' where Voucher='" + kode_voucher + "'";
-      db.request().query(query, function (err, dataReturn) {
-        if (err) {
-          logger.error(err.message);
-          reject(err.message);
-          resolve(false);
-        } else {
-          resolve(true);
-        }
-      });
-    } catch (err) {
-      logger.error(err.message);
-      reject(err.message);
-    }
-  });
-}
-
-function getNomoVoucher(kode_rcp_) {
+function getNomorVoucher(kode_rcp_) {
   return new Promise((resolve, reject) => {
     try {
       var kode_rcp = kode_rcp_;
