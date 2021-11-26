@@ -1498,31 +1498,31 @@ function harinya(hari) {
       var hari00 = hari;
       var isinya2;
       var hari0 = hari00.getUTCDay();
-      if (hari0 == 0) {
+      if (hari0 == 1) {
         isinya2 = "Monday";
         resolve(isinya2);
       }
-      else if (hari0 == 1) {
+      else if (hari0 == 2) {
         isinya2 = "Tuesday";
         resolve(isinya2);
       }
-      else if (hari0 == 2) {
+      else if (hari0 == 3) {
         isinya2 = "Wednesday";
         resolve(isinya2);
       }
-      else if (hari0 == 3) {
+      else if (hari0 == 4) {
         isinya2 = "Thursday";
         resolve(isinya2);
       }
-      else if (hari0 == 4) {
+      else if (hari0 == 5) {
         isinya2 = "Friday";
         resolve(isinya2);
       }
-      else if (hari0 == 5) {
+      else if (hari0 == 6) {
         isinya2 = "Saturday";
         resolve(isinya2);
       }
-      else if (hari0 == 6) {
+      else if (hari0 == 7) {
         isinya2 = "Sunday";
         resolve(isinya2);
       }
@@ -1631,25 +1631,25 @@ function formatTanggel(tanggal_) {
       var bulan = tanggal.getUTCMonth();
       var tahun = tanggal.getUTCFullYear();
       var bulannya;
-      if (hari == 0) {
+      if (hari == 1) {
         harinya = "Monday";
       }
-      else if (hari == 1) {
+      else if (hari == 2) {
         harinya = "Tuesday";
       }
-      else if (hari == 2) {
+      else if (hari == 3) {
         harinya = "Wednesday";
       }
-      else if (hari == 3) {
+      else if (hari == 4) {
         harinya = "Thursday";
       }
-      else if (hari == 4) {
+      else if (hari == 5) {
         harinya = "Friday";
       }
-      else if (hari == 5) {
+      else if (hari == 6) {
         harinya = "Saturday";
       }
-      else if (hari == 6) {
+      else if (hari == 7) {
         harinya = "Sunday";
       }
 
