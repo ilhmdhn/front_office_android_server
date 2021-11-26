@@ -1932,6 +1932,47 @@ class CheckinProses {
     });
   }
 
+  updateIhpIvcNilaiUangVoucher(db_, kode_rcp_, uang_voucher_) {
+    return new Promise((resolve, reject) => {
+      try {
+        db = db_;
+        var uang_voucher = uang_voucher_;
+        var kode_rcp = kode_rcp_;
+
+        var isiQuery = "" +
+          " set dateformat dmy " +
+          " Update IHP_Ivc " +
+          " Set " +
+          " [Uang_Voucher] = " + uang_voucher + "" +
+          " where Reception = '" + kode_rcp + "'";
+
+        db.request().query(isiQuery, function (err, dataReturn) {
+          if (err) {
+            sql.close();
+            logger.error(err);
+            console.log(err);
+            logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+            console.log(kode_rcp_ + " Gagal updateIhpIvcNilaiUangVoucher");
+            logger.info(kode_rcp_ + " Gagal updateIhpIvcNilaiUangVoucher");
+          } else {
+            sql.close();
+            console.log(kode_rcp_ + " Sukses updateIhpIvcNilaiUangVoucher ");
+            logger.info(kode_rcp_ + " Sukses updateIhpIvcNilaiUangVoucher ");
+            resolve(true);
+          }
+        });
+
+      } catch (err) {
+        sql.close();
+        logger.error(err);
+        console.log(err);
+        logger.error(err.message);
+        logger.error('Catch Error prosesQuery ');
+        resolve(false);
+      }
+    });
+  }
+
   updateIhpRcpKamarTransfer(db_, old_kode_rcp_, old_room_, old_kode_ivc_, status_) {
     return new Promise((resolve, reject) => {
       try {
@@ -2245,7 +2286,7 @@ class CheckinProses {
     });
   }
 
-  updateIhpVcrSedangDipakaiCheckin(db_, voucher_, status_) {
+  updateStatusIhpVcrDisableEnableSedangDipakaiCheckin(db_, voucher_, status_) {
     return new Promise((resolve, reject) => {
       try {
         db = db_;
@@ -2261,13 +2302,13 @@ class CheckinProses {
             logger.error(err);
             console.log(err);
             logger.error(err.message + ' Error prosesQuery ' + isiQuery);
-            console.log(voucher + " gagal updateIhpVcrSedangDipakaiCheckin");
-            logger.info(voucher + " gagal updateIhpVcrSedangDipakaiCheckin");
+            console.log(voucher + " gagal updateStatusIhpVcrDisableEnableSedangDipakaiCheckin " + status);
+            logger.info(voucher + " gagal updateStatusIhpVcrDisableEnableSedangDipakaiCheckin " + status);
             resolve(false);
           } else {
             sql.close();
-            console.log(voucher + " Sukses updateIhpVcrSedangDipakaiCheckin");
-            logger.info(voucher + " Sukses updateIhpVcrSedangDipakaiCheckin");
+            console.log(voucher + " Sukses updateStatusIhpVcrDisableEnableSedangDipakaiCheckin " + status);
+            logger.info(voucher + " Sukses updateStatusIhpVcrDisableEnableSedangDipakaiCheckin " + status);
             resolve(true);
           }
         });

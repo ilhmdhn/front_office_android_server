@@ -2154,7 +2154,7 @@ function createPdf(
           //  left2, (batasAtas + (1 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].kamar_alias, left2, (batasAtas + (1 * spasiAntarBaris)));
 
-          doc.font(fontpath).fontSize(fontSize).text(": " + tanggal_pembayaran + ",  " + jam_pembayaran,
+          doc.font(fontpath).fontSize(fontSize).text(": " + tanggal_checkin  + ",  " + jam_checkin__,
             left2, (batasAtas + (2 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + room.recordset[0].chusr, left2, (batasAtas + (3 * spasiAntarBaris)));
 
