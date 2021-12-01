@@ -324,6 +324,7 @@ class RoomService {
           ISNULL(IHP_Ivc.Invoice, '') AS invoice,
           ISNULL(IHP_Rcp.Id_Payment, 0) AS id_payment,
           DATEDIFF(mi, IHP_Room.Jam_Checkin, IHP_Room.Jam_Checkout) AS durasi_checkin,
+          DATEDIFF(mi, IHP_Rcp.Checkin, IHP_Rcp.Checkout) AS durasi_checkin_rcp,
           DATEDIFF(mi, GETDATE(), IHP_Room.Jam_Checkout) AS sisa_checkin,
           DATEDIFF(mi, GETDATE(), IHP_Room.Jam_Checkout) / 60 AS sisa_jam_checkin,
           DATEDIFF(mi, GETDATE(), IHP_Room.Jam_Checkout) % 60 AS sisa_menit_checkin,

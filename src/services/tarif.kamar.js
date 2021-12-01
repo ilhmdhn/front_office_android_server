@@ -1603,7 +1603,7 @@ set
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery insertIHPRcpDetailsRoom ' + isiQuery);
                   console.log(kode_rcp + " gagal insertIHPRcpDetailsRoom");
                   logger.info(kode_rcp + " gagal insertIHPRcpDetailsRoom");
                   resolve(false);
@@ -1612,6 +1612,7 @@ set
                   console.log("Sukses date_time_start " + date_time_start);
                   console.log("Sukses date_time_finish " + date_time_finish);
                   console.log("Sukses sewa kamar " + kamar_tarif + " overpax kamar " + overpax_tarif);
+                  logger.info(kode_rcp + " Sukses insertIHPRcpDetailsRoom sewa kamar " + kamar_tarif + " overpax kamar " + overpax_tarif);
                   resolve(true);
                }
             });
@@ -1735,10 +1736,11 @@ set
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery getDeleteInsertIhpDetailSewaKamar ' + isiQuery);
                   resolve(false);
                } else {
                   sql.close();
+                  logger.info(kode_rcp + ' Sukses getDeleteInsertIhpDetailSewaKamar ');
                   resolve(true);
                }
             });
@@ -2016,10 +2018,11 @@ set
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery getDeleteInsertIhpDetailSewaKamarExtend ' + isiQuery);
                   resolve(false);
                } else {
                   sql.close();
+                  logger.info(kode_rcp + ' Sukses getDeleteInsertIhpDetailSewaKamarExtend ');
                   resolve(true);
                }
             });

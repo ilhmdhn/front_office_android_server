@@ -204,19 +204,26 @@ class CheckinProses {
         db = db_;
         var kode_rcp = kode_rcp_;
         var isiQuery = "" +
-          " SELECT  [IHP_Ext].[Reception] as reception  " +
-          " ,[IHP_Ext].[Tgl_Extend] as tanggal_extend_" +
-          " ,[IHP_Ext].[Jam_Extend] as jam_extend " +
-          " ,[IHP_Ext].[Menit_Extend] as menit_extend " +
-          " ,([IHP_Ext].[Jam_Extend]*60)+[IHP_Ext].[Menit_Extend] as total_menit_extend" +
-          " ,[IHP_Ext].[Date_Trans] as date_trans" +
-          " ,CONVERT(VARCHAR(24), [IHP_Ext].[Tgl_Extend], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Ext].[Tgl_Extend], 114), 1, 8) as tanggal_extend  " +
-          " ,[IHP_Ext].[Start_Extend] as start_extend" +
-          " ,[IHP_Ext].[End_Extend] as end_extend" +
-          " FROM [IHP_Ext]    " +
-          " where Reception='" + kode_rcp + "'" +
-          " Order by [Tgl_Extend] asc";
-
+          `
+          SELECT  [IHP_Ext].[Reception] as reception  
+          ,[IHP_Ext].[Tgl_Extend] as tanggal_extend_
+          ,[IHP_Ext].[Jam_Extend] as jam_extend 
+          ,[IHP_Ext].[Menit_Extend] as menit_extend 
+          ,([IHP_Ext].[Jam_Extend]*60)+[IHP_Ext].[Menit_Extend] as total_menit_extend
+          ,[IHP_Ext].[Date_Trans] as date_trans
+          ,CONVERT(VARCHAR(24), [IHP_Ext].[Tgl_Extend], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Ext].[Tgl_Extend], 114), 1, 8) as tanggal_extend  
+          ,[IHP_Ext].[Start_Extend] as start_extend_
+           ,[IHP_Ext].[Start_Extend] as start_extend__
+          ,CONVERT(VARCHAR(30), [IHP_Ext].[Start_Extend], 121) as start_extend
+          ,CONVERT(VARCHAR(24), [IHP_Ext].[Start_Extend], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Ext].[Start_Extend], 114), 1, 8) as start_extend__
+          ,[IHP_Ext].[End_Extend] as end_extend_
+          ,CONVERT(VARCHAR(30), [IHP_Ext].[End_Extend], 121) as end_extend
+          ,CONVERT(VARCHAR(24), [IHP_Ext].[End_Extend], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Ext].[End_Extend], 114), 1, 8) as end_extend__  
+          FROM [IHP_Ext]    
+          where Reception='${kode_rcp}'
+          Order by [Tgl_Extend] asc
+          `
+          ;
 
         db.request().query(isiQuery, function (err, dataReturn) {
           if (err) {
@@ -1733,9 +1740,19 @@ class CheckinProses {
           } else {
             sql.close();
             console.log(kode_rcp_ + " Sukses updateIhpIvcNilaiInvoice ");
-            logger.info(kode_rcp_ + " Sukses updateIhpIvcNilaiInvoice ");
             console.log(kode_rcp_ + " total kamar " + total_kamar + " total all " + total_all);
-            logger.info(kode_rcp_ + " total kamar " + total_kamar + " total all " + total_all);
+
+            logger.info(kode_rcp_ + " Sukses updateIhpIvcNilaiInvoice ");
+            logger.info(kode_rcp_ + " Sewa_Kamar = " + total_tarif_kamar);
+            logger.info(kode_rcp_ + " Total_Extend = " + total_extend);
+            logger.info(kode_rcp_ + " Overpax = " + charge_overpax);
+            logger.info(kode_rcp_ + " Discount_Kamar = " + discount_kamar);
+            logger.info(kode_rcp_ + " Service_Kamar = " + nilai_service_room);
+            logger.info(kode_rcp_ + " Tax_Kamar = " + nilai_pajak_room);
+            logger.info(kode_rcp_ + " Total_Kamar = " + total_kamar);
+            logger.info(kode_rcp_ + " Uang_Voucher = " + uang_voucher);
+            logger.info(kode_rcp_ + " Uang_Muka = " + uang_muka);
+            logger.info(kode_rcp_ + " Total_All = " + total_all);
             resolve(true);
           }
         });
@@ -1900,6 +1917,47 @@ class CheckinProses {
             sql.close();
             console.log(kode_rcp_ + " Sukses updateIhpIvcNilaiInvoiceDiskonExtendKamar ");
             logger.info(kode_rcp_ + " Sukses updateIhpIvcNilaiInvoiceDiskonExtendKamar ");
+            resolve(true);
+          }
+        });
+
+      } catch (err) {
+        sql.close();
+        logger.error(err);
+        console.log(err);
+        logger.error(err.message);
+        logger.error('Catch Error prosesQuery ');
+        resolve(false);
+      }
+    });
+  }
+
+  updateIhpIvcNilaiUangVoucher(db_, kode_rcp_, uang_voucher_) {
+    return new Promise((resolve, reject) => {
+      try {
+        db = db_;
+        var uang_voucher = uang_voucher_;
+        var kode_rcp = kode_rcp_;
+
+        var isiQuery = "" +
+          " set dateformat dmy " +
+          " Update IHP_Ivc " +
+          " Set " +
+          " [Uang_Voucher] = " + uang_voucher + "" +
+          " where Reception = '" + kode_rcp + "'";
+
+        db.request().query(isiQuery, function (err, dataReturn) {
+          if (err) {
+            sql.close();
+            logger.error(err);
+            console.log(err);
+            logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+            console.log(kode_rcp_ + " Gagal updateIhpIvcNilaiUangVoucher");
+            logger.info(kode_rcp_ + " Gagal updateIhpIvcNilaiUangVoucher");
+          } else {
+            sql.close();
+            console.log(kode_rcp_ + " Sukses updateIhpIvcNilaiUangVoucher ");
+            logger.info(kode_rcp_ + " Sukses updateIhpIvcNilaiUangVoucher ");
             resolve(true);
           }
         });
@@ -2228,7 +2286,7 @@ class CheckinProses {
     });
   }
 
-  updateIhpVcrSedangDipakaiCheckin(db_, voucher_, status_) {
+  updateStatusIhpVcrDisableEnableSedangDipakaiCheckin(db_, voucher_, status_) {
     return new Promise((resolve, reject) => {
       try {
         db = db_;
@@ -2244,13 +2302,13 @@ class CheckinProses {
             logger.error(err);
             console.log(err);
             logger.error(err.message + ' Error prosesQuery ' + isiQuery);
-            console.log(voucher + " gagal updateIhpVcrSedangDipakaiCheckin");
-            logger.info(voucher + " gagal updateIhpVcrSedangDipakaiCheckin");
+            console.log(voucher + " gagal updateStatusIhpVcrDisableEnableSedangDipakaiCheckin " + status);
+            logger.info(voucher + " gagal updateStatusIhpVcrDisableEnableSedangDipakaiCheckin " + status);
             resolve(false);
           } else {
             sql.close();
-            console.log(voucher + " Sukses updateIhpVcrSedangDipakaiCheckin");
-            logger.info(voucher + " Sukses updateIhpVcrSedangDipakaiCheckin");
+            console.log(voucher + " Sukses updateStatusIhpVcrDisableEnableSedangDipakaiCheckin " + status);
+            logger.info(voucher + " Sukses updateStatusIhpVcrDisableEnableSedangDipakaiCheckin " + status);
             resolve(true);
           }
         });
@@ -2406,6 +2464,50 @@ class CheckinProses {
             } else {
               console.log(room + " gagal GetReception From IHP_Room");
               logger.info(room + " gagal GetReception From IHP_Room");
+              resolve(false);
+            }
+          }
+        });
+
+      } catch (err) {
+        console.log(err);
+        logger.error(err.message);
+        logger.error('Catch Error prosesQuery ');
+        resolve(false);
+      }
+    });
+  }
+
+  getCekValidIHPRcpDetailsRoom(db_, kode_rcp_) {
+    return new Promise((resolve, reject) => {
+      try {
+        db = db_;
+        var kode_rcp = kode_rcp_;
+        var isiQuery = " " +
+          `
+          select case when Date_Time_Start is null then 'false' else 'true' end
+          as date_time_start 
+          FROM [HP112].[dbo].[IHP_Rcp_DetailsRoom]  where reception='${kode_rcp}'
+          `
+          ;
+
+        db.request().query(isiQuery, function (err, dataReturn) {
+          if (err) {
+            logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+            resolve(false);
+          } else {
+            console.log(kode_rcp + " Sukses getCekIhpDetailRoom ");
+            logger.info(kode_rcp + " Sukses getCekIhpDetailRoom ");
+            if (dataReturn.recordset.length > 0) {
+              var hasil = dataReturn.recordset[0].date_time_start;
+              if (hasil == 'true') {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            } else {
+              console.log(kode_rcp + " gagal getCekIhpDetailRoom From IHP_Room");
+              logger.info(kode_rcp + " gagal getCekIhpDetailRoom From IHP_Room");
               resolve(false);
             }
           }
@@ -3779,21 +3881,22 @@ class CheckinProses {
     });
   }
 
+
   updateRecountIhpIvcTotalAll(db_, kode_rcp_) {
     return new Promise((resolve, reject) => {
-       try {
-          db = db_;
+      try {
+        db = db_;
 
-          var kode_rcp = kode_rcp_;
+        var kode_rcp = kode_rcp_;
 
-          var isiQuery = "" +
-             `
+        var isiQuery = "" +
+          `
              UPDATE
  IHP_Ivc_ 
 SET
  IHP_Ivc_.Total_All = 
  (
-    IHP_Ivc__.Total_Kamar - IHP_Ivc__.Uang_Voucher
+    IHP_Ivc__.Total_Kamar
  )
   + IHP_Ivc__.Total_Penjualan + IHP_Ivc__.Charge_Lain 
 FROM
@@ -3822,40 +3925,40 @@ FROM
 WHERE
  IHP_Ivc_.Reception = '${kode_rcp}'`;
 
-          db.request().query(isiQuery, function (err, dataReturn) {
-             if (err) {
-                sql.close();
-                logger.error(err);
-                console.log(err);
-                logger.error(err.message + ' Error prosesQuery ' + isiQuery);
-                resolve(false);
-             } else {
-                sql.close();
-                logger.info(kode_rcp + " sukses updateIhpIvcPromoAfterEditPromoFood");
-                resolve(true);
-             }
-          });
+        db.request().query(isiQuery, function (err, dataReturn) {
+          if (err) {
+            sql.close();
+            logger.error(err);
+            console.log(err);
+            logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+            resolve(false);
+          } else {
+            sql.close();
+            logger.info(kode_rcp + " sukses updateRecountIhpIvcTotalAll");
+            resolve(true);
+          }
+        });
 
-       } catch (err) {
-          sql.close();
-          logger.error(err);
-          console.log(err);
-          logger.error(err.message);
-          logger.error('Catch Error prosesQuery ');
-          resolve(false);
-       }
+      } catch (err) {
+        sql.close();
+        logger.error(err);
+        console.log(err);
+        logger.error(err.message);
+        logger.error('Catch Error prosesQuery ');
+        resolve(false);
+      }
     });
- }
+  }
 
- updateRecountIhpIvc(db_, kode_rcp_) {
-  return new Promise((resolve, reject) => {
-     try {
+  updateRecountIhpIvc(db_, kode_rcp_) {
+    return new Promise((resolve, reject) => {
+      try {
         db = db_;
 
         var kode_rcp = kode_rcp_;
 
         var isiQuery = "" +
-           `
+          `
            UPDATE
    IHP_Ivc_ 
 SET
@@ -3985,29 +4088,29 @@ WHERE
    and IHP_Config2.Data = '1'`;
 
         db.request().query(isiQuery, function (err, dataReturn) {
-           if (err) {
-              sql.close();
-              logger.error(err);
-              console.log(err);
-              logger.error(err.message + ' Error prosesQuery ' + isiQuery);
-              resolve(false);
-           } else {
-              sql.close();
-              logger.info(kode_rcp + " sukses updateIhpIvcPromoAfterEditPromoFood");
-              resolve(true);
-           }
+          if (err) {
+            sql.close();
+            logger.error(err);
+            console.log(err);
+            logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+            resolve(false);
+          } else {
+            sql.close();
+            logger.info(kode_rcp + " sukses updateRecountIhpIvc");
+            resolve(true);
+          }
         });
 
-     } catch (err) {
+      } catch (err) {
         sql.close();
         logger.error(err);
         console.log(err);
         logger.error(err.message);
         logger.error('Catch Error prosesQuery ');
         resolve(false);
-     }
-  });
-}
+      }
+    });
+  }
 
 }
 module.exports = CheckinProses;

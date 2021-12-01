@@ -168,17 +168,21 @@ async function _procSubmitPayment(req, res) {
     if (Invoice == "") ErrorMsg = "Invoice tidak ditemukan";
     else {
       TotalInvoice = Invoice.Total_All;
+
       TotalInvoice4Point = (
         Invoice.Sewa_Kamar +
         Invoice.Total_Extend +
-        Invoice.Overpax -
-        Invoice.Discount_Kamar +
-        Invoice.Surcharge_Kamar
-      ) + (
+        Invoice.Overpax +
+        Invoice.Surcharge_Kamar -
+        Invoice.Discount_Kamar -
+        Invoice.Uang_Voucher
+      ) +
+        (
           Invoice.Charge_Penjualan -
           Invoice.Total_Cancelation -
           Invoice.Discount_Penjualan
-        ) - Invoice.Uang_Voucher;
+        );
+
       InvoiceCodeTransfer = Invoice.Transfer;
 
       //Mencari total pembayaran (loop semua invoice berkaitan dengan adanya kamar transfer)
@@ -186,17 +190,21 @@ async function _procSubmitPayment(req, res) {
         InvoiceTransfer = await InvoiceModel.getInfoByInvoice(InvoiceCodeTransfer, req, db);
         if (InvoiceTransfer != "") {
           TotalInvoice = TotalInvoice + InvoiceTransfer.Total_All;
+
           TotalInvoice4Point = TotalInvoice4Point + (
             InvoiceTransfer.Sewa_Kamar +
             InvoiceTransfer.Total_Extend +
-            InvoiceTransfer.Overpax -
-            InvoiceTransfer.Discount_Kamar +
-            InvoiceTransfer.Surcharge_Kamar
-          ) + (
+            InvoiceTransfer.Overpax +
+            InvoiceTransfer.Surcharge_Kamar -
+            InvoiceTransfer.Uang_Voucher -
+            InvoiceTransfer.Discount_Kamar
+          ) +
+            (
               InvoiceTransfer.Charge_Penjualan -
               InvoiceTransfer.Total_Cancelation -
               InvoiceTransfer.Discount_Penjualan
-            ) - InvoiceTransfer.Uang_Voucher;
+            );
+
           InvoiceCodeTransfer = InvoiceTransfer.Transfer;
           loopInvoiceTransfer = true;
         }
@@ -386,7 +394,9 @@ async function _procSubmitPayment(req, res) {
         //Cek Pembayaran
         if (listPayment[a].nominal <= 0) {
           if (UMNonCashDet.nominal < TotalInvoice) {
-            ErrorMsg = "Nilai harus lebih besar dari 0";
+            if (TotalInvoice > 6) {
+              ErrorMsg = "Nilai harus lebih besar dari 0";
+            }
           }
         }
         else {
@@ -641,6 +651,9 @@ async function _procSubmitPayment(req, res) {
       }
     }
 
+  } else {
+    dataResponse = new ResponseFormat(false, null, ErrorMsg);
+    res.send(dataResponse);
   }
 
   //Insert IHP_Sud
@@ -658,6 +671,14 @@ async function _procSubmitPayment(req, res) {
   if (UMNonCashDet.nominal > TotalInvoice) {
     await new CheckinProses().updateIhpIvcUangMuka(db, room.Reception, TotalInvoice);
     await new CheckinProses().updateIhpRcpUangMuka(db, room.Reception, TotalInvoice);
+  }
+  if ((TotalInvoice == 0) && (UMNonCashDet.nominal > 0)) {
+    await new CheckinProses().deleteIhpUangMukaNonCash(db, Invoice.Reception);
+  }
+
+  var cek_voucher = await getNomorVoucher(room.Reception);
+  if (cek_voucher != false) {
+    await new CheckinProses().updateStatusIhpVcrDisableEnableSedangDipakaiCheckin(db, cek_voucher, 0);
   }
 
   //Jike member dan punya poin
@@ -701,6 +722,7 @@ async function _procSubmitPayment(req, res) {
 
 
   if (ErrorMsg == "") {
+
     //pesan print Slip Invoice Pos Lorong
     var client_pos = dgram.createSocket('udp4');
     pesan = "PRINT_SUMMARY_POINT_OF_SALES_LORONG";
@@ -717,7 +739,7 @@ async function _procSubmitPayment(req, res) {
       });
     }
 
-    var member_client = dgram.createSocket('udp4');
+    /* var member_client = dgram.createSocket('udp4');
     //pesan print Slip Order Pos Lorong
     pesan = "UPLOAD_DATA_PEMBAYARAN";
     ip_address = await new IpAddressService().getIpAddress(db, "MEMBER CLIENT");
@@ -732,7 +754,7 @@ async function _procSubmitPayment(req, res) {
       member_client.send(pesan, 0, panjang_pesan, port, ip_address, function (err, bytes) {
         member_client.close();
       });
-    }
+    } */
 
     var client_timer_vod2b = dgram.createSocket('udp4');
     //pesan print Slip Order Pos Lorong
@@ -1476,31 +1498,31 @@ function harinya(hari) {
       var hari00 = hari;
       var isinya2;
       var hari0 = hari00.getUTCDay();
-      if (hari0 == 0) {
+      if (hari0 == 1) {
         isinya2 = "Monday";
         resolve(isinya2);
       }
-      else if (hari0 == 1) {
+      else if (hari0 == 2) {
         isinya2 = "Tuesday";
         resolve(isinya2);
       }
-      else if (hari0 == 2) {
+      else if (hari0 == 3) {
         isinya2 = "Wednesday";
         resolve(isinya2);
       }
-      else if (hari0 == 3) {
+      else if (hari0 == 4) {
         isinya2 = "Thursday";
         resolve(isinya2);
       }
-      else if (hari0 == 4) {
+      else if (hari0 == 5) {
         isinya2 = "Friday";
         resolve(isinya2);
       }
-      else if (hari0 == 5) {
+      else if (hari0 == 6) {
         isinya2 = "Saturday";
         resolve(isinya2);
       }
-      else if (hari0 == 6) {
+      else if (hari0 == 7) {
         isinya2 = "Sunday";
         resolve(isinya2);
       }
@@ -1609,25 +1631,25 @@ function formatTanggel(tanggal_) {
       var bulan = tanggal.getUTCMonth();
       var tahun = tanggal.getUTCFullYear();
       var bulannya;
-      if (hari == 0) {
+      if (hari == 1) {
         harinya = "Monday";
       }
-      else if (hari == 1) {
+      else if (hari == 2) {
         harinya = "Tuesday";
       }
-      else if (hari == 2) {
+      else if (hari == 3) {
         harinya = "Wednesday";
       }
-      else if (hari == 3) {
+      else if (hari == 4) {
         harinya = "Thursday";
       }
-      else if (hari == 4) {
+      else if (hari == 5) {
         harinya = "Friday";
       }
-      else if (hari == 5) {
+      else if (hari == 6) {
         harinya = "Saturday";
       }
-      else if (hari == 6) {
+      else if (hari == 7) {
         harinya = "Sunday";
       }
 
@@ -1823,7 +1845,8 @@ function createPdf(
           sewa_kamar = (invoice[n][0].sewa_kamar +
             invoice[n][0].overpax +
             invoice[n][0].total_extend) -
-            invoice[n][0].discount_kamar;
+            invoice[n][0].discount_kamar -
+            invoice[n][0].uang_voucher;
           sewa_kamar = convertRupiah.convert(sewa_kamar.toFixed(0));
 
           total_total = invoice[n][0].sewa_kamar;
@@ -1872,7 +1895,7 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].nama_member, left2, (top + (1 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].member, left2, (top + (2 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].invoice, left2, (top + (3 * spasiAntarBaris)));
-     
+
           doc.font(fontpath).fontSize(fontSize).text(": " + tanggal_checkin + ",  " + jam_checkin__,
             left2, (top + (4 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + room.recordset[0].chusr, left2, (top + (5 * spasiAntarBaris)));
@@ -1883,25 +1906,39 @@ function createPdf(
             .lineTo(bataskanan, (top + (6 * spasiAntarBaris)))
             .fill(warna);
 
-          doc.font(fontpath).fontSize(fontSize).text("Room Charge:", batas_kiri_halaman, (top + (7 * spasiAntarBaris)));
-          doc.font(fontpath).fontSize(fontSize).text(jam_checkin + ":" + menit_checkin + " - " + jam_checkout + ":" + menit_checkout,
-            batas_kiri_halaman, (top + (8 * spasiAntarBaris)));
+          if ((invoice_[0][0].jenis_kamar != 'BAR') && (invoice_[0][0].jenis_kamar != 'SOFA')) {
+            doc.font(fontpath).fontSize(fontSize).text("Room Charge:", batas_kiri_halaman, (top + (7 * spasiAntarBaris)));
+            doc.font(fontpath).fontSize(fontSize).text(jam_checkin + ":" + menit_checkin + " - " + jam_checkout + ":" + menit_checkout,
+              batas_kiri_halaman, (top + (8 * spasiAntarBaris)));
 
-            if(invoice[n][0].total_diskon_kamar>0){
-            doc.font(fontpath).fontSize(fontSize).text("Promo", batas_kiri_halaman, (top + (9 * spasiAntarBaris)));
+            if (invoice[n][0].total_diskon_kamar > 0) {
+              doc.font(fontpath).fontSize(fontSize).text("Promo", batas_kiri_halaman, (top + (9 * spasiAntarBaris)));
+            }
+            if (invoice[n][0].uang_voucher > 0) {
+              doc.font(fontpath).fontSize(fontSize).text("Voucher", batas_kiri_halaman, (top + (9 * spasiAntarBaris)));
             }
 
-          doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)));
-          doc.font(fontpath).fontSize(fontSize).text( convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)), 
-            (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
+            doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)));
+            doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)),
+              (9 * batasKiriKolom), (top + (8 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
 
-          if(invoice[n][0].total_diskon_kamar>0){
-          doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)));
-          doc.font(fontpath).fontSize(fontSize).text("("+convertRupiah.convert(invoice[n][0].total_diskon_kamar.toFixed(0))+")", 
-            (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
+            if (invoice[n][0].total_diskon_kamar > 0) {
+              doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)));
+              doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].total_diskon_kamar.toFixed(0)) + ")",
+                (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
+            }
+
+            if (invoice[n][0].uang_voucher > 0) {
+              doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)));
+              doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].uang_voucher.toFixed(0)) + ")",
+                (9 * batasKiriKolom), (top + (9 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
+            }
+
+            batasAtas = parseInt((top + ((batasHeaderAtas + 2) * spasiAntarBaris)));
+          } else {
+            batasAtas = parseInt((top + ((batasHeaderAtas) * spasiAntarBaris)));
           }
 
-          batasAtas = parseInt((top + ((batasHeaderAtas + 2) * spasiAntarBaris)));
 
           for (m = 0; m < order_penjualan.length; m++) {
             for (i = 0; i < order_penjualan[m].length; i++) {
@@ -1929,7 +1966,7 @@ function createPdf(
                         (1 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarSubjectDiskon, align: 'right' });
                       doc.font(fontpath).fontSize(fontSize).text(":",
                         (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris));
-                      doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((order_penjualan[m][i].total_diskon_setelah_cancel).toFixed(0))+")",
+                      doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((order_penjualan[m][i].total_diskon_setelah_cancel).toFixed(0)) + ")",
                         (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
 
                       batasAtas = batasAtas + spasiAntarBaris + spasiAntarBaris + spasiAntarBaris;
@@ -1959,7 +1996,7 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text("Total F&B", batas_kiri_halaman, (batasAtas + (2 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
 
           if (invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon > 0) {
-            doc.font(fontpath).fontSize(fontSize).text("Total Disc F&B", batas_kiri_halaman, (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarSubjectDiskon, align: 'right' });
+            doc.font(fontpath).fontSize(fontSize).text("Total Disc ", batas_kiri_halaman, (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarSubjectDiskon, align: 'right' });
           }
 
           doc.font(fontpath).fontSize(fontSize).text("Service", batas_kiri_halaman, (batasAtas + (4 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
@@ -1991,7 +2028,7 @@ function createPdf(
             doc.font(fontpath).fontSize(fontSize).text(":",
               (9 * batasKiriKolom), (batasAtas + (3 * spasiAntarBaris)));
             doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((
-              invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon).toFixed(0))+")",
+              invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon).toFixed(0)) + ")",
               (9 * batasKiriKolom), (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarAngkaRupiah, align: 'right' });
           }
 
@@ -2061,9 +2098,9 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text((room.recordset[0].point_reward + total_point),
             (9 * batasKiriKolom), (batasAtas + (2 * spasiAntarBaris)), { width: lebarAngkaRupiah, align: 'right' });
 
-                   doc.font(fontpath).fontSize(fontSizeFooter).text(tanggal_pembayaran + ",  " + jam_pembayaran+
-                   " "+room.recordset[0].summary_chusr,
-                   (7* batasKiriKolom), (batasAtas + (4 * spasiAntarBaris))); 
+          doc.font(fontpath).fontSize(fontSizeFooter).text(tanggal_pembayaran + ",  " + jam_pembayaran +
+            " " + room.recordset[0].summary_chusr,
+            (7 * batasKiriKolom), (batasAtas + (4 * spasiAntarBaris)));
 
           batasAtas = batasAtas + (5 * spasiAntarBaris);
 
@@ -2075,7 +2112,8 @@ function createPdf(
           sewa_kamar = (invoice[n][0].sewa_kamar +
             invoice[n][0].overpax +
             invoice[n][0].total_extend) -
-            invoice[n][0].discount_kamar;
+            invoice[n][0].discount_kamar -
+            invoice[n][0].uang_voucher;
           sewa_kamar = convertRupiah.convert(sewa_kamar.toFixed(0));
 
           total_total = invoice[n][0].sewa_kamar;
@@ -2116,7 +2154,7 @@ function createPdf(
           //  left2, (batasAtas + (1 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].kamar_alias, left2, (batasAtas + (1 * spasiAntarBaris)));
 
-          doc.font(fontpath).fontSize(fontSize).text(": " + tanggal_pembayaran + ",  " + jam_pembayaran,
+          doc.font(fontpath).fontSize(fontSize).text(": " + tanggal_checkin  + ",  " + jam_checkin__,
             left2, (batasAtas + (2 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + room.recordset[0].chusr, left2, (batasAtas + (3 * spasiAntarBaris)));
 
@@ -2130,20 +2168,32 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text(jam_checkin + ":" + menit_checkin + " - " + jam_checkout + ":" + menit_checkout,
             batas_kiri_halaman, (batasAtas + (6 * spasiAntarBaris)));
 
-            if(invoice[n][0].total_diskon_kamar>0){
-              doc.font(fontpath).fontSize(fontSize).text("Promo",batas_kiri_halaman, (batasAtas + (7 * spasiAntarBaris)));
-              }
+          if (invoice[n][0].total_diskon_kamar > 0) {
+            doc.font(fontpath).fontSize(fontSize).text("Promo", batas_kiri_halaman, (batasAtas + (7 * spasiAntarBaris)));
+          }
+          if (invoice[n][0].uang_voucher > 0) {
+            doc.font(fontpath).fontSize(fontSize).text("Voucher", batas_kiri_halaman, (batasAtas + (7 * spasiAntarBaris)));
+          }
 
-          doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (6 * spasiAntarBaris)));     
-          doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)), 
+          doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (6 * spasiAntarBaris)));
+          doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(invoice[n][0].sewa_kamar_sebelum_diskon.toFixed(0)),
             (9 * batasKiriKolom), (batasAtas + (6 * spasiAntarBaris)),
             { width: lebarAngkaRupiah, align: 'right' });
 
-            doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)));     
-            doc.font(fontpath).fontSize(fontSize).text("("+convertRupiah.convert(invoice[n][0].total_diskon_kamar.toFixed(0))+")", 
+          if (invoice[n][0].total_diskon_kamar > 0) {
+            doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)));
+            doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].total_diskon_kamar.toFixed(0)) + ")",
               (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)),
               { width: lebarAngkaRupiah, align: 'right' });
-            
+          }
+
+          if (invoice[n][0].total_diskon_kamar > 0) {
+            doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)));
+            doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].uang_voucher.toFixed(0)) + ")",
+              (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)),
+              { width: lebarAngkaRupiah, align: 'right' });
+          }
+
 
           batasAtas = batasAtas + (8 * spasiAntarBaris);
 
@@ -2174,7 +2224,7 @@ function createPdf(
                         (1 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarSubjectDiskon, align: 'right' });
                       doc.font(fontpath).fontSize(fontSize).text(":",
                         (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris));
-                      doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((order_penjualan[m][i].total_diskon_setelah_cancel).toFixed(0))+")",
+                      doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((order_penjualan[m][i].total_diskon_setelah_cancel).toFixed(0)) + ")",
                         (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
 
                       batasAtas = batasAtas + spasiAntarBaris + spasiAntarBaris + spasiAntarBaris;
@@ -2204,7 +2254,7 @@ function createPdf(
           doc.font(fontpath).fontSize(fontSize).text("Total Room", batas_kiri_halaman, (batasAtas + (1 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
           doc.font(fontpath).fontSize(fontSize).text("Total F&B", batas_kiri_halaman, (batasAtas + (2 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
           if (invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon > 0) {
-            doc.font(fontpath).fontSize(fontSize).text("Total Disc F&B ", batas_kiri_halaman, (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarSubjectDiskon, align: 'right' });
+            doc.font(fontpath).fontSize(fontSize).text("Total Disc ", batas_kiri_halaman, (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarSubjectDiskon, align: 'right' });
           }
           doc.font(fontpath).fontSize(fontSize).text("Service", batas_kiri_halaman, (batasAtas + (4 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
           doc.font(fontpath).fontSize(fontSize).text("Tax", batas_kiri_halaman, (batasAtas + (5 * spasiAntarBaris)), { width: lebarSubjectDiskon, align: 'right' });
@@ -2231,7 +2281,7 @@ function createPdf(
             doc.font(fontpath).fontSize(fontSize).text(":",
               (9 * batasKiriKolom), (batasAtas + (3 * spasiAntarBaris)));
             doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((
-              invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon).toFixed(0))+")",
+              invoice[n][0].discount_kamar + invoice[n][0].discount_penjualan + total_diskon).toFixed(0)) + ")",
               (9 * batasKiriKolom), (batasAtas + (3 * spasiAntarBaris) + 1), { width: lebarAngkaRupiah, align: 'right' });
           }
 
@@ -2436,7 +2486,7 @@ function getOrderPenjualan(ivc_) {
         " , IHP_Ivc.Invoice" +
         " , IHP_Ivc.[Transfer]" +
         " , IHP_Ivc.[Status]" +
-        " , IHP_Ocd.[OrderCancelation]"+
+        " , IHP_Ocd.[OrderCancelation]" +
         " order by IHP_Okd.Nama asc";
 
 
@@ -2637,6 +2687,37 @@ function updateIhpSulKirimEmail(ivc_, email_) {
           resolve(true);
         }
       });
+    } catch (err) {
+      logger.error(err.message);
+      reject(err.message);
+    }
+  });
+}
+
+function getNomorVoucher(kode_rcp_) {
+  return new Promise((resolve, reject) => {
+    try {
+      var kode_rcp = kode_rcp_;
+
+      var isiQuery = "" +
+        `
+        select Voucher from IHP_UangVoucher where Reception= '${kode_rcp}' 
+        `;
+
+      db.request().query(isiQuery, function (err, dataReturn) {
+        if (err) {
+          logger.error(err.message);
+          reject(err.message);
+        } else {
+          if (dataReturn.recordset.length > 0) {
+            var voucher = dataReturn.recordset[0].Voucher;
+            resolve(voucher);
+          } else {
+            resolve(false);
+          }
+        }
+      });
+
     } catch (err) {
       logger.error(err.message);
       reject(err.message);

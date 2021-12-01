@@ -121,7 +121,7 @@ class Socket {
             logger.info('server_socket_tcp is on listening at port 7081');
         });
 
-        tcp_ip_server.maxConnections = 100;
+        tcp_ip_server.maxConnections = 1000;
 
         //static port allocation
         tcp_ip_server.listen(7081);

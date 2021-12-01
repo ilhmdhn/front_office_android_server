@@ -1954,8 +1954,8 @@ class PromoRoom {
             var rcp = rcp_;
             //you must use set dateformat dmy
             var isiQuery = "" +
-
-               `set
+               `
+               set
    dateformat dmy 
    select
 
@@ -3186,7 +3186,7 @@ class PromoRoom {
                )
             )
          then
-            60 
+            DATEDIFF(mi, [IHP_Promo_Rcp].[Start_promo] , [IHP_Promo_Rcp].[End_promo]) 
          when
             (
 ( 
@@ -4061,7 +4061,7 @@ class PromoRoom {
                )
             )
          then
-(([IHP_Rcp_DetailsRoom].[Tarif] / 60) * 60 ) / 100*[IHP_Promo_Rcp].[Diskon_Persen] 
+(([IHP_Rcp_DetailsRoom].[Tarif] / 60) * DATEDIFF(mi, [IHP_Promo_Rcp].[Start_promo] , [IHP_Promo_Rcp].[End_promo]) ) / 100*[IHP_Promo_Rcp].[Diskon_Persen] 
          when
             (
 ( 
@@ -4430,7 +4430,8 @@ class PromoRoom {
       and [IHP_Promo_Rcp].[FlagExtend] = 1 
       and [IHP_Promo_Rcp].[Status_Promo] = 1 
    Group By
-      [IHP_Rcp].[Reception], [IHP_Rcp].[Checkin], [IHP_Rcp].[Jam_Sewa], [IHP_Rcp].[Menit_Sewa], [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[Promo] , [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] , [IHP_Promo_Rcp].[Diskon_Persen] , [IHP_Promo_Rcp].[Diskon_Rp] , [IHP_Rcp_DetailsRoom].[Overpax] , [IHP_Rcp_DetailsRoom].[Tarif] , [IHP_Rcp_DetailsRoom].[Time_Start] , [IHP_Rcp_DetailsRoom].[Time_Finish] `;
+      [IHP_Rcp].[Reception], [IHP_Rcp].[Checkin], [IHP_Rcp].[Jam_Sewa], [IHP_Rcp].[Menit_Sewa], [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[Promo] , [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] , [IHP_Promo_Rcp].[Diskon_Persen] , [IHP_Promo_Rcp].[Diskon_Rp] , [IHP_Rcp_DetailsRoom].[Overpax] , [IHP_Rcp_DetailsRoom].[Tarif] , [IHP_Rcp_DetailsRoom].[Time_Start] , [IHP_Rcp_DetailsRoom].[Time_Finish] 
+      `;
 
             db.request().query(isiQuery, function (err, dataReturn) {
                if (err) {
@@ -5247,7 +5248,7 @@ where
       });
    }
 
-   getPromoRoomExtendByJamCheckoutIhpRoom(db_, promo_, durasi_menit_, kode_rcp_) {
+   getPromoRoomExtendByJamCheckoutIhpRoom(db_, promo_, durasi_menit_, kode_rcp_, jenis_kamar_) {
       return new Promise((resolve, reject) => {
          try {
             db = db_;
@@ -5255,6 +5256,7 @@ where
             var promo = promo_;
             var durasi_menit__ = durasi_menit_;
             var durasi_menit = parseInt(durasi_menit__);
+            var jenis_kamar = jenis_kamar_;
             //warning do Not use set dateformat dmy
             var isiQuery = "" +
                `
@@ -5980,6 +5982,784 @@ where
    and IHP_PromoRoom.Promo_Room = '${promo}' 
    and IHP_Rcp.Reception = '${kode_rcp}' 
    and IHP_Room.Reception = '${kode_rcp}'`;
+
+            db.request().query(isiQuery, function (err, dataReturn) {
+               if (err) {
+                  sql.close();
+                  logger.error(err);
+                  console.log(err);
+                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  resolve(false);
+               } else {
+                  sql.close();
+                  if (dataReturn.recordset.length > 0) {
+                     dataResponse = new ResponseFormat(true, dataReturn.recordset);
+                     if ((dataReturn.recordset[0].hasil_start_promo !== null) && (dataReturn.recordset[0].hasil_end_promo !== null)) {
+                        console.log(kode_rcp + " promo " + promo_ +
+                           " promo room start " + dataReturn.recordset[0].hasil_start_promo +
+                           " promo room finish " + dataReturn.recordset[0].hasil_end_promo);
+
+                        logger.info(kode_rcp + " promo " + promo_ +
+                           " promo room start " + dataReturn.recordset[0].hasil_start_promo +
+                           " promo room finish " + dataReturn.recordset[0].hasil_end_promo);
+                     }
+                     else {
+                        console.log(kode_rcp + " promo " + promo_ + " Promo Room tidak Berlaku");
+                        logger.info(kode_rcp + " promo " + promo_ + " Promo Room tidak Berlaku");
+                     }
+                     resolve(dataResponse);
+                  }
+                  else {
+                     resolve(false);
+                  }
+               }
+            });
+
+         } catch (error) {
+            console.log(error);
+            logger.error(error.message);
+            logger.error('Catch Error prosesQuery ');
+            resolve(false);
+         }
+      });
+   }
+
+   getPromoRoomExtendByJamStartExtendIhpExt(db_, promo_, durasi_menit_, kode_rcp_, jenis_kamar_, start_extned_) {
+      return new Promise((resolve, reject) => {
+         try {
+            db = db_;
+            var kode_rcp = kode_rcp_;
+            var promo = promo_;
+            var durasi_menit__ = durasi_menit_;
+            var durasi_menit = parseInt(durasi_menit__);
+            var start_extned = start_extned_;
+            var jenis_kamar = jenis_kamar_;
+            //warning do Not use set dateformat dmy
+            var isiQuery = "" +
+               `
+               select
+   IHP_PromoRoom.[Promo_Room] as promo_room,
+   IHP_PromoRoom.[Hari] as hari,
+   IHP_PromoRoom.[Room] as room,
+   IHP_PromoRoom.[Date_Start] as date_start,
+   IHP_PromoRoom.[Time_Start] as time_start,
+   case
+      when
+         CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+         and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+      then
+         DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+      else
+         DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+   end
+   as date_time_start, IHP_PromoRoom.[Date_Finish] as date_finish, IHP_PromoRoom.[Time_Finish] as time_finish, 
+   case
+      when
+         CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+         and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+      then
+         DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+      else
+         DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+   end
+   as date_time_finish , 
+   case
+      when
+         IHP_Ext.Start_Extend BETWEEN 
+         case
+            when
+               CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+            then
+               DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            else
+               DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+         end
+         and 
+         case
+            when
+               CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+               and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+            then
+               DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+            else
+               DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+         end
+      then
+         '1' 
+      else
+         '0' 
+   end
+   as status_jam_sekarang_masuk_masa_promo , DATEDIFF(mi, IHP_Ext.Start_Extend, 
+   case
+      when
+         CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+         and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+      then
+         DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+      else
+         DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+   end
+) as wisa_waktu_promo_hari_ini_menit , IHP_PromoRoom.[Diskon_Persen] as diskon_persen, IHP_PromoRoom.[Diskon_Rp] as diskon_rp, IHP_PromoRoom.[Khusus] as khusus , 
+   case
+      when
+         IHP_PromoRoom.[Khusus] = 0 
+      then
+         'PROMO TIDAK MEMERLUKAN VERIFIKASI SPV KAPTEN' 
+      when
+         IHP_PromoRoom.[Khusus] = 1 
+      then
+         'PROMO MEMERLUKAN VERIFIKASI SPV KAPTEN' 
+   end
+   as keterangan_khusus, IHP_PromoRoom.[Status] as status_aktif, IHP_Ext.Start_Extend as checkin, DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) as checkout, 
+   case
+      when
+         IHP_Ext.Start_Extend between ( 
+         case
+            when
+               CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+            then
+               DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            else
+               DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+         end
+) 
+         and 
+         (
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                  and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+            end
+         )
+      then
+         1 
+      else
+         0 
+   end
+   as checkin_in_range_start_promo_and_end_promo, 
+   case
+      when
+         DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
+         case
+            when
+               CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+            then
+               DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            else
+               DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+         end
+) 
+         and 
+         (
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                  and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+            end
+         )
+      then
+         1 
+      else
+         0 
+   end
+   as checkout_in_range_start_promo_and_end_promo, 
+   case
+      when
+         (
+            IHP_Ext.Start_Extend between ( 
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            end
+) 
+            and 
+            (
+               case
+                  when
+                     CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                     and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                  then
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                  else
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               end
+            )
+         )
+         and 
+         (
+            DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            end
+) 
+            and 
+            (
+               case
+                  when
+                     CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                     and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                  then
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                  else
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               end
+            )
+         )
+      then
+         2 
+      when
+         IHP_Ext.Start_Extend between ( 
+         case
+            when
+               CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+            then
+               DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            else
+               DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+         end
+) 
+         and 
+         (
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                  and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+            end
+         )
+      then
+         1 
+      when
+         DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
+         case
+            when
+               CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+            then
+               DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            else
+               DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+         end
+) 
+         and 
+         (
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                  and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+            end
+         )
+      then
+         3 
+      else
+         0 
+   end
+   as awal_tengah_akhir, DATEDIFF(mi, IHP_Ext.Start_Extend , 
+   (
+      case
+         when
+            CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+            and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+         then
+            DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+         else
+            DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+      end
+   )
+) as different_checkin_and_finish_promo, DATEDIFF(mi, 
+   (
+      case
+         when
+            CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+            and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+         then
+            DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+         else
+            DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+      end
+   )
+, DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)) as different_time_Start_and_checkout, 
+   case
+      when
+         (
+            IHP_Ext.Start_Extend between ( 
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            end
+) 
+            and 
+            (
+               case
+                  when
+                     CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                     and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                  then
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                  else
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               end
+            )
+         )
+         and 
+         (
+            DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            end
+) 
+            and 
+            (
+               case
+                  when
+                     CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                     and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                  then
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                  else
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               end
+            )
+         )
+      then
+         DATEDIFF(mi, IHP_Ext.Start_Extend , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)) 
+      when
+         (
+            IHP_Ext.Start_Extend between ( 
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            end
+) 
+            and 
+            (
+               case
+                  when
+                     CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                     and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                  then
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                  else
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               end
+            )
+         )
+      then
+         DATEDIFF(mi, IHP_Ext.Start_Extend , 
+         (
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                  and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+            end
+         )
+) 
+         when
+            (
+               DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
+               case
+                  when
+                     CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                  then
+                     DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                  else
+                     DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+               end
+) 
+               and 
+               (
+                  case
+                     when
+                        CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                        and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                     then
+                        DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                     else
+                        DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                  end
+               )
+            )
+         then
+            DATEDIFF(mi, 
+            (
+               case
+                  when
+                     CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                     and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                  then
+                     DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                  else
+                     DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+               end
+            )
+, DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)) 
+            else
+               0 
+   end
+   as menit_yang_digunakan, 
+   case
+      when
+         (
+            IHP_Ext.Start_Extend between ( 
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            end
+) 
+            and 
+            (
+               case
+                  when
+                     CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                     and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                  then
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                  else
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               end
+            )
+         )
+         and 
+         (
+            DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            end
+) 
+            and 
+            (
+               case
+                  when
+                     CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                     and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                  then
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                  else
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               end
+            )
+         )
+      then
+         CONVERT(VARCHAR(24), DATEADD(minute, 
+         (
+            DATEDIFF(mi, IHP_Ext.Start_Extend , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)) 
+         )
+, IHP_Ext.Start_Extend), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+         (
+            DATEDIFF(mi, IHP_Ext.Start_Extend , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)) 
+         )
+, IHP_Ext.Start_Extend), 114), 1, 8) 
+      when
+         IHP_Ext.Start_Extend between ( 
+         case
+            when
+               CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+            then
+               DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            else
+               DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+         end
+) 
+         and 
+         (
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                  and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+            end
+         )
+      then
+         CONVERT(VARCHAR(24), DATEADD(minute, 
+         (
+            DATEDIFF(mi, IHP_Ext.Start_Extend , 
+            (
+               case
+                  when
+                     CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                     and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                  then
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                  else
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               end
+            )
+) 
+         )
+, IHP_Ext.Start_Extend), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+         (
+            DATEDIFF(mi, IHP_Ext.Start_Extend , 
+            (
+               case
+                  when
+                     CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                     and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                  then
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                  else
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               end
+            )
+) 
+         )
+, IHP_Ext.Start_Extend), 114), 1, 8) 
+         when
+            DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            end
+) 
+            and 
+            (
+               case
+                  when
+                     CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                     and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                  then
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                  else
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               end
+            )
+         then
+            CONVERT(VARCHAR(24), DATEADD(minute, 
+            (
+               0 
+            )
+, DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+            (
+               0 
+            )
+, DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 114), 1, 8) 
+   end
+   as hasil_end_promo, 
+   case
+      when
+         (
+            IHP_Ext.Start_Extend between ( 
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            end
+) 
+            and 
+            (
+               case
+                  when
+                     CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                     and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                  then
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                  else
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               end
+            )
+         )
+         and 
+         (
+            DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            end
+) 
+            and 
+            (
+               case
+                  when
+                     CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                     and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                  then
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                  else
+                     DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               end
+            )
+         )
+      then
+         CONVERT(VARCHAR(24), DATEADD(minute, 
+         (
+            0 
+         )
+, IHP_Ext.Start_Extend), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+         (
+            0 
+         )
+, IHP_Ext.Start_Extend), 114), 1, 8) 
+      when
+         IHP_Ext.Start_Extend between ( 
+         case
+            when
+               CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+            then
+               DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            else
+               DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+         end
+) 
+         and 
+         (
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                  and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+            end
+         )
+      then
+         CONVERT(VARCHAR(24), DATEADD(minute, 
+         (
+            0 
+         )
+, IHP_Ext.Start_Extend), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+         (
+            0 
+         )
+, IHP_Ext.Start_Extend), 114), 1, 8) 
+      when
+         DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
+         case
+            when
+               CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+            then
+               DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+            else
+               DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+         end
+) 
+         and 
+         (
+            case
+               when
+                  CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                  and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+               then
+                  DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+               else
+                  DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+            end
+         )
+      then
+         CONVERT(VARCHAR(24), DATEADD(minute, 
+         (
+            - DATEDIFF(mi, 
+            (
+               case
+                  when
+                     CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                     and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                  then
+                     DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                  else
+                     DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+               end
+            )
+, DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)) 
+         )
+, DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+         (
+            - DATEDIFF(mi, 
+            (
+               case
+                  when
+                     CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                     and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                  then
+                     DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                  else
+                     DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+               end
+            )
+, DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)) 
+         )
+, DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 114), 1, 8) 
+   end
+   as hasil_start_promo 
+FROM
+   IHP_PromoRoom, IHP_Ext 
+where
+   (
+      IHP_PromoRoom.Room = '[NONE]' 
+      or IHP_PromoRoom.Room = '${jenis_kamar}' 
+   )
+   and 
+   (
+      IHP_PromoRoom.Hari = 0 
+      or IHP_PromoRoom.Hari = 5 
+   )
+   and IHP_PromoRoom.Status = 1 
+   and IHP_PromoRoom.Promo_Room = '${promo}' 
+   and IHP_Ext.Reception = '${kode_rcp}'
+   and IHP_Ext.Start_Extend = '${start_extned}'
+   `;
 
             db.request().query(isiQuery, function (err, dataReturn) {
                if (err) {
@@ -7910,10 +8690,11 @@ where
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery getDeleteInsertIhpDetailDiskonSewaKamar ' + isiQuery);
                   resolve(false);
                } else {
                   sql.close();
+                  logger.info(kode_rcp + ' Sukses getDeleteInsertIhpDetailDiskonSewaKamar ');
                   resolve(true);
                }
             });
@@ -7934,7 +8715,8 @@ where
             var kode_rcp = kode_rcp_;
             //you must use set dateformat dmy
             var isiQuery = "" +
-               `set
+               `
+               set
                dateformat dmy 
                 delete from [IHP_Detail_Diskon_Sewa_Kamar_Extend] where Reception = '${kode_rcp}'
               insert into [IHP_Detail_Diskon_Sewa_Kamar_Extend]
@@ -8645,8 +9427,7 @@ where
                            )
                         )
                      then
-                        60
-            
+                        DATEDIFF(mi, [IHP_Promo_Rcp].[Start_promo] , [IHP_Promo_Rcp].[End_promo])            
             
                      when
                         (
@@ -9534,7 +10315,7 @@ where
                         )
                      then
                         (([IHP_Rcp_DetailsRoom].[Tarif] / 60) *
-                     60
+                     DATEDIFF(mi, [IHP_Promo_Rcp].[Start_promo] , [IHP_Promo_Rcp].[End_promo])
                   )/ 100*[IHP_Promo_Rcp].[Diskon_Persen] 
             
                            when
@@ -9917,17 +10698,19 @@ where
                   and [IHP_Promo_Rcp].[FlagExtend] = 1 
                   and [IHP_Promo_Rcp].[Status_Promo] = 1 
                Group By
-                  [IHP_Rcp].[Reception], [IHP_Rcp].[Checkin], [IHP_Rcp].[Jam_Sewa], [IHP_Rcp].[Menit_Sewa], [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[Promo] , [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] , [IHP_Promo_Rcp].[Diskon_Persen] , [IHP_Promo_Rcp].[Diskon_Rp] , [IHP_Rcp_DetailsRoom].[Overpax] , [IHP_Rcp_DetailsRoom].[Tarif] , [IHP_Rcp_DetailsRoom].[Time_Start] , [IHP_Rcp_DetailsRoom].[Time_Finish],[IHP_Rcp_DetailsRoom].[Nama_Kamar],[IHP_Rcp_DetailsRoom].[Hari],[IHP_Rcp_DetailsRoom].[Date_Time_Start],[IHP_Rcp_DetailsRoom].[Date_Time_Finish]`;
+                  [IHP_Rcp].[Reception], [IHP_Rcp].[Checkin], [IHP_Rcp].[Jam_Sewa], [IHP_Rcp].[Menit_Sewa], [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[Promo] , [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] , [IHP_Promo_Rcp].[Diskon_Persen] , [IHP_Promo_Rcp].[Diskon_Rp] , [IHP_Rcp_DetailsRoom].[Overpax] , [IHP_Rcp_DetailsRoom].[Tarif] , [IHP_Rcp_DetailsRoom].[Time_Start] , [IHP_Rcp_DetailsRoom].[Time_Finish],[IHP_Rcp_DetailsRoom].[Nama_Kamar],[IHP_Rcp_DetailsRoom].[Hari],[IHP_Rcp_DetailsRoom].[Date_Time_Start],[IHP_Rcp_DetailsRoom].[Date_Time_Finish]
+                  `;
 
             db.request().query(isiQuery, function (err, dataReturn) {
                if (err) {
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery getDeleteInsertIhpDetailDiskonSewaKamarExtend ' + isiQuery);
                   resolve(false);
                } else {
                   sql.close();
+                  logger.info(kode_rcp + ' Sukses getDeleteInsertIhpDetailDiskonSewaKamarExtend ');
                   resolve(true);
                }
             });
@@ -10303,10 +11086,12 @@ where
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery getDeleteInsertIhpPromoRcpRoomByRcpCheckin ' + isiQuery);
                   resolve(false);
                } else {
                   sql.close();
+
+                  logger.info(kode_rcp + ' Sukses getDeleteInsertIhpPromoRcpRoomByRcpCheckin');
                   resolve(true);
                }
             });
@@ -10320,7 +11105,7 @@ where
       });
    }
 
-   getDeleteInsertIhpPromoRcpRoomByJamCheckoutIhpRoom(db_, promo_, durasi_menit_, jenis_kamar_, kode_rcp_) {
+   getInsertIhpPromoRcpRoomByJamCheckoutIhpRoom(db_, promo_, durasi_menit_, jenis_kamar_, kode_rcp_) {
       return new Promise((resolve, reject) => {
          try {
             db = db_;
@@ -10666,10 +11451,379 @@ where
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery getDeleteInsertIhpPromoRcpRoomByJamCheckoutIhpRoom ' + isiQuery);
                   resolve(false);
                } else {
                   sql.close();
+                  logger.info(kode_rcp + ' Sukses prosesQuery getDeleteInsertIhpPromoRcpRoomByJamCheckoutIhpRoom ');
+                  resolve(true);
+               }
+            });
+
+         } catch (error) {
+            console.log(error);
+            logger.error(error.message);
+            logger.error('Catch Error prosesQuery ');
+            resolve(false);
+         }
+      });
+   }
+
+   getInsertIhpPromoRcpRoomByStartExtendIhpExt(db_, promo_, durasi_menit_, jenis_kamar_, kode_rcp_, start_extend_) {
+      return new Promise((resolve, reject) => {
+         try {
+            db = db_;
+            var kode_rcp = kode_rcp_;
+            var promo = promo_;
+            var durasi_menit__ = durasi_menit_;
+            var durasi_menit = parseInt(durasi_menit__);
+            var jenis_kamar = jenis_kamar_;
+            var start_extend = start_extend_;
+            //warning do Not use set dateformat dmy
+            var isiQuery = "" +
+               `
+               insert into
+               [IHP_Promo_Rcp] 
+               select
+                  '${kode_rcp}' AS Reception,
+                  IHP_PromoRoom.[Promo_Room] as Promo,
+                  CONVERT(DATETIME, 
+                  case
+                     when
+                        (
+                           IHP_Ext.Start_Extend between ( 
+                           case
+                              when
+                                 CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                              then
+                                 DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                              else
+                                 DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                           end
+         ) 
+                           and 
+                           (
+                              case
+                                 when
+                                    CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                                    and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                                 then
+                                    DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                                 else
+                                    DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                              end
+                           )
+                        )
+                        and 
+                        (
+                           DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
+                           case
+                              when
+                                 CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                              then
+                                 DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                              else
+                                 DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                           end
+         ) 
+                           and 
+                           (
+                              case
+                                 when
+                                    CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                                    and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                                 then
+                                    DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                                 else
+                                    DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                              end
+                           )
+                        )
+                     then
+                        CONVERT(VARCHAR(24), DATEADD(minute, 
+                        (
+                           0 
+                        )
+         , IHP_Ext.Start_Extend), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+                        (
+                           0 
+                        )
+         , IHP_Ext.Start_Extend), 114), 1, 8) 
+                     when
+                        IHP_Ext.Start_Extend between ( 
+                        case
+                           when
+                              CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                           then
+                              DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                           else
+                              DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                        end
+         ) 
+                        and 
+                        (
+                           case
+                              when
+                                 CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                                 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                              then
+                                 DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                              else
+                                 DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                           end
+                        )
+                     then
+                        CONVERT(VARCHAR(24), DATEADD(minute, 
+                        (
+                           0 
+                        )
+         , IHP_Ext.Start_Extend), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+                        (
+                           0 
+                        )
+         , IHP_Ext.Start_Extend), 114), 1, 8) 
+                     when
+                        DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
+                        case
+                           when
+                              CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                           then
+                              DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                           else
+                              DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                        end
+         ) 
+                        and 
+                        (
+                           case
+                              when
+                                 CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                                 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                              then
+                                 DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                              else
+                                 DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                           end
+                        )
+                     then
+                        CONVERT(VARCHAR(24), DATEADD(minute, 
+                        (
+                           - DATEDIFF(mi, 
+                           (
+                              case
+                                 when
+                                    CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                                    and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                                 then
+                                    DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                                 else
+                                    DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                              end
+                           )
+         , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)) 
+                        )
+         , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+                        (
+                           - DATEDIFF(mi, 
+                           (
+                              case
+                                 when
+                                    CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                                    and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                                 then
+                                    DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                                 else
+                                    DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                              end
+                           )
+         , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)) 
+                        )
+         , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 114), 1, 8) 
+                  end
+         , 103) as Start_Promo, CONVERT(DATETIME, 
+                  case
+                     when
+                        (
+                           IHP_Ext.Start_Extend between ( 
+                           case
+                              when
+                                 CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                              then
+                                 DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                              else
+                                 DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                           end
+         ) 
+                           and 
+                           (
+                              case
+                                 when
+                                    CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                                    and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                                 then
+                                    DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                                 else
+                                    DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                              end
+                           )
+                        )
+                        and 
+                        (
+                           DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
+                           case
+                              when
+                                 CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                              then
+                                 DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                              else
+                                 DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                           end
+         ) 
+                           and 
+                           (
+                              case
+                                 when
+                                    CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                                    and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                                 then
+                                    DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                                 else
+                                    DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                              end
+                           )
+                        )
+                     then
+                        CONVERT(VARCHAR(24), DATEADD(minute, 
+                        (
+                           DATEDIFF(mi, IHP_Ext.Start_Extend , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)) 
+                        )
+         , IHP_Ext.Start_Extend), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+                        (
+                           DATEDIFF(mi, IHP_Ext.Start_Extend , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)) 
+                        )
+         , IHP_Ext.Start_Extend), 114), 1, 8) 
+                     when
+                        IHP_Ext.Start_Extend between ( 
+                        case
+                           when
+                              CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                           then
+                              DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                           else
+                              DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                        end
+         ) 
+                        and 
+                        (
+                           case
+                              when
+                                 CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                                 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                              then
+                                 DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                              else
+                                 DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                           end
+                        )
+                     then
+                        CONVERT(VARCHAR(24), DATEADD(minute, 
+                        (
+                           DATEDIFF(mi, IHP_Ext.Start_Extend , 
+                           (
+                              case
+                                 when
+                                    CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                                    and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                                 then
+                                    DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                                 else
+                                    DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                              end
+                           )
+         ) 
+                        )
+         , IHP_Ext.Start_Extend), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+                        (
+                           DATEDIFF(mi, IHP_Ext.Start_Extend , 
+                           (
+                              case
+                                 when
+                                    CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                                    and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                                 then
+                                    DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                                 else
+                                    DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                              end
+                           )
+         ) 
+                        )
+         , IHP_Ext.Start_Extend), 114), 1, 8) 
+                        when
+                           DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
+                           case
+                              when
+                                 CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                              then
+                                 DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                              else
+                                 DATEADD(day, IHP_PromoRoom.[Date_Start], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Start])) 
+                           end
+         ) 
+                           and 
+                           (
+                              case
+                                 when
+                                    CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) >= 0 
+                                    and CAST(substring(convert(varchar(24), IHP_Ext.Start_Extend, 114), 1, 2)AS int) <= 5 
+                                 then
+                                    DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), DATEADD(dd, - 1, IHP_Ext.Start_Extend), 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                                 else
+                                    DATEADD(day, IHP_PromoRoom.[Date_Finish], CONVERT(DATETIME, convert(varchar(10), IHP_Ext.Start_Extend, 23) + ' ' + IHP_PromoRoom.[Time_Finish])) 
+                              end
+                           )
+                        then
+                           CONVERT(VARCHAR(24), DATEADD(minute, 
+                           (
+                              0 
+                           )
+         , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+                           (
+                              0 
+                           )
+         , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 114), 1, 8) 
+                  end
+         , 103) as End_Promo, 1 as Status_Promo, 0 Syarat_Kamar, IHP_PromoRoom.[Room] as Kamar, 0 Syarat_Jenis_kamar, '[NONE]' as Jenis_Kamar, 0 as Syarat_Durasi, 0 as Durasi, 0 as Syarat_Hari, IHP_PromoRoom.[Hari] as hari, 0 as Syarat_Jam, IHP_PromoRoom.[Date_Start] as Date_Start, IHP_PromoRoom.[Time_Start] as Time_Start, IHP_PromoRoom.[Date_Finish] as Date_Finish, IHP_PromoRoom.[Time_Finish] as Time_Finish, 0 Syarat_Quantity, 0 Quantity, IHP_PromoRoom.[Diskon_Persen] as Diskon_Persen, IHP_PromoRoom.[Diskon_Rp] as Diskon_Rp, 0 Syarat_Inventory, '' as Inventory, 0 as Sign_Inventory, 0 as Sign_Diskon_Persen, 0 as Sign_Diskon_Rp, 1 as FlagExtend 
+               FROM
+                  IHP_PromoRoom , IHP_Rcp , IHP_Room ,IHP_Ext 
+               where
+                  (
+                     IHP_PromoRoom.Room = '[NONE]' 
+                     or IHP_PromoRoom.Room = '${jenis_kamar}' 
+                  )
+                  and 
+                  (
+                     IHP_PromoRoom.Hari = 0 
+                     or IHP_PromoRoom.Hari = 5 
+                  )
+                  and IHP_PromoRoom.Status = 1 
+                  and IHP_PromoRoom.Promo_Room = '${promo}' 
+                  and IHP_Rcp.Reception = '${kode_rcp}' 
+                  and IHP_Room.Reception = '${kode_rcp}'
+                  and IHP_Ext.Reception = '${kode_rcp}'
+                  and IHP_Ext.Start_Extend = '${start_extend}'
+                  `;
+
+            db.request().query(isiQuery, function (err, dataReturn) {
+               if (err) {
+                  sql.close();
+                  logger.error(err);
+                  console.log(err);
+                  logger.error(err.message + ' Error prosesQuery getInsertIhpPromoRcpRoomByStartExtendIhpExt ' + isiQuery);
+                  resolve(false);
+               } else {
+                  sql.close();
+                  logger.info(kode_rcp + ' Sukses prosesQuery getInsertIhpPromoRcpRoomByStartExtendIhpExt ');
                   resolve(true);
                }
             });
@@ -11037,10 +12191,11 @@ where
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery getDeleteInsertIhpPromoRcpRoomExtendOldTransferByRcpCheckOut ' + isiQuery);
                   resolve(false);
                } else {
                   sql.close();
+                  logger.info(kode_rcp + ' sukses prosesQuery getDeleteInsertIhpPromoRcpRoomExtendOldTransferByRcpCheckOut ');
                   resolve(true);
                }
             });
@@ -11056,48 +12211,48 @@ where
 
    getPromoRcpRoom(db_, kode_rcp_, flag_extend_) {
       return new Promise((resolve, reject) => {
-        try {
-          db = db_;
-          var kode_rcp = kode_rcp_;
-          var flag_extend = flag_extend_;
-          var isiQuery = "" +
-            `select distinct Promo as promo from IHP_Promo_Rcp where Reception='${kode_rcp}' 
+         try {
+            db = db_;
+            var kode_rcp = kode_rcp_;
+            var flag_extend = flag_extend_;
+            var isiQuery = "" +
+               `select distinct Promo as promo from IHP_Promo_Rcp where Reception='${kode_rcp}' 
             and FlagExtend=${flag_extend} 
             and Status_Promo=1`;
-  
-          db.request().query(isiQuery, function (err, dataReturn) {
-            if (err) {
-              sql.close();
-              logger.error(err);
-              console.log(err);
-              logger.error(err.message + ' Error prosesQuery ' + isiQuery);
-              resolve(false);
-            } else {
-              sql.close();
-              if (dataReturn.recordset.length > 0) {
-                dataResponse = new ResponseFormat(true, dataReturn.recordset);
-                if ((dataReturn.recordset[0].hasil_start_promo !== null) && (dataReturn.recordset[0].hasil_end_promo !== null)) {
-                  console.log("promo rcp " + dataReturn.recordset[0].promo);
-                  logger.info("promo rcp " + dataReturn.recordset[0].promo);
-                }
-                resolve(dataResponse);
-              }
-              else {
-                resolve(false);
-              }
-            }
-          });
-  
-        } catch (err) {
-          sql.close();
-          logger.error(err);
-          console.log(err);
-          logger.error(err.message);
-          logger.error('Catch Error prosesQuery ');
-          resolve(false);
-        }
+
+            db.request().query(isiQuery, function (err, dataReturn) {
+               if (err) {
+                  sql.close();
+                  logger.error(err);
+                  console.log(err);
+                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  resolve(false);
+               } else {
+                  sql.close();
+                  if (dataReturn.recordset.length > 0) {
+                     dataResponse = new ResponseFormat(true, dataReturn.recordset);
+                     if ((dataReturn.recordset[0].hasil_start_promo !== null) && (dataReturn.recordset[0].hasil_end_promo !== null)) {
+                        console.log("promo rcp " + dataReturn.recordset[0].promo);
+                        logger.info("promo rcp " + dataReturn.recordset[0].promo);
+                     }
+                     resolve(dataResponse);
+                  }
+                  else {
+                     resolve(false);
+                  }
+               }
+            });
+
+         } catch (err) {
+            sql.close();
+            logger.error(err);
+            console.log(err);
+            logger.error(err.message);
+            logger.error('Catch Error prosesQuery ');
+            resolve(false);
+         }
       });
-    }
+   }
 
 
 }

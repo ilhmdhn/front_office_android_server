@@ -3557,10 +3557,11 @@ where
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery getDeleteInsertIhpPromoRcpFoodByRcpChekin ' + isiQuery);
                   resolve(false);
                } else {
                   sql.close();
+                  logger.info(kode_rcp + ' Sukses prosesQuery getDeleteInsertIhpPromoRcpFoodByRcpChekin ');
                   resolve(true);
                }
             });
@@ -3925,10 +3926,11 @@ where
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery getDeleteInsertIhpPromoRcpFoodExtendRoomOldTranferByRcpCheckOut ' + isiQuery);
                   resolve(false);
                } else {
                   sql.close();
+                  logger.info(kode_rcp + ' Sukse prosesQuery getDeleteInsertIhpPromoRcpFoodExtendRoomOldTranferByRcpCheckOut ');
                   resolve(true);
                }
             });
@@ -3942,7 +3944,7 @@ where
       });
    }
 
-   getDeleteInsertIhpPromoRcpFoodExtendRoomByIhpRoomCheckout(db_, promo_, durasi_menit_, jenis_kamar_, room_, kode_rcp_) {
+   getInsertIhpPromoRcpFoodExtendRoomByIhpRoomCheckout(db_, promo_, durasi_menit_, jenis_kamar_, room_, kode_rcp_) {
       return new Promise((resolve, reject) => {
          try {
             db = db_;
@@ -4320,10 +4322,11 @@ where
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery getDeleteInsertIhpPromoRcpFoodExtendRoomByIhpRoomCheckout ' + isiQuery);
                   resolve(false);
                } else {
                   sql.close();
+                  logger.info(kode_rcp + ' Sukses prosesQuery getDeleteInsertIhpPromoRcpFoodExtendRoomByIhpRoomCheckout ');
                   resolve(true);
                }
             });
@@ -4711,10 +4714,11 @@ where
                   sql.close();
                   logger.error(err);
                   console.log(err);
-                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  logger.error(err.message + ' Error prosesQuery getDeleteInsertIhpPromoRcpFoodMultipleExtendRoomByStartExtendIhpExt ' + isiQuery);
                   resolve(false);
                } else {
                   sql.close();
+                  logger.info(kode_rcp + ' Sukses prosesQuery getDeleteInsertIhpPromoRcpFoodMultipleExtendRoomByStartExtendIhpExt ');
                   resolve(true);
                }
             });
