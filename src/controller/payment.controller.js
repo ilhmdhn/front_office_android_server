@@ -1687,7 +1687,7 @@ function formatTanggel(tanggal_) {
       else if (bulan == 10) {
         bulannya = "November";
       }
-      else if (bulan0 == 11) {
+      else if (bulan == 11) {
         bulannya = "December";
       }
 
@@ -2201,7 +2201,7 @@ function createPdf(
             for (i = 0; i < order_penjualan[m].length; i++) {
               if (m == n) {
 
-                if (order_penjualan[0][0].inventory != null) {
+                if (order_penjualan[m][n].inventory != null) {
                   if (order_penjualan[m][i].qty_setelah_cancel > 0) {
                     doc.font(fontpath).fontSize(fontSize).text(order_penjualan[m][i].nama, batas_kiri_halaman, (batasAtas + 1));
 
@@ -2502,6 +2502,7 @@ function getOrderPenjualan(ivc_) {
               var invoiceTransfer = dataReturn.recordset[0].invoice_transfer;
               resolve(getOrderPenjualan(invoiceTransfer));
             }
+
             else {
               resolve(hasil_order_penjualan);
             }
