@@ -905,7 +905,7 @@ async function _procSubmitPayment(req, res) {
               "Attached e-receipt in this email is a summary of your recent visit on  " +
               tanggal + " at " + jam + " " +
               "with invoice number " + invoice[0][0].invoice + ".\n\n" +
-              "Please note that it could take 24-48 hours for points to be added to your PuppyClub Account. PuppyClub app can be downloaded from the Apple App Store or Google Play Store for a better experience.\n\n" +
+              //"Please note that it could take 24-48 hours for points to be added to your PuppyClub Account. PuppyClub app can be downloaded from the Apple App Store or Google Play Store for a better experience.\n\n" +
               "Any further information, please contact +62881-1338-833\n\n" +
               "Regards,\n" +
               "BLACKHOLE KTV\n",
@@ -1440,7 +1440,7 @@ async function _pocSubmitEmail(req, res) {
             //hari + ", " + day + " " + bulan + " " + tahun + " Pukul " + jam + ":" + Menit + ".\n" +
             tanggal + " at " + jam + " " +
             "with invoice number " + invoice[0][0].invoice + ".\n\n" +
-            "Please note that it could take 24-48 hours for points to be added to your PuppyClub Account. PuppyClub app can be downloaded from the Apple App Store or Google Play Store for a better experience.\n\n" +
+            //"Please note that it could take 24-48 hours for points to be added to your PuppyClub Account. PuppyClub app can be downloaded from the Apple App Store or Google Play Store for a better experience.\n\n" +
             "Any further information, please contact +62881-1338-833\n\n" +
             "Regards,\n" +
             "BLACKHOLE KTV\n",
