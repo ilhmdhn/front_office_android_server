@@ -19,10 +19,10 @@ class PromoRoom {
    dateformat dmy 
    select
       [IHP_Rcp].[Reception] as reception,
-      CONVERT(VARCHAR(24), [IHP_Rcp].[Checkin], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Rcp].[Checkin], 114), 1, 8) as checkin,
+      CONVERT(VARCHAR(24), [IHP_Rcp].[Checkin], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Rcp].[Checkin], 114), 1, 12) as checkin,
       [IHP_Rcp].[Jam_Sewa] as jam_sewa,
       [IHP_Rcp].[Menit_Sewa] as menit_sewa,
-      CONVERT(VARCHAR(24), [IHP_Rcp].[Checkout], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Rcp].[Checkout], 114), 1, 8) as checkout,
+      CONVERT(VARCHAR(24), [IHP_Rcp].[Checkout], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Rcp].[Checkout], 114), 1, 12) as checkout,
       [IHP_Promo_Rcp].[Promo],
       [IHP_Promo_Rcp].[Start_Promo],
       [IHP_Promo_Rcp].[End_promo],
@@ -113,7 +113,7 @@ class PromoRoom {
             (
                DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
             )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
          when
             --jika promo di separo akhir checkin saja
             [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -126,7 +126,7 @@ class PromoRoom {
             (
                DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
             )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
          when
             --jika promo di seluruh checkin checkout
             [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -140,7 +140,7 @@ class PromoRoom {
             (
                DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
             )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
       end
       as hasil_end_promo , 
       case
@@ -156,7 +156,7 @@ class PromoRoom {
             (
                - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
             )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
          when
             --jika promo di separo akhir checkin saja
             [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -169,7 +169,7 @@ class PromoRoom {
             (
                - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
             )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
          when
             --jika promo di seluruh checkin checkout
             [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -183,7 +183,7 @@ class PromoRoom {
             (
                - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
             )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
       end
       as hasil_start_promo , [IHP_Rcp_DetailsRoom].[Overpax] as tarif_overpax, [IHP_Rcp_DetailsRoom].[Tarif] as tarif_kamar, 
       case
@@ -202,7 +202,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -215,7 +215,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -229,7 +229,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                end
             )
             between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
@@ -255,7 +255,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -268,7 +268,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -282,7 +282,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
             )
             between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
@@ -308,7 +308,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                when
                   --jika promo di separo akhir checkin saja
                   [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -321,7 +321,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                when
                   --jika promo di seluruh checkin checkout
                   [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -335,7 +335,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
             end
 ) ) 
             and 
@@ -353,7 +353,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -366,7 +366,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -380,7 +380,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
             )
          then
@@ -405,7 +405,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                when
                   --jika promo di separo akhir checkin saja
                   [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -418,7 +418,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                when
                   --jika promo di seluruh checkin checkout
                   [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -432,7 +432,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
             end
 ) ) 
             and 
@@ -450,7 +450,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -463,7 +463,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -477,7 +477,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
             )
          then
@@ -501,7 +501,7 @@ class PromoRoom {
                (
                   - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
             when
                --jika promo di separo akhir checkin saja
                [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -514,7 +514,7 @@ class PromoRoom {
                (
                   - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
             when
                --jika promo di seluruh checkin checkout
                [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -528,7 +528,7 @@ class PromoRoom {
                (
                   - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
          end
 ) 
       )
@@ -547,7 +547,7 @@ class PromoRoom {
                (
                   DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
             when
                --jika promo di separo akhir checkin saja
                [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -560,7 +560,7 @@ class PromoRoom {
                (
                   DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
             when
                --jika promo di seluruh checkin checkout
                [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -574,7 +574,7 @@ class PromoRoom {
                (
                   DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
          end
       )
 ) as different_time_start_and_end_promo , 
@@ -594,7 +594,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                when
                   --jika promo di separo akhir checkin saja
                   [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -607,7 +607,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                when
                   --jika promo di seluruh checkin checkout
                   [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -621,7 +621,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
             end
 ) 
             and 
@@ -639,7 +639,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -652,7 +652,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -666,7 +666,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
             )
             and [IHP_Rcp_DetailsRoom].[Time_Finish] between ( 
@@ -683,7 +683,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                when
                   --jika promo di separo akhir checkin saja
                   [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -696,7 +696,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                when
                   --jika promo di seluruh checkin checkout
                   [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -710,7 +710,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
             end
 ) 
             and 
@@ -728,7 +728,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -741,7 +741,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -755,7 +755,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
             )
          then
@@ -776,7 +776,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -789,7 +789,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -803,7 +803,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
             )
@@ -823,7 +823,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -836,7 +836,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -850,7 +850,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
             )
@@ -871,7 +871,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -884,7 +884,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -898,7 +898,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                end
             )
             between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
@@ -919,7 +919,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -932,7 +932,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -946,7 +946,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
             )
             between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
@@ -972,7 +972,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                when
                   --jika promo di separo akhir checkin saja
                   [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -985,7 +985,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                when
                   --jika promo di seluruh checkin checkout
                   [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -999,7 +999,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
             end
 ) 
             and 
@@ -1017,7 +1017,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1030,7 +1030,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1044,7 +1044,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
             )
             and [IHP_Rcp_DetailsRoom].[Time_Finish] between ( 
@@ -1061,7 +1061,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                when
                   --jika promo di separo akhir checkin saja
                   [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1074,7 +1074,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                when
                   --jika promo di seluruh checkin checkout
                   [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1088,7 +1088,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
             end
 ) 
             and 
@@ -1106,7 +1106,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1119,7 +1119,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1133,7 +1133,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
             )
          then
@@ -1154,7 +1154,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1167,7 +1167,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1181,7 +1181,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
             )
@@ -1201,7 +1201,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1214,7 +1214,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1228,7 +1228,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
             )
@@ -1249,7 +1249,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1262,7 +1262,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1276,7 +1276,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                end
             )
             between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
@@ -1296,7 +1296,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1309,7 +1309,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1323,7 +1323,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                end
             )
 , [IHP_Rcp_DetailsRoom].[Time_Finish] ) 
@@ -1342,7 +1342,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1355,7 +1355,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1369,7 +1369,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
             )
             between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
@@ -1389,7 +1389,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1402,7 +1402,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1416,7 +1416,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
             )
 ) 
@@ -1440,7 +1440,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                when
                   --jika promo di separo akhir checkin saja
                   [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1453,7 +1453,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                when
                   --jika promo di seluruh checkin checkout
                   [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1467,7 +1467,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
             end
 ) 
             and 
@@ -1485,7 +1485,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1498,7 +1498,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1512,7 +1512,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
             )
             and [IHP_Rcp_DetailsRoom].[Time_Finish] between ( 
@@ -1529,7 +1529,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                when
                   --jika promo di separo akhir checkin saja
                   [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1542,7 +1542,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                when
                   --jika promo di seluruh checkin checkout
                   [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1556,7 +1556,7 @@ class PromoRoom {
                   (
                      - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                   )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
             end
 ) 
             and 
@@ -1574,7 +1574,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1587,7 +1587,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1601,7 +1601,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
             )
          then
@@ -1622,7 +1622,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1635,7 +1635,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1649,7 +1649,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
             )
@@ -1669,7 +1669,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1682,7 +1682,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1696,7 +1696,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
             )
@@ -1717,7 +1717,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1730,7 +1730,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1744,7 +1744,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                end
             )
             between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
@@ -1764,7 +1764,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1777,7 +1777,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1791,7 +1791,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                end
             )
 , [IHP_Rcp_DetailsRoom].[Time_Finish] )) / 100*[IHP_Promo_Rcp].[Diskon_Persen] 
@@ -1810,7 +1810,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1823,7 +1823,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1837,7 +1837,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
             )
             between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
@@ -1857,7 +1857,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -1870,7 +1870,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -1884,7 +1884,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
             )
 )) / 100*[IHP_Promo_Rcp].[Diskon_Persen] 
@@ -1976,7 +1976,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -1987,7 +1987,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -1999,7 +1999,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
 , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2011,9 +2011,9 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2024,7 +2024,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -2033,7 +2033,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2047,7 +2047,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
@@ -2059,7 +2059,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] ) 
             )
@@ -2079,7 +2079,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2090,7 +2090,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2100,7 +2100,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2111,7 +2111,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -2120,7 +2120,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2130,7 +2130,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] ) 
             )
@@ -2152,7 +2152,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2163,7 +2163,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2175,7 +2175,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
 , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2187,9 +2187,9 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2200,7 +2200,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -2209,7 +2209,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2223,7 +2223,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
@@ -2235,7 +2235,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                end
 ) 
                and 
@@ -2253,7 +2253,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                      when
                         --jika promo di separo akhir checkin saja
                         CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2264,7 +2264,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                      then
                         CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -2274,7 +2274,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                      when
                         --jika promo di seluruh checkin checkout
                         [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2285,7 +2285,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                         and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -2294,7 +2294,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      then
                         CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -2304,7 +2304,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   end
                )
             )
@@ -2324,7 +2324,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2335,7 +2335,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2347,7 +2347,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
 , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2359,9 +2359,9 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2372,7 +2372,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -2381,7 +2381,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2395,7 +2395,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
@@ -2407,7 +2407,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                end
 ) 
                and 
@@ -2425,7 +2425,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                      when
                         --jika promo di separo akhir checkin saja
                         CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2436,7 +2436,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                      then
                         CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -2446,7 +2446,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                      when
                         --jika promo di seluruh checkin checkout
                         [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2457,7 +2457,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                         and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -2466,7 +2466,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      then
                         CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -2476,7 +2476,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   end
                )
             )
@@ -2498,7 +2498,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2509,7 +2509,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2519,7 +2519,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2530,7 +2530,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -2539,7 +2539,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2549,7 +2549,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
             )
@@ -2571,7 +2571,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2582,7 +2582,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2594,7 +2594,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
 , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2606,9 +2606,9 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2619,7 +2619,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -2628,7 +2628,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2642,7 +2642,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
@@ -2654,7 +2654,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
             )
@@ -2681,7 +2681,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2692,7 +2692,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2704,7 +2704,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
 , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2716,9 +2716,9 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2729,7 +2729,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -2738,7 +2738,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2752,7 +2752,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
@@ -2764,7 +2764,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] ) 
             )
@@ -2784,7 +2784,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2795,7 +2795,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2805,7 +2805,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2816,7 +2816,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -2825,7 +2825,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2835,7 +2835,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] ) 
             )
@@ -2857,7 +2857,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2868,7 +2868,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2880,7 +2880,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
 , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2892,9 +2892,9 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2905,7 +2905,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -2914,7 +2914,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -2928,7 +2928,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
@@ -2940,7 +2940,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                end
 ) 
                and 
@@ -2958,7 +2958,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                      when
                         --jika promo di separo akhir checkin saja
                         CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2969,7 +2969,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                      then
                         CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -2979,7 +2979,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                      when
                         --jika promo di seluruh checkin checkout
                         [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -2990,7 +2990,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                         and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -2999,7 +2999,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      then
                         CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -3009,7 +3009,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   end
                )
             )
@@ -3029,7 +3029,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3040,7 +3040,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3052,7 +3052,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
 , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3064,9 +3064,9 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3077,7 +3077,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -3086,7 +3086,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3100,7 +3100,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
@@ -3112,7 +3112,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                end
 ) 
                and 
@@ -3130,7 +3130,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                      when
                         --jika promo di separo akhir checkin saja
                         CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3141,7 +3141,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                      then
                         CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -3151,7 +3151,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                      when
                         --jika promo di seluruh checkin checkout
                         [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3162,7 +3162,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                         and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -3171,7 +3171,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      then
                         CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -3181,7 +3181,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   end
                )
             )
@@ -3203,7 +3203,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3214,7 +3214,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3224,7 +3224,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3235,7 +3235,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -3244,7 +3244,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3254,7 +3254,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
             )
@@ -3274,7 +3274,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3285,7 +3285,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3295,7 +3295,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3306,7 +3306,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -3315,7 +3315,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3325,7 +3325,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
             )
 ) 
@@ -3345,7 +3345,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3356,7 +3356,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3368,7 +3368,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
 , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3380,9 +3380,9 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3393,7 +3393,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -3402,7 +3402,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3416,7 +3416,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
@@ -3428,7 +3428,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
             )
@@ -3448,7 +3448,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3459,7 +3459,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3471,7 +3471,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
 , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3483,9 +3483,9 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3496,7 +3496,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -3505,7 +3505,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3519,7 +3519,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
@@ -3531,7 +3531,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                end
             )
 , [IHP_Rcp_DetailsRoom].[Time_Finish] ) 
@@ -3556,7 +3556,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3567,7 +3567,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3579,7 +3579,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
 , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3591,9 +3591,9 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3604,7 +3604,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -3613,7 +3613,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3627,7 +3627,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
@@ -3639,7 +3639,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] ) 
             )
@@ -3659,7 +3659,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3670,7 +3670,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3680,7 +3680,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3691,7 +3691,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -3700,7 +3700,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3710,7 +3710,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] ) 
             )
@@ -3732,7 +3732,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3743,7 +3743,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3755,7 +3755,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
 , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3767,9 +3767,9 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3780,7 +3780,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -3789,7 +3789,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3803,7 +3803,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
@@ -3815,7 +3815,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                end
 ) 
                and 
@@ -3833,7 +3833,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                      when
                         --jika promo di separo akhir checkin saja
                         CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3844,7 +3844,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                      then
                         CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -3854,7 +3854,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                      when
                         --jika promo di seluruh checkin checkout
                         [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3865,7 +3865,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                         and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -3874,7 +3874,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      then
                         CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -3884,7 +3884,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   end
                )
             )
@@ -3904,7 +3904,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3915,7 +3915,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3927,7 +3927,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
 , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3939,9 +3939,9 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -3952,7 +3952,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -3961,7 +3961,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -3975,7 +3975,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
@@ -3987,7 +3987,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                end
 ) 
                and 
@@ -4005,7 +4005,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                      when
                         --jika promo di separo akhir checkin saja
                         CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -4016,7 +4016,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                      then
                         CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -4026,7 +4026,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                      when
                         --jika promo di seluruh checkin checkout
                         [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -4037,7 +4037,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                         and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -4046,7 +4046,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      then
                         CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -4056,7 +4056,7 @@ class PromoRoom {
                         (
                            DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   end
                )
             )
@@ -4078,7 +4078,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -4089,7 +4089,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -4099,7 +4099,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -4110,7 +4110,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -4119,7 +4119,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -4129,7 +4129,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
             )
@@ -4149,7 +4149,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -4160,7 +4160,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -4170,7 +4170,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkout]), 114), 1, 8) 
+, [IHP_Rcp].[Checkout]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -4181,7 +4181,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -4190,7 +4190,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -4200,7 +4200,7 @@ class PromoRoom {
                      (
                         DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                end
             )
 ) ) / 100*[IHP_Promo_Rcp].[Diskon_Persen] 
@@ -4220,7 +4220,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -4231,7 +4231,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -4243,7 +4243,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
 , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -4255,9 +4255,9 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -4268,7 +4268,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -4277,7 +4277,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -4291,7 +4291,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
@@ -4303,7 +4303,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                end
 ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
             )
@@ -4323,7 +4323,7 @@ class PromoRoom {
                      (
                         - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di separo akhir checkin saja
                      CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -4334,7 +4334,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -4346,7 +4346,7 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
 , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -4358,9 +4358,9 @@ class PromoRoom {
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                      )
-, [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+, [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                   when
                      --jika promo di seluruh checkin checkout
                      [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -4371,7 +4371,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -4380,7 +4380,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   then
                      CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
@@ -4394,7 +4394,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                      (
                         - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                      )
@@ -4406,7 +4406,7 @@ class PromoRoom {
                      (
                         isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                      )
-, [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+, [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                end
             )
 , [IHP_Rcp_DetailsRoom].[Time_Finish] ) ) / 100*[IHP_Promo_Rcp].[Diskon_Persen] 
@@ -4946,7 +4946,7 @@ class PromoRoom {
          (
             DATEDIFF(mi, IHP_Rcp.Checkin , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin)) 
          )
-, IHP_Rcp.Checkin), 114), 1, 8) 
+, IHP_Rcp.Checkin), 114), 1, 12) 
       when
          IHP_Rcp.Checkin between ( 
          case
@@ -5003,7 +5003,7 @@ class PromoRoom {
             )
 ) 
          )
-, IHP_Rcp.Checkin), 114), 1, 8) 
+, IHP_Rcp.Checkin), 114), 1, 12) 
          when
             DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin) between ( 
             case
@@ -5036,7 +5036,7 @@ class PromoRoom {
             (
                0 
             )
-, DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin)), 114), 1, 8) 
+, DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin)), 114), 1, 12) 
    end
    as hasil_end_promo, 
    case
@@ -5099,7 +5099,7 @@ class PromoRoom {
          (
             0 
          )
-, IHP_Rcp.Checkin), 114), 1, 8) 
+, IHP_Rcp.Checkin), 114), 1, 12) 
       when
          IHP_Rcp.Checkin between ( 
          case
@@ -5132,7 +5132,7 @@ class PromoRoom {
          (
             0 
          )
-, IHP_Rcp.Checkin), 114), 1, 8) 
+, IHP_Rcp.Checkin), 114), 1, 12) 
       when
          DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin) between ( 
          case
@@ -5189,7 +5189,7 @@ class PromoRoom {
             )
 , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin)) 
          )
-, DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin)), 114), 1, 8) 
+, DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin)), 114), 1, 12) 
    end
    as hasil_start_promo 
 FROM
@@ -5720,7 +5720,7 @@ where
          (
             DATEDIFF(mi, IHP_Room.Jam_Checkout , DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout)) 
          )
-, IHP_Room.Jam_Checkout), 114), 1, 8) 
+, IHP_Room.Jam_Checkout), 114), 1, 12) 
       when
          IHP_Room.Jam_Checkout between ( 
          case
@@ -5777,7 +5777,7 @@ where
             )
 ) 
          )
-, IHP_Room.Jam_Checkout), 114), 1, 8) 
+, IHP_Room.Jam_Checkout), 114), 1, 12) 
          when
             DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout) between ( 
             case
@@ -5810,7 +5810,7 @@ where
             (
                0 
             )
-, DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout)), 114), 1, 8) 
+, DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout)), 114), 1, 12) 
    end
    as hasil_end_promo, 
    case
@@ -5873,7 +5873,7 @@ where
          (
             0 
          )
-, IHP_Room.Jam_Checkout), 114), 1, 8) 
+, IHP_Room.Jam_Checkout), 114), 1, 12) 
       when
          IHP_Room.Jam_Checkout between ( 
          case
@@ -5906,7 +5906,7 @@ where
          (
             0 
          )
-, IHP_Room.Jam_Checkout), 114), 1, 8) 
+, IHP_Room.Jam_Checkout), 114), 1, 12) 
       when
          DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout) between ( 
          case
@@ -5963,7 +5963,7 @@ where
             )
 , DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout)) 
          )
-, DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout)), 114), 1, 8) 
+, DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout)), 114), 1, 12) 
    end
    as hasil_start_promo 
 FROM
@@ -6497,7 +6497,7 @@ where
          (
             DATEDIFF(mi, IHP_Ext.Start_Extend , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)) 
          )
-, IHP_Ext.Start_Extend), 114), 1, 8) 
+, IHP_Ext.Start_Extend), 114), 1, 12) 
       when
          IHP_Ext.Start_Extend between ( 
          case
@@ -6554,7 +6554,7 @@ where
             )
 ) 
          )
-, IHP_Ext.Start_Extend), 114), 1, 8) 
+, IHP_Ext.Start_Extend), 114), 1, 12) 
          when
             DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
             case
@@ -6587,7 +6587,7 @@ where
             (
                0 
             )
-, DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 114), 1, 8) 
+, DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 114), 1, 12) 
    end
    as hasil_end_promo, 
    case
@@ -6650,7 +6650,7 @@ where
          (
             0 
          )
-, IHP_Ext.Start_Extend), 114), 1, 8) 
+, IHP_Ext.Start_Extend), 114), 1, 12) 
       when
          IHP_Ext.Start_Extend between ( 
          case
@@ -6683,7 +6683,7 @@ where
          (
             0 
          )
-, IHP_Ext.Start_Extend), 114), 1, 8) 
+, IHP_Ext.Start_Extend), 114), 1, 12) 
       when
          DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
          case
@@ -6740,7 +6740,7 @@ where
             )
 , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)) 
          )
-, DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 114), 1, 8) 
+, DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 114), 1, 12) 
    end
    as hasil_start_promo 
 FROM
@@ -7274,7 +7274,7 @@ where
          (
             DATEDIFF(mi, IHP_Rcp.Checkout , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout)) 
          )
-, IHP_Rcp.Checkout), 114), 1, 8) 
+, IHP_Rcp.Checkout), 114), 1, 12) 
       when
          IHP_Rcp.Checkout between ( 
          case
@@ -7331,7 +7331,7 @@ where
             )
 ) 
          )
-, IHP_Rcp.Checkout), 114), 1, 8) 
+, IHP_Rcp.Checkout), 114), 1, 12) 
          when
             DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout) between ( 
             case
@@ -7364,7 +7364,7 @@ where
             (
                0 
             )
-, DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout)), 114), 1, 8) 
+, DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout)), 114), 1, 12) 
    end
    as hasil_end_promo, 
    case
@@ -7427,7 +7427,7 @@ where
          (
             0 
          )
-, IHP_Rcp.Checkout), 114), 1, 8) 
+, IHP_Rcp.Checkout), 114), 1, 12) 
       when
          IHP_Rcp.Checkout between ( 
          case
@@ -7460,7 +7460,7 @@ where
          (
             0 
          )
-, IHP_Rcp.Checkout), 114), 1, 8) 
+, IHP_Rcp.Checkout), 114), 1, 12) 
       when
          DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout) between ( 
          case
@@ -7517,7 +7517,7 @@ where
             )
 , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout)) 
          )
-, DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout)), 114), 1, 8) 
+, DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout)), 114), 1, 12) 
    end
    as hasil_start_promo 
 FROM
@@ -7663,7 +7663,7 @@ where
                               (
                                  - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                               )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                            when
                               --jika promo di separo akhir checkin saja
                               [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -7676,7 +7676,7 @@ where
                               (
                                  - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                               )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                            when
                               --jika promo di seluruh checkin checkout
                               [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -7690,7 +7690,7 @@ where
                               (
                                  - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                               )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                         end
                         as Hasil_Start_Promo , 
                         case
@@ -7706,7 +7706,7 @@ where
                               (
                                  DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                               )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                            when
                               --jika promo di separo akhir checkin saja
                               [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -7719,7 +7719,7 @@ where
                               (
                                  DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                               )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                            when
                               --jika promo di seluruh checkin checkout
                               [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -7733,7 +7733,7 @@ where
                               (
                                  DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                               )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                         end
                         as Hasil_End_Promo , [IHP_Promo_Rcp].[Start_Promo], [IHP_Promo_Rcp].[End_promo], [IHP_Promo_Rcp].[Diskon_Persen], [IHP_Promo_Rcp].[Diskon_Rp], 
                         case
@@ -7752,7 +7752,7 @@ where
                                     (
                                        - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  when
                                     --jika promo di separo akhir checkin saja
                                     [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -7765,7 +7765,7 @@ where
                                     (
                                        - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  when
                                     --jika promo di seluruh checkin checkout
                                     [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -7779,7 +7779,7 @@ where
                                     (
                                        - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                               end
             ) 
                               and 
@@ -7797,7 +7797,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di separo akhir checkin saja
                                        [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -7810,7 +7810,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di seluruh checkin checkout
                                        [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -7824,7 +7824,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  end
                               )
                               and [IHP_Rcp_DetailsRoom].[Time_Finish] between ( 
@@ -7841,7 +7841,7 @@ where
                                     (
                                        - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  when
                                     --jika promo di separo akhir checkin saja
                                     [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -7854,7 +7854,7 @@ where
                                     (
                                        - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  when
                                     --jika promo di seluruh checkin checkout
                                     [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -7868,7 +7868,7 @@ where
                                     (
                                        - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                               end
             ) 
                               and 
@@ -7886,7 +7886,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di separo akhir checkin saja
                                        [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -7899,7 +7899,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di seluruh checkin checkout
                                        [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -7913,7 +7913,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  end
                               )
                            then
@@ -7934,7 +7934,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                     when
                                        --jika promo di separo akhir checkin saja
                                        [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -7947,7 +7947,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                     when
                                        --jika promo di seluruh checkin checkout
                                        [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -7961,7 +7961,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  end
             ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
                               )
@@ -7981,7 +7981,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di separo akhir checkin saja
                                        [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -7994,7 +7994,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di seluruh checkin checkout
                                        [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -8008,7 +8008,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  end
             ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
                               )
@@ -8029,7 +8029,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                     when
                                        --jika promo di separo akhir checkin saja
                                        [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -8042,7 +8042,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                     when
                                        --jika promo di seluruh checkin checkout
                                        [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -8056,7 +8056,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  end
                               )
                               between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
@@ -8076,7 +8076,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                     when
                                        --jika promo di separo akhir checkin saja
                                        [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -8089,7 +8089,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                     when
                                        --jika promo di seluruh checkin checkout
                                        [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -8103,7 +8103,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  end
                               )
             , [IHP_Rcp_DetailsRoom].[Time_Finish] ) 
@@ -8122,7 +8122,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di separo akhir checkin saja
                                        [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -8135,7 +8135,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di seluruh checkin checkout
                                        [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -8149,7 +8149,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  end
                               )
                               between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
@@ -8169,7 +8169,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di separo akhir checkin saja
                                        [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -8182,7 +8182,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di seluruh checkin checkout
                                        [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -8196,7 +8196,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  end
                               )
             ) 
@@ -8220,7 +8220,7 @@ where
                                     (
                                        - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  when
                                     --jika promo di separo akhir checkin saja
                                     [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -8233,7 +8233,7 @@ where
                                     (
                                        - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  when
                                     --jika promo di seluruh checkin checkout
                                     [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -8247,7 +8247,7 @@ where
                                     (
                                        - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                               end
             ) 
                               and 
@@ -8265,7 +8265,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di separo akhir checkin saja
                                        [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -8278,7 +8278,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di seluruh checkin checkout
                                        [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -8292,7 +8292,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  end
                               )
                               and [IHP_Rcp_DetailsRoom].[Time_Finish] between ( 
@@ -8309,7 +8309,7 @@ where
                                     (
                                        - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  when
                                     --jika promo di separo akhir checkin saja
                                     [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -8322,7 +8322,7 @@ where
                                     (
                                        - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  when
                                     --jika promo di seluruh checkin checkout
                                     [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -8336,7 +8336,7 @@ where
                                     (
                                        - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                               end
             ) 
                               and 
@@ -8354,7 +8354,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di separo akhir checkin saja
                                        [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -8367,7 +8367,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di seluruh checkin checkout
                                        [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -8381,7 +8381,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  end
                               )
                            then
@@ -8402,7 +8402,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                     when
                                        --jika promo di separo akhir checkin saja
                                        [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -8415,7 +8415,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                     when
                                        --jika promo di seluruh checkin checkout
                                        [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -8429,7 +8429,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  end
             ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
                               )
@@ -8449,7 +8449,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di separo akhir checkin saja
                                        [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -8462,7 +8462,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di seluruh checkin checkout
                                        [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -8476,7 +8476,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  end
             ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
                               )
@@ -8497,7 +8497,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                     when
                                        --jika promo di separo akhir checkin saja
                                        [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -8510,7 +8510,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                     when
                                        --jika promo di seluruh checkin checkout
                                        [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -8524,7 +8524,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  end
                               )
                               between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
@@ -8544,7 +8544,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                     when
                                        --jika promo di separo akhir checkin saja
                                        [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -8557,7 +8557,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                     when
                                        --jika promo di seluruh checkin checkout
                                        [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -8571,7 +8571,7 @@ where
                                        (
                                           - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Rcp].[Checkout] ) 
                                        )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  end
                               )
             , [IHP_Rcp_DetailsRoom].[Time_Finish] )) / 100*[IHP_Promo_Rcp].[Diskon_Persen] 
@@ -8590,7 +8590,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di separo akhir checkin saja
                                        [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -8603,7 +8603,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di seluruh checkin checkout
                                        [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -8617,7 +8617,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  end
                               )
                               between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
@@ -8637,7 +8637,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di separo akhir checkin saja
                                        [IHP_Rcp].[Checkout] between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
@@ -8650,7 +8650,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Rcp].[Checkin] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     when
                                        --jika promo di seluruh checkin checkout
                                        [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkin] and [IHP_Rcp].[Checkout] 
@@ -8664,7 +8664,7 @@ where
                                        (
                                           DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                        )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  end
                               )
             )) / 100*[IHP_Promo_Rcp].[Diskon_Persen] 
@@ -8745,7 +8745,7 @@ where
                         (
                            - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                      when
                         --jika promo di separo akhir checkin saja
                         CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -8756,7 +8756,7 @@ where
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                      then
                         CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -8768,7 +8768,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                         )
             , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -8780,9 +8780,9 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                         )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                      when
                         --jika promo di seluruh checkin checkout
                         [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -8793,7 +8793,7 @@ where
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                         and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -8802,7 +8802,7 @@ where
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      then
                         CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -8816,7 +8816,7 @@ where
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
                            - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
@@ -8828,7 +8828,7 @@ where
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                   end
                   as Hasil_Start_Promo,
                  
@@ -8845,7 +8845,7 @@ where
                         (
                            DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                      when
                         --jika promo di separo akhir checkin saja
                         CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -8856,7 +8856,7 @@ where
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                      then
                         CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -8866,7 +8866,7 @@ where
                         (
                            DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                      when
                         --jika promo di seluruh checkin checkout
                         [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -8877,7 +8877,7 @@ where
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                         and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -8886,7 +8886,7 @@ where
                         (
                            isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                         )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      then
                         CONVERT(VARCHAR(24), DATEADD(minute, 
                         (
@@ -8896,7 +8896,7 @@ where
                         (
                            DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                         )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                   end
                   as Hasil_End_Promo ,
             
@@ -8921,7 +8921,7 @@ where
                                  (
                                     - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                               when
                                  --jika promo di separo akhir checkin saja
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -8932,7 +8932,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -8944,7 +8944,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                                  )
             , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -8956,9 +8956,9 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                                  )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                               when
                                  --jika promo di seluruh checkin checkout
                                  [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -8969,7 +8969,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -8978,7 +8978,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -8992,7 +8992,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
@@ -9004,7 +9004,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                            end
             ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] )
                         )
@@ -9024,7 +9024,7 @@ where
                                  (
                                     DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                               when
                                  --jika promo di separo akhir checkin saja
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9035,7 +9035,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9045,7 +9045,7 @@ where
                                  (
                                     DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                               when
                                  --jika promo di seluruh checkin checkout
                                  [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9056,7 +9056,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -9065,7 +9065,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9075,7 +9075,7 @@ where
                                  (
                                     DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                            end
             ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] )
                         )
@@ -9098,7 +9098,7 @@ where
                                  (
                                     - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                               when
                                  --jika promo di separo akhir checkin saja
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9109,7 +9109,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9121,7 +9121,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                                  )
             , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9133,9 +9133,9 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                                  )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                               when
                                  --jika promo di seluruh checkin checkout
                                  [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9146,7 +9146,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -9155,7 +9155,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9169,7 +9169,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
@@ -9181,7 +9181,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                            end
             ) 
                            and 
@@ -9199,7 +9199,7 @@ where
                                     (
                                        DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  when
                                     --jika promo di separo akhir checkin saja
                                     CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9210,7 +9210,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                                  then
                                     CONVERT(VARCHAR(24), DATEADD(minute, 
                                     (
@@ -9220,7 +9220,7 @@ where
                                     (
                                        DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  when
                                     --jika promo di seluruh checkin checkout
                                     [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9231,7 +9231,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -9240,7 +9240,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  then
                                     CONVERT(VARCHAR(24), DATEADD(minute, 
                                     (
@@ -9250,7 +9250,7 @@ where
                                     (
                                        DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                               end
                            )
                         )
@@ -9270,7 +9270,7 @@ where
                                  (
                                     - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                               when
                                  --jika promo di separo akhir checkin saja
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9281,7 +9281,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9293,7 +9293,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                                  )
             , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9305,9 +9305,9 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                                  )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                               when
                                  --jika promo di seluruh checkin checkout
                                  [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9318,7 +9318,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -9327,7 +9327,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9341,7 +9341,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
@@ -9353,7 +9353,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                            end
             ) 
                            and 
@@ -9371,7 +9371,7 @@ where
                                     (
                                        DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  when
                                     --jika promo di separo akhir checkin saja
                                     CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9382,7 +9382,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                                  then
                                     CONVERT(VARCHAR(24), DATEADD(minute, 
                                     (
@@ -9392,7 +9392,7 @@ where
                                     (
                                        DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  when
                                     --jika promo di seluruh checkin checkout
                                     [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9403,7 +9403,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -9412,7 +9412,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  then
                                     CONVERT(VARCHAR(24), DATEADD(minute, 
                                     (
@@ -9422,7 +9422,7 @@ where
                                     (
                                        DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                               end
                            )
                         )
@@ -9445,7 +9445,7 @@ where
                                  (
                                     DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                               when
                                  --jika promo di separo akhir checkin saja
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9456,7 +9456,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9466,7 +9466,7 @@ where
                                  (
                                     DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                               when
                                  --jika promo di seluruh checkin checkout
                                  [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9477,7 +9477,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -9486,7 +9486,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9496,7 +9496,7 @@ where
                                  (
                                     DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                            end
             ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
                         )
@@ -9518,7 +9518,7 @@ where
                            (
                               DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                            )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                         when
                            --jika promo di separo akhir checkin saja
                            CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9529,7 +9529,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                         then
                            CONVERT(VARCHAR(24), DATEADD(minute, 
                            (
@@ -9539,7 +9539,7 @@ where
                            (
                               DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                            )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                         when
                            --jika promo di seluruh checkin checkout
                            [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9550,7 +9550,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                            and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -9559,7 +9559,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                         then
                            CONVERT(VARCHAR(24), DATEADD(minute, 
                            (
@@ -9569,7 +9569,7 @@ where
                            (
                               DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      end
                   )
             )
@@ -9590,7 +9590,7 @@ where
                                  (
                                     - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                               when
                                  --jika promo di separo akhir checkin saja
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9601,7 +9601,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9613,7 +9613,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                                  )
             , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9625,9 +9625,9 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                                  )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                               when
                                  --jika promo di seluruh checkin checkout
                                  [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9638,7 +9638,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -9647,7 +9647,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9661,7 +9661,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
@@ -9673,7 +9673,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                            end
             ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
                         )
@@ -9693,7 +9693,7 @@ where
                            (
                               - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                            )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                         when
                            --jika promo di separo akhir checkin saja
                            CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9704,7 +9704,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                         then
                            CONVERT(VARCHAR(24), DATEADD(minute, 
                            (
@@ -9716,7 +9716,7 @@ where
                               (
                                  isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                               )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                            )
             , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                            (
@@ -9728,9 +9728,9 @@ where
                               (
                                  isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                               )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                            )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                         when
                            --jika promo di seluruh checkin checkout
                            [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9741,7 +9741,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                            and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -9750,7 +9750,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                         then
                            CONVERT(VARCHAR(24), DATEADD(minute, 
                            (
@@ -9764,7 +9764,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                            (
                               - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                            )
@@ -9776,7 +9776,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                      end
                   )
             , [IHP_Rcp_DetailsRoom].[Time_Finish] ) 
@@ -9805,7 +9805,7 @@ where
                                  (
                                     - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                               when
                                  --jika promo di separo akhir checkin saja
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9816,7 +9816,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9828,7 +9828,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                                  )
             , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9840,9 +9840,9 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                                  )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                               when
                                  --jika promo di seluruh checkin checkout
                                  [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9853,7 +9853,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -9862,7 +9862,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9876,7 +9876,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
@@ -9888,7 +9888,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                            end
             ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] )
                         )
@@ -9908,7 +9908,7 @@ where
                                  (
                                     DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                               when
                                  --jika promo di separo akhir checkin saja
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9919,7 +9919,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9929,7 +9929,7 @@ where
                                  (
                                     DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                               when
                                  --jika promo di seluruh checkin checkout
                                  [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9940,7 +9940,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -9949,7 +9949,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -9959,7 +9959,7 @@ where
                                  (
                                     DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                            end
             ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] )
                         )
@@ -9985,7 +9985,7 @@ where
                                  (
                                     - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                               when
                                  --jika promo di separo akhir checkin saja
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -9996,7 +9996,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -10008,7 +10008,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                                  )
             , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -10020,9 +10020,9 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                                  )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                               when
                                  --jika promo di seluruh checkin checkout
                                  [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -10033,7 +10033,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -10042,7 +10042,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -10056,7 +10056,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
@@ -10068,7 +10068,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                            end
             ) 
                            and 
@@ -10086,7 +10086,7 @@ where
                                     (
                                        DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  when
                                     --jika promo di separo akhir checkin saja
                                     CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -10097,7 +10097,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                                  then
                                     CONVERT(VARCHAR(24), DATEADD(minute, 
                                     (
@@ -10107,7 +10107,7 @@ where
                                     (
                                        DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  when
                                     --jika promo di seluruh checkin checkout
                                     [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -10118,7 +10118,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -10127,7 +10127,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  then
                                     CONVERT(VARCHAR(24), DATEADD(minute, 
                                     (
@@ -10137,7 +10137,7 @@ where
                                     (
                                        DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                               end
                            )
                         )
@@ -10157,7 +10157,7 @@ where
                                  (
                                     - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                               when
                                  --jika promo di separo akhir checkin saja
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -10168,7 +10168,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -10180,7 +10180,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                                  )
             , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -10192,9 +10192,9 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                                  )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                               when
                                  --jika promo di seluruh checkin checkout
                                  [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -10205,7 +10205,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -10214,7 +10214,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -10228,7 +10228,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
@@ -10240,7 +10240,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                            end
             ) 
                            and 
@@ -10258,7 +10258,7 @@ where
                                     (
                                        DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  when
                                     --jika promo di separo akhir checkin saja
                                     CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -10269,7 +10269,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                                  then
                                     CONVERT(VARCHAR(24), DATEADD(minute, 
                                     (
@@ -10279,7 +10279,7 @@ where
                                     (
                                        DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                     )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                                  when
                                     --jika promo di seluruh checkin checkout
                                     [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -10290,7 +10290,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                     and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -10299,7 +10299,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  then
                                     CONVERT(VARCHAR(24), DATEADD(minute, 
                                     (
@@ -10309,7 +10309,7 @@ where
                                     (
                                        DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                               end
                            )
                         )
@@ -10334,7 +10334,7 @@ where
                                  (
                                     DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                               when
                                  --jika promo di separo akhir checkin saja
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -10345,7 +10345,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -10355,7 +10355,7 @@ where
                                  (
                                     DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                               when
                                  --jika promo di seluruh checkin checkout
                                  [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -10366,7 +10366,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -10375,7 +10375,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -10385,7 +10385,7 @@ where
                                  (
                                     DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                            end
             ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
                         )
@@ -10407,7 +10407,7 @@ where
                            (
                               DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                            )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                         when
                            --jika promo di separo akhir checkin saja
                            CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -10418,7 +10418,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                         then
                            CONVERT(VARCHAR(24), DATEADD(minute, 
                            (
@@ -10428,7 +10428,7 @@ where
                            (
                               DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                            )
-            , [IHP_Rcp].[Checkout]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkout]), 114), 1, 12) 
                         when
                            --jika promo di seluruh checkin checkout
                            [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -10439,7 +10439,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                            and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -10448,7 +10448,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                         then
                            CONVERT(VARCHAR(24), DATEADD(minute, 
                            (
@@ -10458,7 +10458,7 @@ where
                            (
                               DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                      end
                   )
             )
@@ -10480,7 +10480,7 @@ where
                                  (
                                     - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                               when
                                  --jika promo di separo akhir checkin saja
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -10491,7 +10491,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -10503,7 +10503,7 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                                  )
             , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -10515,9 +10515,9 @@ where
                                     (
                                        isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                     )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                                  )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                               when
                                  --jika promo di seluruh checkin checkout
                                  [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -10528,7 +10528,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                                  and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -10537,7 +10537,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                               then
                                  CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
@@ -10551,7 +10551,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                                  (
                                     - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                                  )
@@ -10563,7 +10563,7 @@ where
                                  (
                                     isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                                  )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                            end
             ) between [IHP_Rcp_DetailsRoom].[Time_Start] and [IHP_Rcp_DetailsRoom].[Time_Finish] 
                         )
@@ -10585,7 +10585,7 @@ where
                            (
                               - DATEDIFF(mi, [IHP_Rcp].[Checkout] , [IHP_Promo_Rcp].[End_promo] ) 
                            )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                         when
                            --jika promo di separo akhir checkin saja
                            CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -10596,7 +10596,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) between [IHP_Promo_Rcp].[Start_Promo] and [IHP_Promo_Rcp].[End_promo] 
                         then
                            CONVERT(VARCHAR(24), DATEADD(minute, 
                            (
@@ -10608,7 +10608,7 @@ where
                               (
                                  isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                               )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                            )
             , [IHP_Promo_Rcp].[End_promo] ), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                            (
@@ -10620,9 +10620,9 @@ where
                               (
                                  isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                               )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) ) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) ) 
                            )
-            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 8) 
+            , [IHP_Promo_Rcp].[End_promo]), 114), 1, 12) 
                         when
                            --jika promo di seluruh checkin checkout
                            [IHP_Promo_Rcp].[Start_Promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
@@ -10633,7 +10633,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                            and [IHP_Promo_Rcp].[End_promo] between [IHP_Rcp].[Checkout] and CONVERT(VARCHAR(24), DATEADD(minute, 
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
@@ -10642,7 +10642,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12) 
                         then
                            CONVERT(VARCHAR(24), DATEADD(minute, 
                            (
@@ -10656,7 +10656,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
                            (
                               - DATEDIFF(mi, [IHP_Promo_Rcp].[Start_Promo] , [IHP_Promo_Rcp].[End_promo] ) 
                            )
@@ -10668,7 +10668,7 @@ where
                            (
                               isnull(sum([IHP_Ext].[Menit_Extend]), 0) + (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + ([IHP_Rcp].[Jam_Sewa]*60) + [IHP_Rcp].[Menit_Sewa] 
                            )
-            , [IHP_Rcp].[Checkin]), 114), 1, 8)), 114), 1, 8) 
+            , [IHP_Rcp].[Checkin]), 114), 1, 12)), 114), 1, 12) 
                      end
                   )
             , [IHP_Rcp_DetailsRoom].[Time_Finish] ) 
@@ -10810,7 +10810,7 @@ where
                               (
                                  0 
                               )
-            , IHP_Rcp.Checkin), 114), 1, 8) 
+            , IHP_Rcp.Checkin), 114), 1, 12) 
                            when
                               IHP_Rcp.Checkin between ( 
                               case
@@ -10843,7 +10843,7 @@ where
                               (
                                  0 
                               )
-            , IHP_Rcp.Checkin), 114), 1, 8) 
+            , IHP_Rcp.Checkin), 114), 1, 12) 
                            when
                               DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin) between ( 
                               case
@@ -10900,7 +10900,7 @@ where
                                  )
             , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin)) 
                               )
-            , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin)), 114), 1, 8) 
+            , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin)), 114), 1, 12) 
                         end
                      ,103)
                         as Start_Promo,
@@ -10967,7 +10967,7 @@ where
                               (
                                  DATEDIFF(mi, IHP_Rcp.Checkin , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin)) 
                               )
-            , IHP_Rcp.Checkin), 114), 1, 8) 
+            , IHP_Rcp.Checkin), 114), 1, 12) 
                            when
                               IHP_Rcp.Checkin between ( 
                               case
@@ -11024,7 +11024,7 @@ where
                                  )
             ) 
                               )
-            , IHP_Rcp.Checkin), 114), 1, 8) 
+            , IHP_Rcp.Checkin), 114), 1, 12) 
                               when
                                  DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin) between ( 
                                  case
@@ -11057,7 +11057,7 @@ where
                                  (
                                     0 
                                  )
-            , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin)), 114), 1, 8) 
+            , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin)), 114), 1, 12) 
                         end
                      ,103)
                         as End_Promo,                     
@@ -11183,7 +11183,7 @@ where
                      (
                         0 
                      )
-      , IHP_Room.Jam_Checkout), 114), 1, 8) 
+      , IHP_Room.Jam_Checkout), 114), 1, 12) 
                   when
                      IHP_Room.Jam_Checkout between ( 
                      case
@@ -11216,7 +11216,7 @@ where
                      (
                         0 
                      )
-      , IHP_Room.Jam_Checkout), 114), 1, 8) 
+      , IHP_Room.Jam_Checkout), 114), 1, 12) 
                   when
                      DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout) between ( 
                      case
@@ -11273,7 +11273,7 @@ where
                         )
       , DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout)) 
                      )
-      , DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout)), 114), 1, 8) 
+      , DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout)), 114), 1, 12) 
                end
       , 103) as Start_Promo, CONVERT(DATETIME, 
                case
@@ -11336,7 +11336,7 @@ where
                      (
                         DATEDIFF(mi, IHP_Room.Jam_Checkout , DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout)) 
                      )
-      , IHP_Room.Jam_Checkout), 114), 1, 8) 
+      , IHP_Room.Jam_Checkout), 114), 1, 12) 
                   when
                      IHP_Room.Jam_Checkout between ( 
                      case
@@ -11393,7 +11393,7 @@ where
                         )
       ) 
                      )
-      , IHP_Room.Jam_Checkout), 114), 1, 8) 
+      , IHP_Room.Jam_Checkout), 114), 1, 12) 
                      when
                         DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout) between ( 
                         case
@@ -11426,7 +11426,7 @@ where
                         (
                            0 
                         )
-      , DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout)), 114), 1, 8) 
+      , DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout)), 114), 1, 12) 
                end
       , 103) as End_Promo, 1 as Status_Promo, 0 Syarat_Kamar, IHP_PromoRoom.[Room] as Kamar, 0 Syarat_Jenis_kamar, '[NONE]' as Jenis_Kamar, 0 as Syarat_Durasi, 0 as Durasi, 0 as Syarat_Hari, IHP_PromoRoom.[Hari] as hari, 0 as Syarat_Jam, IHP_PromoRoom.[Date_Start] as Date_Start, IHP_PromoRoom.[Time_Start] as Time_Start, IHP_PromoRoom.[Date_Finish] as Date_Finish, IHP_PromoRoom.[Time_Finish] as Time_Finish, 0 Syarat_Quantity, 0 Quantity, IHP_PromoRoom.[Diskon_Persen] as Diskon_Persen, IHP_PromoRoom.[Diskon_Rp] as Diskon_Rp, 0 Syarat_Inventory, '' as Inventory, 0 as Sign_Inventory, 0 as Sign_Diskon_Persen, 0 as Sign_Diskon_Rp, 1 as FlagExtend 
             FROM
@@ -11548,7 +11548,7 @@ where
                         (
                            0 
                         )
-         , IHP_Ext.Start_Extend), 114), 1, 8) 
+         , IHP_Ext.Start_Extend), 114), 1, 12) 
                      when
                         IHP_Ext.Start_Extend between ( 
                         case
@@ -11581,7 +11581,7 @@ where
                         (
                            0 
                         )
-         , IHP_Ext.Start_Extend), 114), 1, 8) 
+         , IHP_Ext.Start_Extend), 114), 1, 12) 
                      when
                         DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
                         case
@@ -11638,7 +11638,7 @@ where
                            )
          , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)) 
                         )
-         , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 114), 1, 8) 
+         , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 114), 1, 12) 
                   end
          , 103) as Start_Promo, CONVERT(DATETIME, 
                   case
@@ -11701,7 +11701,7 @@ where
                         (
                            DATEDIFF(mi, IHP_Ext.Start_Extend , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)) 
                         )
-         , IHP_Ext.Start_Extend), 114), 1, 8) 
+         , IHP_Ext.Start_Extend), 114), 1, 12) 
                      when
                         IHP_Ext.Start_Extend between ( 
                         case
@@ -11758,7 +11758,7 @@ where
                            )
          ) 
                         )
-         , IHP_Ext.Start_Extend), 114), 1, 8) 
+         , IHP_Ext.Start_Extend), 114), 1, 12) 
                         when
                            DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend) between ( 
                            case
@@ -11791,7 +11791,7 @@ where
                            (
                               0 
                            )
-         , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 114), 1, 8) 
+         , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 114), 1, 12) 
                   end
          , 103) as End_Promo, 1 as Status_Promo, 0 Syarat_Kamar, IHP_PromoRoom.[Room] as Kamar, 0 Syarat_Jenis_kamar, '[NONE]' as Jenis_Kamar, 0 as Syarat_Durasi, 0 as Durasi, 0 as Syarat_Hari, IHP_PromoRoom.[Hari] as hari, 0 as Syarat_Jam, IHP_PromoRoom.[Date_Start] as Date_Start, IHP_PromoRoom.[Time_Start] as Time_Start, IHP_PromoRoom.[Date_Finish] as Date_Finish, IHP_PromoRoom.[Time_Finish] as Time_Finish, 0 Syarat_Quantity, 0 Quantity, IHP_PromoRoom.[Diskon_Persen] as Diskon_Persen, IHP_PromoRoom.[Diskon_Rp] as Diskon_Rp, 0 Syarat_Inventory, '' as Inventory, 0 as Sign_Inventory, 0 as Sign_Diskon_Persen, 0 as Sign_Diskon_Rp, 1 as FlagExtend 
                FROM
@@ -11916,7 +11916,7 @@ where
                         (
                            0 
                         )
-      , IHP_Rcp.Checkout), 114), 1, 8) 
+      , IHP_Rcp.Checkout), 114), 1, 12) 
                      when
                         IHP_Rcp.Checkout between ( 
                         case
@@ -11949,7 +11949,7 @@ where
                         (
                            0 
                         )
-      , IHP_Rcp.Checkout), 114), 1, 8) 
+      , IHP_Rcp.Checkout), 114), 1, 12) 
                      when
                         DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout) between ( 
                         case
@@ -12006,7 +12006,7 @@ where
                            )
       , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout)) 
                         )
-      , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout)), 114), 1, 8) 
+      , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout)), 114), 1, 12) 
                   end
                ,103)
                   as Start_Promo,
@@ -12073,7 +12073,7 @@ where
                         (
                            DATEDIFF(mi, IHP_Rcp.Checkout , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout)) 
                         )
-      , IHP_Rcp.Checkout), 114), 1, 8) 
+      , IHP_Rcp.Checkout), 114), 1, 12) 
                      when
                         IHP_Rcp.Checkout between ( 
                         case
@@ -12130,7 +12130,7 @@ where
                            )
       ) 
                         )
-      , IHP_Rcp.Checkout), 114), 1, 8) 
+      , IHP_Rcp.Checkout), 114), 1, 12) 
                         when
                            DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout) between ( 
                            case
@@ -12163,7 +12163,7 @@ where
                            (
                               0 
                            )
-      , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout)), 114), 1, 8) 
+      , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout)), 114), 1, 12) 
                   end
                ,103)
                   as End_Promo,               

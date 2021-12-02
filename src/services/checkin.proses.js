@@ -266,39 +266,48 @@ class CheckinProses {
     });
   }
 
-  getJamCheckoutExtend(db_, rcp_) {
+  getJamCheckoutExtend(db_, kode_rcp_) {
     return new Promise((resolve, reject) => {
       try {
         db = db_;
-        var rcp = rcp_;
+        var kode_rcp = kode_rcp_;
         var isiQuery = "" +
-          " set dateformat dmy  " +
-          " select " +
-          " (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60)+isnull(sum([IHP_Ext].[Menit_Extend]), 0) as [total_menit_extend]" +
-          " ,DATEADD(minute, (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60)+isnull(sum([IHP_Ext].[Menit_Extend]), 0)" +
-          " , [IHP_Rcp] .[Checkout]) as checkout_ditambah_extend_" +
-
-          " ,CONVERT(VARCHAR(24), DATEADD(minute, " +
-          " (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60)+isnull(sum([IHP_Ext].[Menit_Extend]), 0)" +
-          " , [IHP_Rcp] .[Checkout]), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, " +
-          " (isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60)+isnull(sum([IHP_Ext].[Menit_Extend]), 0)" +
-          " , [IHP_Rcp] .[Checkout]), 114), 1, 8) as checkout_ditambah_extend" +
-
-          " , isnull([IHP_Room].[Jumlah_Tamu],0) as jumlah_tamu" +
-          " , isnull([IHP_Room].[Kapasitas],0) as kapasitas_kamar" +
-          " ,CONVERT(VARCHAR(24), [IHP_Room].[Jam_Checkout], 103) +' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Room].[Jam_Checkout], 114), 1, 8) as jam_checkout" +
-          " FROM [IHP_Ext] " +
-          " , [IHP_Room]" +
-          " ,[IHP_Rcp] " +
-          " where " +
-          " [IHP_Ext].[Reception]='" + rcp + "'" +
-          " and  [IHP_Room].[Reception]=[IHP_Ext] .[Reception]" +
-          " and [IHP_Room].[Reception] = [IHP_Rcp] .[Reception] " +
-          " group by" +
-          " [IHP_Room].[Jam_Checkout]" +
-          " ,[IHP_Room].[Jumlah_Tamu]" +
-          " ,[IHP_Room].[Kapasitas]" +
-          " ,[IHP_Rcp] .[Checkout]";
+          `
+          set
+   dateformat dmy 
+   select
+(isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60) + isnull(sum([IHP_Ext].[Menit_Extend]), 0) as [total_menit_extend],
+      DATEADD(minute, 
+      (
+         isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60
+      )
+       + isnull(sum([IHP_Ext].[Menit_Extend]), 0) , [IHP_Rcp] .[Checkout]) as checkout_ditambah_extend_,
+      CONVERT(VARCHAR(24), DATEADD(minute, 
+      (
+         isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60
+      )
+       + isnull(sum([IHP_Ext].[Menit_Extend]), 0) , [IHP_Rcp] .[Checkout]), 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), DATEADD(minute, 
+      (
+         isnull(sum([IHP_Ext].[Jam_Extend]), 0)*60
+      )
+       + isnull(sum([IHP_Ext].[Menit_Extend]), 0) , [IHP_Rcp] .[Checkout]), 114), 1, 12) as checkout_ditambah_extend,
+      isnull([IHP_Room].[Jumlah_Tamu], 0) as jumlah_tamu,
+      isnull([IHP_Room].[Kapasitas], 0) as kapasitas_kamar,
+      CONVERT(VARCHAR(24), [IHP_Room].[Jam_Checkout], 103) + ' ' + SUBSTRING(CONVERT(VARCHAR(24), [IHP_Room].[Jam_Checkout], 114), 1, 12) as jam_checkout 
+   FROM
+      [IHP_Ext],
+      [IHP_Room],
+      [IHP_Rcp] 
+   where
+      [IHP_Ext].[Reception] = '${kode_rcp}' 
+      and [IHP_Room].[Reception] = [IHP_Ext] .[Reception] 
+      and [IHP_Room].[Reception] = [IHP_Rcp] .[Reception] 
+   group by
+      [IHP_Room].[Jam_Checkout],
+      [IHP_Room].[Jumlah_Tamu],
+      [IHP_Room].[Kapasitas],
+      [IHP_Rcp] .[Checkout]
+          `;
 
         db.request().query(isiQuery, function (err, dataReturn) {
           if (err) {
@@ -311,8 +320,8 @@ class CheckinProses {
             sql.close();
             if (dataReturn.recordset.length > 0) {
               dataResponse = new ResponseFormat(true, dataReturn.recordset);
-              console.log(rcp + " checkout " + dataReturn.recordset[0].checkout_ditambah_extend);
-              logger.info(rcp + " checkout " + dataReturn.recordset[0].checkout_ditambah_extend);
+              console.log(kode_rcp + " checkout " + dataReturn.recordset[0].checkout_ditambah_extend);
+              logger.info(kode_rcp + " checkout " + dataReturn.recordset[0].checkout_ditambah_extend);
               resolve(dataResponse);
             }
             else {
