@@ -141,9 +141,9 @@ exports.getWebMembership = async function (req, res) {
                                         res.send(dataResponse);
                                     }
                                 }
-                            } catch (err) {
-                                logger.error("Error getWebMembership -> " + err.message);
-                                res.send(new ResponseFormat(false, null, "Error getWebMembership " + err.message));
+                            } catch (error) {
+                                logger.error("Error getWebMembership -> " + error.message);
+                                res.send(new ResponseFormat(false, null, "Error getWebMembership " + error.message));
                             }
                         }
                     });
