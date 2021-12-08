@@ -3028,6 +3028,18 @@ async function _procExtendRoom(req, res) {
                                         }
                                         discount_member_kamar = discount_member_kamar + discount_member_kamar_extend;
 
+                                        if ((isgetTotalPromoRoom > 0) || (discount_member_kamar > 0) || (isgetTotalPromoRoomExtend > 0)) {
+                                            var voucher = await new CheckinProses().getNomorVoucher(db, kode_rcp);
+                                            if (voucher != false) {
+                                                //disable voucher jika promo sewa kamar >0
+                                                logger.info(kode_rcp + " Disable voucher " + voucher + " karena Promo Room " +
+                                                    (isgetTotalPromoRoom + discount_member_kamar + isgetTotalPromoRoomExtend));
+                                                await new CheckinProses().deleteIhpUangVoucher(db, kode_rcp, voucher);
+                                                await new CheckinProses().updateIhpRcpNilaiUangVoucher(db, kode_rcp, 0);
+                                                await new CheckinProses().updateIhpIvcNilaiUangVoucher(db, kode_rcp, 0);
+                                                await new CheckinProses().updateStatusIhpVcrDisableEnableSedangDipakaiCheckin(db, voucher, 1);
+                                            }
+                                        }
                                         var isgetNilaiInvoice = await new CheckinProses().getNilaiInvoice(db, kode_rcp, room);
                                         if (isgetNilaiInvoice.state == true) {
                                             nilai_ivc_sewa_kamar = parseFloat(isgetNilaiInvoice.data[0].sewa_kamar);
