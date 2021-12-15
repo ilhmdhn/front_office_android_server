@@ -1382,6 +1382,15 @@ async function _procDirectEditCheckInRoom(req, res) {
                             //mengambil nilai promo sewa kamar
                             var isgetTotalPromoRoom = await new PromoRoom().getTotalPromoRoom(db, kode_rcp);
                             if (isgetTotalPromoRoom != false) {
+                                //bay pass perhitungan promo kamar yang salah hitung karena terlalu besar
+                                //karena promo lebih besar dari tarif kamar
+                                if (isgetTotalPromoRoom > isgetTotalTarifKamarDanOverpax.sewa_kamar) {
+                                    logger.info(kode_rcp + 
+                                        " isgetTotalPromoRoom " + isgetTotalPromoRoom+
+                                        " > total_tarif_kamar " + isgetTotalTarifKamarDanOverpax.sewa_kamar);
+                                    isgetTotalPromoRoom = isgetTotalTarifKamarDanOverpax.sewa_kamar;
+                                }
+
                                 await new CheckinProses().updateIhpIvcNilaiInvoiceDiskonSewaKamar(db, isgetTotalPromoRoom, kode_rcp);
                                 await new PromoRoom().insertIhpDetailPromo(db, kode_rcp, kode_ivc, isgetTotalPromoRoom);
                                 await new PromoRoom().getDeleteInsertIhpDetailDiskonSewaKamar(db, kode_rcp);
@@ -1415,6 +1424,15 @@ async function _procDirectEditCheckInRoom(req, res) {
                                 //mengambil nilai promo sewa kamar extend
                                 isgetTotalPromoRoomExtend = await new PromoRoom().getTotalPromoExtendRoom(db, kode_rcp);
                                 if (isgetTotalPromoRoomExtend != false) {
+
+                                    //bay pass perhitungan promo yang salah hitung karena terlalu besar
+                                    //karena promo extend lebih besar dari sewa kamar extend
+                                    if (isgetTotalPromoRoomExtend > isgetTotalTarifExtendDanOverpax.sewa_kamar) {
+                                        logger.info(kode_rcp + 
+                                            " isgetTotalPromoRoomExtend " + isgetTotalPromoRoomExtend+
+                                            " > isgetTotalTarifExtendDanOverpax " +  isgetTotalTarifExtendDanOverpax.sewa_kamar);
+                                        isgetTotalPromoRoomExtend = isgetTotalTarifExtendDanOverpax.sewa_kamar;
+                                    }
                                     await new CheckinProses().updateIhpIvcNilaiInvoiceDiskonExtendKamar(db, isgetTotalPromoRoomExtend, kode_rcp);
                                     await new PromoRoom().insertIhpDetailPromo(db, kode_rcp, kode_ivc, isgetTotalPromoRoom + isgetTotalPromoRoomExtend);
                                     await new PromoRoom().getDeleteInsertIhpDetailDiskonSewaKamarExtend(db, kode_rcp);
@@ -2986,6 +3004,16 @@ async function _procExtendRoom(req, res) {
                                     var isgetTotalPromoRoom = await new PromoRoom().getTotalPromoRoom(db, kode_rcp);
 
                                     if (isgetTotalPromoRoom != false) {
+                                        
+                                        //bay pass perhitungan promo kamar yang salah hitung karena terlalu besar
+                                        //karena promo lebih besar dari tarif kamar
+                                        if (isgetTotalPromoRoom > isgetTotalTarifKamarDanOverpax.sewa_kamar) {
+                                            logger.info(kode_rcp + 
+                                                " isgetTotalPromoRoom " + isgetTotalPromoRoom+
+                                                " > isgetTotalTarifKamarDanOverpax " +  isgetTotalTarifKamarDanOverpax.sewa_kamar);
+                                            isgetTotalPromoRoom = isgetTotalTarifKamarDanOverpax.sewa_kamar;
+                                        }
+
                                         await new CheckinProses().updateIhpIvcNilaiInvoiceDiskonSewaKamar(db, isgetTotalPromoRoom, kode_rcp);
                                         await new PromoRoom().insertIhpDetailPromo(db, kode_rcp, kode_ivc, isgetTotalPromoRoom);
                                         total_tarif_kamar = total_tarif_kamar - isgetTotalPromoRoom;
@@ -3012,9 +3040,20 @@ async function _procExtendRoom(req, res) {
                                         //menghitung promo sewa kamar extend 
                                         var isgetTotalPromoRoomExtend = await new PromoRoom().getTotalPromoExtendRoom(db, kode_rcp);
                                         if (isgetTotalPromoRoomExtend != false) {
+
+                                            //bay pass perhitungan promo yang salah hitung karena terlalu besar
+                                            //karena promo extend lebih besar dari sewa kamar extend
+                                            if (isgetTotalPromoRoomExtend > isgetTotalTarifExtendDanOverpax.sewa_kamar) {
+                                                logger.info(kode_rcp + 
+                                                    " isgetTotalPromoRoomExtend " + isgetTotalPromoRoomExtend+
+                                                    " > isgetTotalTarifExtendDanOverpax " +  isgetTotalTarifExtendDanOverpax.sewa_kamar);
+                                                isgetTotalPromoRoomExtend = isgetTotalTarifExtendDanOverpax.sewa_kamar;
+                                            }
+
                                             await new CheckinProses().updateIhpIvcNilaiInvoiceDiskonExtendKamar(db, isgetTotalPromoRoomExtend, kode_rcp);
                                             await new PromoRoom().insertIhpDetailPromo(db, kode_rcp, kode_ivc, isgetTotalPromoRoom + isgetTotalPromoRoomExtend);
                                             await new PromoRoom().getDeleteInsertIhpDetailDiskonSewaKamarExtend(db, kode_rcp);
+
                                             total_tarif_kamar_extend = total_tarif_kamar_extend - isgetTotalPromoRoomExtend;
                                             console.log(kode_rcp + " total_tarif_kamar_extend " + total_tarif_kamar_extend);
                                             logger.info(kode_rcp + " total_tarif_kamar_extend " + total_tarif_kamar_extend);
@@ -3028,6 +3067,18 @@ async function _procExtendRoom(req, res) {
                                         }
                                         discount_member_kamar = discount_member_kamar + discount_member_kamar_extend;
 
+                                        if ((isgetTotalPromoRoom > 0) || (discount_member_kamar > 0) || (isgetTotalPromoRoomExtend > 0)) {
+                                            var voucher = await new CheckinProses().getNomorVoucher(db, kode_rcp);
+                                            if (voucher != false) {
+                                                //disable voucher jika promo sewa kamar >0
+                                                logger.info(kode_rcp + " Disable voucher " + voucher + " karena Promo Room " +
+                                                    (isgetTotalPromoRoom + discount_member_kamar + isgetTotalPromoRoomExtend));
+                                                await new CheckinProses().deleteIhpUangVoucher(db, kode_rcp, voucher);
+                                                await new CheckinProses().updateIhpRcpNilaiUangVoucher(db, kode_rcp, 0);
+                                                await new CheckinProses().updateIhpIvcNilaiUangVoucher(db, kode_rcp, 0);
+                                                await new CheckinProses().updateStatusIhpVcrDisableEnableSedangDipakaiCheckin(db, voucher, 1);
+                                            }
+                                        }
                                         var isgetNilaiInvoice = await new CheckinProses().getNilaiInvoice(db, kode_rcp, room);
                                         if (isgetNilaiInvoice.state == true) {
                                             nilai_ivc_sewa_kamar = parseFloat(isgetNilaiInvoice.data[0].sewa_kamar);

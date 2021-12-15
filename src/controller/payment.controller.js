@@ -676,7 +676,8 @@ async function _procSubmitPayment(req, res) {
     await new CheckinProses().deleteIhpUangMukaNonCash(db, Invoice.Reception);
   }
 
-  var cek_voucher = await getNomorVoucher(room.Reception);
+  var cek_voucher = await new CheckinProses().getNomorVoucher(db, room.Reception);
+
   if (cek_voucher != false) {
     await new CheckinProses().updateStatusIhpVcrDisableEnableSedangDipakaiCheckin(db, cek_voucher, 0);
   }
@@ -1946,40 +1947,42 @@ function createPdf(
             for (i = 0; i < order_penjualan[m].length; i++) {
               if (m == n) {
 
-                if (order_penjualan[0][0].inventory != null) {
-                  if (order_penjualan[m][i].qty_setelah_cancel > 0) {
-                    doc.font(fontpath).fontSize(fontSize).text(order_penjualan[m][i].nama, batas_kiri_halaman, (batasAtas + 1));
+                if (order_penjualan[m][n] !== undefined) {
+                  if (order_penjualan[0][0].inventory != null) {
+                    if (order_penjualan[m][i].qty_setelah_cancel > 0) {
+                      doc.font(fontpath).fontSize(fontSize).text(order_penjualan[m][i].nama, batas_kiri_halaman, (batasAtas + 1));
 
-                    doc.font(fontpath).fontSize(fontSize).text(order_penjualan[m][i].qty_setelah_cancel, (2 * batasKiriKolom), batasAtas + spasiAntarBaris,
-                      { width: lebarAngka, align: 'right' });
+                      doc.font(fontpath).fontSize(fontSize).text(order_penjualan[m][i].qty_setelah_cancel, (2 * batasKiriKolom), batasAtas + spasiAntarBaris,
+                        { width: lebarAngka, align: 'right' });
 
-                    doc.font(fontpath).fontSize(fontSize).text("x", (4 * batasKiriKolom), batasAtas + spasiAntarBaris);
-                    doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert((order_penjualan[m][i].price).toFixed(0)),
-                      (3 * batasKiriKolom), (batasAtas + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
+                      doc.font(fontpath).fontSize(fontSize).text("x", (4 * batasKiriKolom), batasAtas + spasiAntarBaris);
+                      doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert((order_penjualan[m][i].price).toFixed(0)),
+                        (3 * batasKiriKolom), (batasAtas + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
 
-                    doc.font(fontpath).fontSize(fontSize).text(":",
-                      (9 * batasKiriKolom), (batasAtas + spasiAntarBaris));
-
-                    doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert((order_penjualan[m][i].total_sebelum_diskon_setelah_cancel).toFixed(0)),
-                      (9 * batasKiriKolom), (batasAtas + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
-
-                    if (order_penjualan[m][i].total_diskon_setelah_cancel > 0) {
-                      doc.font(fontpath).fontSize(fontSize).text((order_penjualan[m][i].promo_food),
-                        (1 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarSubjectDiskon, align: 'right' });
                       doc.font(fontpath).fontSize(fontSize).text(":",
-                        (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris));
-                      doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((order_penjualan[m][i].total_diskon_setelah_cancel).toFixed(0)) + ")",
-                        (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
+                        (9 * batasKiriKolom), (batasAtas + spasiAntarBaris));
 
-                      batasAtas = batasAtas + spasiAntarBaris + spasiAntarBaris + spasiAntarBaris;
+                      doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert((order_penjualan[m][i].total_sebelum_diskon_setelah_cancel).toFixed(0)),
+                        (9 * batasKiriKolom), (batasAtas + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
+
+                      if (order_penjualan[m][i].total_diskon_setelah_cancel > 0) {
+                        doc.font(fontpath).fontSize(fontSize).text((order_penjualan[m][i].promo_food),
+                          (1 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarSubjectDiskon, align: 'right' });
+                        doc.font(fontpath).fontSize(fontSize).text(":",
+                          (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris));
+                        doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((order_penjualan[m][i].total_diskon_setelah_cancel).toFixed(0)) + ")",
+                          (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
+
+                        batasAtas = batasAtas + spasiAntarBaris + spasiAntarBaris + spasiAntarBaris;
+                      }
+                      else {
+                        batasAtas = batasAtas + spasiAntarBaris + spasiAntarBaris;
+                      }
+                      total_fnb = total_fnb + order_penjualan[m][i].total_sebelum_diskon_setelah_cancel;
+                      total_diskon = total_diskon + order_penjualan[m][i].total_diskon_setelah_cancel;
                     }
-                    else {
-                      batasAtas = batasAtas + spasiAntarBaris + spasiAntarBaris;
-                    }
-                    total_fnb = total_fnb + order_penjualan[m][i].total_sebelum_diskon_setelah_cancel;
-                    total_diskon = total_diskon + order_penjualan[m][i].total_diskon_setelah_cancel;
+
                   }
-
                 }
               }
             }
@@ -2156,7 +2159,7 @@ function createPdf(
           //  left2, (batasAtas + (1 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + invoice[n][0].kamar_alias, left2, (batasAtas + (1 * spasiAntarBaris)));
 
-          doc.font(fontpath).fontSize(fontSize).text(": " + tanggal_checkin  + ",  " + jam_checkin__,
+          doc.font(fontpath).fontSize(fontSize).text(": " + tanggal_checkin + ",  " + jam_checkin__,
             left2, (batasAtas + (2 * spasiAntarBaris)));
           doc.font(fontpath).fontSize(fontSize).text(": " + room.recordset[0].chusr, left2, (batasAtas + (3 * spasiAntarBaris)));
 
@@ -2189,7 +2192,7 @@ function createPdf(
               { width: lebarAngkaRupiah, align: 'right' });
           }
 
-          if (invoice[n][0].total_diskon_kamar > 0) {
+          if (invoice[n][0].uang_voucher > 0) {
             doc.font(fontpath).fontSize(fontSize).text(":", (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)));
             doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert(invoice[n][0].uang_voucher.toFixed(0)) + ")",
               (9 * batasKiriKolom), (batasAtas + (7 * spasiAntarBaris)),
@@ -2203,40 +2206,43 @@ function createPdf(
             for (i = 0; i < order_penjualan[m].length; i++) {
               if (m == n) {
 
-                if (order_penjualan[m][n].inventory != null) {
-                  if (order_penjualan[m][i].qty_setelah_cancel > 0) {
-                    doc.font(fontpath).fontSize(fontSize).text(order_penjualan[m][i].nama, batas_kiri_halaman, (batasAtas + 1));
+                if (order_penjualan[m][n] !== undefined) {
 
-                    doc.font(fontpath).fontSize(fontSize).text(order_penjualan[m][i].qty_setelah_cancel, (2 * batasKiriKolom), batasAtas + spasiAntarBaris,
-                      { width: lebarAngka, align: 'right' });
+                  if (order_penjualan[m][n].inventory != null) {
+                    if (order_penjualan[m][i].qty_setelah_cancel > 0) {
+                      doc.font(fontpath).fontSize(fontSize).text(order_penjualan[m][i].nama, batas_kiri_halaman, (batasAtas + 1));
 
-                    doc.font(fontpath).fontSize(fontSize).text("x", (4 * batasKiriKolom), batasAtas + spasiAntarBaris);
+                      doc.font(fontpath).fontSize(fontSize).text(order_penjualan[m][i].qty_setelah_cancel, (2 * batasKiriKolom), batasAtas + spasiAntarBaris,
+                        { width: lebarAngka, align: 'right' });
 
-                    doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert((order_penjualan[m][i].price).toFixed(0)),
-                      (3 * batasKiriKolom), (batasAtas + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
+                      doc.font(fontpath).fontSize(fontSize).text("x", (4 * batasKiriKolom), batasAtas + spasiAntarBaris);
 
-                    doc.font(fontpath).fontSize(fontSize).text(":",
-                      (9 * batasKiriKolom), (batasAtas + spasiAntarBaris));
+                      doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert((order_penjualan[m][i].price).toFixed(0)),
+                        (3 * batasKiriKolom), (batasAtas + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
 
-                    doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert((order_penjualan[m][i].total_sebelum_diskon_setelah_cancel).toFixed(0)),
-                      (9 * batasKiriKolom), (batasAtas + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
-
-                    if (order_penjualan[m][i].total_diskon_setelah_cancel > 0) {
-                      doc.font(fontpath).fontSize(fontSize).text((order_penjualan[m][i].promo_food),
-                        (1 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarSubjectDiskon, align: 'right' });
                       doc.font(fontpath).fontSize(fontSize).text(":",
-                        (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris));
-                      doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((order_penjualan[m][i].total_diskon_setelah_cancel).toFixed(0)) + ")",
-                        (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
+                        (9 * batasKiriKolom), (batasAtas + spasiAntarBaris));
 
-                      batasAtas = batasAtas + spasiAntarBaris + spasiAntarBaris + spasiAntarBaris;
-                    }
-                    else {
-                      batasAtas = batasAtas + spasiAntarBaris + spasiAntarBaris;
-                    }
-                    total_fnb = total_fnb + order_penjualan[m][i].total_sebelum_diskon_setelah_cancel;
-                    total_diskon = total_diskon + order_penjualan[m][i].total_diskon_setelah_cancel;
+                      doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert((order_penjualan[m][i].total_sebelum_diskon_setelah_cancel).toFixed(0)),
+                        (9 * batasKiriKolom), (batasAtas + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
 
+                      if (order_penjualan[m][i].total_diskon_setelah_cancel > 0) {
+                        doc.font(fontpath).fontSize(fontSize).text((order_penjualan[m][i].promo_food),
+                          (1 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarSubjectDiskon, align: 'right' });
+                        doc.font(fontpath).fontSize(fontSize).text(":",
+                          (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris));
+                        doc.font(fontpath).fontSize(fontSize).text("(" + convertRupiah.convert((order_penjualan[m][i].total_diskon_setelah_cancel).toFixed(0)) + ")",
+                          (9 * batasKiriKolom), (batasAtas + spasiAntarBaris + spasiAntarBaris), { width: lebarAngkaRupiah, align: 'right' });
+
+                        batasAtas = batasAtas + spasiAntarBaris + spasiAntarBaris + spasiAntarBaris;
+                      }
+                      else {
+                        batasAtas = batasAtas + spasiAntarBaris + spasiAntarBaris;
+                      }
+                      total_fnb = total_fnb + order_penjualan[m][i].total_sebelum_diskon_setelah_cancel;
+                      total_diskon = total_diskon + order_penjualan[m][i].total_diskon_setelah_cancel;
+
+                    }
                   }
                 }
               }
@@ -2690,37 +2696,6 @@ function updateIhpSulKirimEmail(ivc_, email_) {
           resolve(true);
         }
       });
-    } catch (err) {
-      logger.error(err.message);
-      reject(err.message);
-    }
-  });
-}
-
-function getNomorVoucher(kode_rcp_) {
-  return new Promise((resolve, reject) => {
-    try {
-      var kode_rcp = kode_rcp_;
-
-      var isiQuery = "" +
-        `
-        select Voucher from IHP_UangVoucher where Reception= '${kode_rcp}' 
-        `;
-
-      db.request().query(isiQuery, function (err, dataReturn) {
-        if (err) {
-          logger.error(err.message);
-          reject(err.message);
-        } else {
-          if (dataReturn.recordset.length > 0) {
-            var voucher = dataReturn.recordset[0].Voucher;
-            resolve(voucher);
-          } else {
-            resolve(false);
-          }
-        }
-      });
-
     } catch (err) {
       logger.error(err.message);
       reject(err.message);
