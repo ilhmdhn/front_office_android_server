@@ -1246,10 +1246,10 @@ async function _procDirectEditCheckInRoom(req, res) {
                                 for (a = 0; a < promo.length; a++) {
                                     promo_ = promo[a];
                                     var status_berlaku_promo;
-                                    var isgetPromoFood = await new PromoFood().getPromoFoodByRcpCheckin(db, promo_, totalDurasiCekinMenit, jenis_kamar, room, kode_rcp);
+                                    var isgetPromoFood = await new PromoFood().getPromoFoodByRcpCheckin(db, promo_, totalDurasiCekinMenitRcp, jenis_kamar, room, kode_rcp);
                                     if (isgetPromoFood.state == true) {
                                         if ((isgetPromoFood.data[0].hasil_start_promo !== null) && (isgetPromoFood.data[0].hasil_end_promo !== null)) {
-                                            await new PromoFood().getDeleteInsertIhpPromoRcpFoodByRcpChekin(db, promo_, totalDurasiCekinMenit, jenis_kamar, room, kode_rcp);
+                                            await new PromoFood().getDeleteInsertIhpPromoRcpFoodByRcpChekin(db, promo_, totalDurasiCekinMenitRcp, jenis_kamar, room, kode_rcp);
                                             status_berlaku_promo = await new PromoFood().getRequirementPromoFood(db, promo_);
                                         }
                                         var slip_order_insert = await new CheckinProses().getStatusSolSod(db, kode_rcp);

@@ -1585,5 +1585,80 @@ class ModifikasiTable {
     });
   }
 
+  penambahanKolomCheckinIHPPromoRcp(db_) {
+    return new Promise((resolve, reject) => {
+      try {
+        db = db_;
+
+        var isiQuery = " " +
+          " IF NOT EXISTS (SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS " +
+          " WHERE TABLE_NAME='IHP_Promo_Rcp'" +
+          " AND COLUMN_NAME ='Checkin')" +
+          " BEGIN  " +
+          " ALTER TABLE IHP_Promo_Rcp ADD Checkin  [datetime] NULL " +
+          " END ";
+        db.request().query(isiQuery, function (err, dataReturn) {
+          if (err) {
+            sql.close();
+            logger.error(err);
+            console.log(err);
+            logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+            console.log(" Gagal penambahanKolomStartExtIHPPromoRcp");
+            logger.info(" Gagal penambahanKolomStartExtIHPPromoRcp");
+            resolve(false);
+          } else {
+            sql.close();
+            console.log(" Sukses penambahanKolomStartExtIHPPromoRcp");
+            logger.info(" Sukses penambahanKolomStartExtIHPPromoRcp");
+            resolve(true);
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        logger.error(error.message);
+        logger.error('Catch Error prosesQuery ');
+        resolve(false);
+      }
+    });
+  }
+
+  penambahanKolomCheckoutIHPPromoRcp(db_) {
+    return new Promise((resolve, reject) => {
+      try {
+        db = db_;
+
+        var isiQuery = " " +
+          " IF NOT EXISTS (SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS " +
+          " WHERE TABLE_NAME='IHP_Promo_Rcp'" +
+          " AND COLUMN_NAME ='Checkout')" +
+          " BEGIN  " +
+          " ALTER TABLE IHP_Promo_Rcp ADD Checkout  [datetime] NULL " +
+          " END ";
+        db.request().query(isiQuery, function (err, dataReturn) {
+          if (err) {
+            sql.close();
+            logger.error(err);
+            console.log(err);
+            logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+            console.log(" Gagal penambahanKolomEndExtIHPPromoRcp");
+            logger.info(" Gagal penambahanKolomEndExtIHPPromoRcp");
+            resolve(false);
+          } else {
+            sql.close();
+            console.log(" Sukses penambahanKolomEndExtIHPPromoRcp");
+            logger.info(" Sukses penambahanKolomEndExtIHPPromoRcp");
+            resolve(true);
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        logger.error(error.message);
+        logger.error('Catch Error prosesQuery ');
+        resolve(false);
+      }
+    });
+  }
+
+
 }
 module.exports = ModifikasiTable;

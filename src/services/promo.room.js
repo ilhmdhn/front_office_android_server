@@ -11060,11 +11060,14 @@ where
             , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin)), 114), 1, 12) 
                         end
                      ,103)
-                        as End_Promo,                     
+                        as End_Promo,  
+                                           
                          
                         
                      1 as Status_Promo, 0 Syarat_Kamar, IHP_PromoRoom.[Room] as Kamar, 0 Syarat_Jenis_kamar, '[NONE]' as Jenis_Kamar, 0 as Syarat_Durasi, 0 as Durasi, 0 as Syarat_Hari, IHP_PromoRoom.[Hari] as hari, 0 as Syarat_Jam, IHP_PromoRoom.[Date_Start] as Date_Start, IHP_PromoRoom.[Time_Start] as Time_Start, IHP_PromoRoom.[Date_Finish] as Date_Finish, IHP_PromoRoom.[Time_Finish] as Time_Finish, 0 Syarat_Quantity, 0 Quantity, IHP_PromoRoom.[Diskon_Persen] as Diskon_Persen, IHP_PromoRoom.[Diskon_Rp] as Diskon_Rp, 0 Syarat_Inventory, '' as Inventory, 0 as Sign_Inventory, 0 as Sign_Diskon_Persen, 0 as Sign_Diskon_Rp, 
-                     0 as FlagExtend 
+                     0 as FlagExtend,
+                     IHP_Rcp.Checkin,
+                     DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin)
                      FROM
                         IHP_PromoRoom , IHP_Rcp 
                      where
@@ -11428,7 +11431,9 @@ where
                         )
       , DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout)), 114), 1, 12) 
                end
-      , 103) as End_Promo, 1 as Status_Promo, 0 Syarat_Kamar, IHP_PromoRoom.[Room] as Kamar, 0 Syarat_Jenis_kamar, '[NONE]' as Jenis_Kamar, 0 as Syarat_Durasi, 0 as Durasi, 0 as Syarat_Hari, IHP_PromoRoom.[Hari] as hari, 0 as Syarat_Jam, IHP_PromoRoom.[Date_Start] as Date_Start, IHP_PromoRoom.[Time_Start] as Time_Start, IHP_PromoRoom.[Date_Finish] as Date_Finish, IHP_PromoRoom.[Time_Finish] as Time_Finish, 0 Syarat_Quantity, 0 Quantity, IHP_PromoRoom.[Diskon_Persen] as Diskon_Persen, IHP_PromoRoom.[Diskon_Rp] as Diskon_Rp, 0 Syarat_Inventory, '' as Inventory, 0 as Sign_Inventory, 0 as Sign_Diskon_Persen, 0 as Sign_Diskon_Rp, 1 as FlagExtend 
+      , 103) as End_Promo, 1 as Status_Promo, 0 Syarat_Kamar, IHP_PromoRoom.[Room] as Kamar, 0 Syarat_Jenis_kamar, '[NONE]' as Jenis_Kamar, 0 as Syarat_Durasi, 0 as Durasi, 0 as Syarat_Hari, IHP_PromoRoom.[Hari] as hari, 0 as Syarat_Jam, IHP_PromoRoom.[Date_Start] as Date_Start, IHP_PromoRoom.[Time_Start] as Time_Start, IHP_PromoRoom.[Date_Finish] as Date_Finish, IHP_PromoRoom.[Time_Finish] as Time_Finish, 0 Syarat_Quantity, 0 Quantity, IHP_PromoRoom.[Diskon_Persen] as Diskon_Persen, IHP_PromoRoom.[Diskon_Rp] as Diskon_Rp, 0 Syarat_Inventory, '' as Inventory, 0 as Sign_Inventory, 0 as Sign_Diskon_Persen, 0 as Sign_Diskon_Rp, 1 as FlagExtend,
+      IHP_Room.Jam_Checkout,
+      DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout)
             FROM
                IHP_PromoRoom , IHP_Rcp , IHP_Room 
             where
@@ -11793,7 +11798,9 @@ where
                            )
          , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 114), 1, 12) 
                   end
-         , 103) as End_Promo, 1 as Status_Promo, 0 Syarat_Kamar, IHP_PromoRoom.[Room] as Kamar, 0 Syarat_Jenis_kamar, '[NONE]' as Jenis_Kamar, 0 as Syarat_Durasi, 0 as Durasi, 0 as Syarat_Hari, IHP_PromoRoom.[Hari] as hari, 0 as Syarat_Jam, IHP_PromoRoom.[Date_Start] as Date_Start, IHP_PromoRoom.[Time_Start] as Time_Start, IHP_PromoRoom.[Date_Finish] as Date_Finish, IHP_PromoRoom.[Time_Finish] as Time_Finish, 0 Syarat_Quantity, 0 Quantity, IHP_PromoRoom.[Diskon_Persen] as Diskon_Persen, IHP_PromoRoom.[Diskon_Rp] as Diskon_Rp, 0 Syarat_Inventory, '' as Inventory, 0 as Sign_Inventory, 0 as Sign_Diskon_Persen, 0 as Sign_Diskon_Rp, 1 as FlagExtend 
+         , 103) as End_Promo, 1 as Status_Promo, 0 Syarat_Kamar, IHP_PromoRoom.[Room] as Kamar, 0 Syarat_Jenis_kamar, '[NONE]' as Jenis_Kamar, 0 as Syarat_Durasi, 0 as Durasi, 0 as Syarat_Hari, IHP_PromoRoom.[Hari] as hari, 0 as Syarat_Jam, IHP_PromoRoom.[Date_Start] as Date_Start, IHP_PromoRoom.[Time_Start] as Time_Start, IHP_PromoRoom.[Date_Finish] as Date_Finish, IHP_PromoRoom.[Time_Finish] as Time_Finish, 0 Syarat_Quantity, 0 Quantity, IHP_PromoRoom.[Diskon_Persen] as Diskon_Persen, IHP_PromoRoom.[Diskon_Rp] as Diskon_Rp, 0 Syarat_Inventory, '' as Inventory, 0 as Sign_Inventory, 0 as Sign_Diskon_Persen, 0 as Sign_Diskon_Rp, 1 as FlagExtend,
+         IHP_Ext.Start_Exten,
+         DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)
                FROM
                   IHP_PromoRoom , IHP_Rcp , IHP_Room ,IHP_Ext 
                where
@@ -12169,7 +12176,9 @@ where
                   as End_Promo,               
                    
                   
-               1 as Status_Promo, 0 Syarat_Kamar, IHP_PromoRoom.[Room] as Kamar, 0 Syarat_Jenis_kamar, '[NONE]' as Jenis_Kamar, 0 as Syarat_Durasi, 0 as Durasi, 0 as Syarat_Hari, IHP_PromoRoom.[Hari] as hari, 0 as Syarat_Jam, IHP_PromoRoom.[Date_Start] as Date_Start, IHP_PromoRoom.[Time_Start] as Time_Start, IHP_PromoRoom.[Date_Finish] as Date_Finish, IHP_PromoRoom.[Time_Finish] as Time_Finish, 0 Syarat_Quantity, 0 Quantity, IHP_PromoRoom.[Diskon_Persen] as Diskon_Persen, IHP_PromoRoom.[Diskon_Rp] as Diskon_Rp, 0 Syarat_Inventory, '' as Inventory, 0 as Sign_Inventory, 0 as Sign_Diskon_Persen, 0 as Sign_Diskon_Rp, 1 as FlagExtend 
+               1 as Status_Promo, 0 Syarat_Kamar, IHP_PromoRoom.[Room] as Kamar, 0 Syarat_Jenis_kamar, '[NONE]' as Jenis_Kamar, 0 as Syarat_Durasi, 0 as Durasi, 0 as Syarat_Hari, IHP_PromoRoom.[Hari] as hari, 0 as Syarat_Jam, IHP_PromoRoom.[Date_Start] as Date_Start, IHP_PromoRoom.[Time_Start] as Time_Start, IHP_PromoRoom.[Date_Finish] as Date_Finish, IHP_PromoRoom.[Time_Finish] as Time_Finish, 0 Syarat_Quantity, 0 Quantity, IHP_PromoRoom.[Diskon_Persen] as Diskon_Persen, IHP_PromoRoom.[Diskon_Rp] as Diskon_Rp, 0 Syarat_Inventory, '' as Inventory, 0 as Sign_Inventory, 0 as Sign_Diskon_Persen, 0 as Sign_Diskon_Rp, 1 as FlagExtend,
+               IHP_Rcp.Checkout,
+               DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout)
                FROM
                   IHP_PromoRoom , IHP_Rcp 
                where

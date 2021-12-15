@@ -3530,7 +3530,9 @@ where
                               )
             , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin)), 114), 1, 8) 
                      end
-            , 103) as End_Promo, 2 as Status_Promo, IHP_PromoFood.[Syarat_Kamar] as Syarat_Kamar, IHP_PromoFood.[Kamar] as Kamar, IHP_PromoFood.Syarat_Jenis_kamar as Syarat_Jenis_kamar, IHP_PromoFood.Jenis_Kamar as Jenis_Kamar, IHP_PromoFood.Syarat_Durasi as Syarat_Durasi, IHP_PromoFood.Durasi as Durasi, IHP_PromoFood.Syarat_Hari as Syarat_Hari, IHP_PromoFood.[Hari] as hari, IHP_PromoFood.Syarat_Jam as Syarat_Jam, IHP_PromoFood.[Date_Start] as Date_Start, IHP_PromoFood.[Time_Start] as Time_Start, IHP_PromoFood.[Date_Finish] as Date_Finish, IHP_PromoFood.[Time_Finish] as Time_Finish, IHP_PromoFood.[Syarat_Quantity] as Syarat_Quantity, IHP_PromoFood.Quantity as Quantity, IHP_PromoFood.[Diskon_Persen] as Diskon_Persen, IHP_PromoFood.[Diskon_Rp] as Diskon_Rp, IHP_PromoFood.[Syarat_Inventory] as Syarat_Inventory, IHP_PromoFood.[Inventory] as Inventory, IHP_PromoFood.[Sign_Inventory] as Sign_Inventory, IHP_PromoFood.[Sign_Diskon_Persen] as Sign_Diskon_Persen, IHP_PromoFood.[Sign_Diskon_Rp] as Sign_Diskon_Rp, 0 as FlagExtend 
+            , 103) as End_Promo, 2 as Status_Promo, IHP_PromoFood.[Syarat_Kamar] as Syarat_Kamar, IHP_PromoFood.[Kamar] as Kamar, IHP_PromoFood.Syarat_Jenis_kamar as Syarat_Jenis_kamar, IHP_PromoFood.Jenis_Kamar as Jenis_Kamar, IHP_PromoFood.Syarat_Durasi as Syarat_Durasi, IHP_PromoFood.Durasi as Durasi, IHP_PromoFood.Syarat_Hari as Syarat_Hari, IHP_PromoFood.[Hari] as hari, IHP_PromoFood.Syarat_Jam as Syarat_Jam, IHP_PromoFood.[Date_Start] as Date_Start, IHP_PromoFood.[Time_Start] as Time_Start, IHP_PromoFood.[Date_Finish] as Date_Finish, IHP_PromoFood.[Time_Finish] as Time_Finish, IHP_PromoFood.[Syarat_Quantity] as Syarat_Quantity, IHP_PromoFood.Quantity as Quantity, IHP_PromoFood.[Diskon_Persen] as Diskon_Persen, IHP_PromoFood.[Diskon_Rp] as Diskon_Rp, IHP_PromoFood.[Syarat_Inventory] as Syarat_Inventory, IHP_PromoFood.[Inventory] as Inventory, IHP_PromoFood.[Sign_Inventory] as Sign_Inventory, IHP_PromoFood.[Sign_Diskon_Persen] as Sign_Diskon_Persen, IHP_PromoFood.[Sign_Diskon_Rp] as Sign_Diskon_Rp, 0 as FlagExtend,
+            IHP_Rcp.Checkin,
+            DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkin)
                   FROM
                      IHP_PromoFood , IHP_Rcp 
                   where
@@ -3899,7 +3901,9 @@ where
                               )
             , DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout)), 114), 1, 8) 
                      end
-            , 103) as End_Promo, 2 as Status_Promo, IHP_PromoFood.[Syarat_Kamar] as Syarat_Kamar, IHP_PromoFood.[Kamar] as Kamar, IHP_PromoFood.Syarat_Jenis_kamar as Syarat_Jenis_kamar, IHP_PromoFood.Jenis_Kamar as Jenis_Kamar, IHP_PromoFood.Syarat_Durasi as Syarat_Durasi, IHP_PromoFood.Durasi as Durasi, IHP_PromoFood.Syarat_Hari as Syarat_Hari, IHP_PromoFood.[Hari] as hari, IHP_PromoFood.Syarat_Jam as Syarat_Jam, IHP_PromoFood.[Date_Start] as Date_Start, IHP_PromoFood.[Time_Start] as Time_Start, IHP_PromoFood.[Date_Finish] as Date_Finish, IHP_PromoFood.[Time_Finish] as Time_Finish, IHP_PromoFood.[Syarat_Quantity] as Syarat_Quantity, IHP_PromoFood.Quantity as Quantity, IHP_PromoFood.[Diskon_Persen] as Diskon_Persen, IHP_PromoFood.[Diskon_Rp] as Diskon_Rp, IHP_PromoFood.[Syarat_Inventory] as Syarat_Inventory, IHP_PromoFood.[Inventory] as Inventory, IHP_PromoFood.[Sign_Inventory] as Sign_Inventory, IHP_PromoFood.[Sign_Diskon_Persen] as Sign_Diskon_Persen, IHP_PromoFood.[Sign_Diskon_Rp] as Sign_Diskon_Rp, 1 as FlagExtend 
+            , 103) as End_Promo, 2 as Status_Promo, IHP_PromoFood.[Syarat_Kamar] as Syarat_Kamar, IHP_PromoFood.[Kamar] as Kamar, IHP_PromoFood.Syarat_Jenis_kamar as Syarat_Jenis_kamar, IHP_PromoFood.Jenis_Kamar as Jenis_Kamar, IHP_PromoFood.Syarat_Durasi as Syarat_Durasi, IHP_PromoFood.Durasi as Durasi, IHP_PromoFood.Syarat_Hari as Syarat_Hari, IHP_PromoFood.[Hari] as hari, IHP_PromoFood.Syarat_Jam as Syarat_Jam, IHP_PromoFood.[Date_Start] as Date_Start, IHP_PromoFood.[Time_Start] as Time_Start, IHP_PromoFood.[Date_Finish] as Date_Finish, IHP_PromoFood.[Time_Finish] as Time_Finish, IHP_PromoFood.[Syarat_Quantity] as Syarat_Quantity, IHP_PromoFood.Quantity as Quantity, IHP_PromoFood.[Diskon_Persen] as Diskon_Persen, IHP_PromoFood.[Diskon_Rp] as Diskon_Rp, IHP_PromoFood.[Syarat_Inventory] as Syarat_Inventory, IHP_PromoFood.[Inventory] as Inventory, IHP_PromoFood.[Sign_Inventory] as Sign_Inventory, IHP_PromoFood.[Sign_Diskon_Persen] as Sign_Diskon_Persen, IHP_PromoFood.[Sign_Diskon_Rp] as Sign_Diskon_Rp, 1 as FlagExtend,
+            IHP_Rcp.Checkout,
+            DATEADD(minute, ${durasi_menit}, IHP_Rcp.Checkout)
                   FROM
                      IHP_PromoFood , IHP_Rcp 
                   where
@@ -4292,7 +4296,9 @@ where
         IHP_PromoFood.[Sign_Inventory] as Sign_Inventory, 
         IHP_PromoFood.[Sign_Diskon_Persen] as Sign_Diskon_Persen, 
        IHP_PromoFood.[Sign_Diskon_Rp] as Sign_Diskon_Rp, 
-       1 as FlagExtend 
+       1 as FlagExtend,
+       [IHP_Room].[Jam_Checkout],
+       DATEADD(minute, ${durasi_menit}, IHP_Room.Jam_Checkout)
       
       FROM
         IHP_PromoFood 
@@ -4685,7 +4691,9 @@ where
         IHP_PromoFood.[Sign_Inventory] as Sign_Inventory, 
         IHP_PromoFood.[Sign_Diskon_Persen] as Sign_Diskon_Persen, 
        IHP_PromoFood.[Sign_Diskon_Rp] as Sign_Diskon_Rp, 
-       1 as FlagExtend 
+       1 as FlagExtend,
+       IHP_Ext.Start_Extend,
+       IHP_Ext.End_Extend 
       
       FROM
         IHP_PromoFood 

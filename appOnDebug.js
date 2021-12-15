@@ -150,8 +150,9 @@ new DBConnection().initializeConnection(function (err) {
                 new ModifikasiTable().melebarkanKolomPrintedIhpIvcHistory(db);
                 new ModifikasiTable().penambahanKolomEmailedIhpSul(db);
                 new ModifikasiTable().penambahanKolomEmailedSuccessIhpSul(db);
-                new ModifikasiTable().penambahanKolomEmailedAddressIhpSul(db);               
-
+                new ModifikasiTable().penambahanKolomEmailedAddressIhpSul(db);
+                new ModifikasiTable().penambahanKolomCheckoutIHPPromoRcp(db);
+                new ModifikasiTable().penambahanKolomCheckinIHPPromoRcp(db);
             }
         });
 
