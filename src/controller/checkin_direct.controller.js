@@ -1382,6 +1382,15 @@ async function _procDirectEditCheckInRoom(req, res) {
                             //mengambil nilai promo sewa kamar
                             var isgetTotalPromoRoom = await new PromoRoom().getTotalPromoRoom(db, kode_rcp);
                             if (isgetTotalPromoRoom != false) {
+                                //bay pass perhitungan promo kamar yang salah hitung karena terlalu besar
+                                //karena promo lebih besar dari tarif kamar
+                                if (isgetTotalPromoRoom > isgetTotalTarifKamarDanOverpax.sewa_kamar) {
+                                    logger.info(kode_rcp + 
+                                        " isgetTotalPromoRoom " + isgetTotalPromoRoom+
+                                        " > total_tarif_kamar " + isgetTotalTarifKamarDanOverpax.sewa_kamar);
+                                    isgetTotalPromoRoom = isgetTotalTarifKamarDanOverpax.sewa_kamar;
+                                }
+
                                 await new CheckinProses().updateIhpIvcNilaiInvoiceDiskonSewaKamar(db, isgetTotalPromoRoom, kode_rcp);
                                 await new PromoRoom().insertIhpDetailPromo(db, kode_rcp, kode_ivc, isgetTotalPromoRoom);
                                 await new PromoRoom().getDeleteInsertIhpDetailDiskonSewaKamar(db, kode_rcp);
@@ -1415,6 +1424,15 @@ async function _procDirectEditCheckInRoom(req, res) {
                                 //mengambil nilai promo sewa kamar extend
                                 isgetTotalPromoRoomExtend = await new PromoRoom().getTotalPromoExtendRoom(db, kode_rcp);
                                 if (isgetTotalPromoRoomExtend != false) {
+
+                                    //bay pass perhitungan promo yang salah hitung karena terlalu besar
+                                    //karena promo extend lebih besar dari sewa kamar extend
+                                    if (isgetTotalPromoRoomExtend > isgetTotalTarifExtendDanOverpax.sewa_kamar) {
+                                        logger.info(kode_rcp + 
+                                            " isgetTotalPromoRoomExtend " + isgetTotalPromoRoomExtend+
+                                            " > isgetTotalTarifExtendDanOverpax " +  isgetTotalTarifExtendDanOverpax.sewa_kamar);
+                                        isgetTotalPromoRoomExtend = isgetTotalTarifExtendDanOverpax.sewa_kamar;
+                                    }
                                     await new CheckinProses().updateIhpIvcNilaiInvoiceDiskonExtendKamar(db, isgetTotalPromoRoomExtend, kode_rcp);
                                     await new PromoRoom().insertIhpDetailPromo(db, kode_rcp, kode_ivc, isgetTotalPromoRoom + isgetTotalPromoRoomExtend);
                                     await new PromoRoom().getDeleteInsertIhpDetailDiskonSewaKamarExtend(db, kode_rcp);
@@ -2986,6 +3004,16 @@ async function _procExtendRoom(req, res) {
                                     var isgetTotalPromoRoom = await new PromoRoom().getTotalPromoRoom(db, kode_rcp);
 
                                     if (isgetTotalPromoRoom != false) {
+                                        
+                                        //bay pass perhitungan promo kamar yang salah hitung karena terlalu besar
+                                        //karena promo lebih besar dari tarif kamar
+                                        if (isgetTotalPromoRoom > isgetTotalTarifKamarDanOverpax.sewa_kamar) {
+                                            logger.info(kode_rcp + 
+                                                " isgetTotalPromoRoom " + isgetTotalPromoRoom+
+                                                " > isgetTotalTarifKamarDanOverpax " +  isgetTotalTarifKamarDanOverpax.sewa_kamar);
+                                            isgetTotalPromoRoom = isgetTotalTarifKamarDanOverpax.sewa_kamar;
+                                        }
+
                                         await new CheckinProses().updateIhpIvcNilaiInvoiceDiskonSewaKamar(db, isgetTotalPromoRoom, kode_rcp);
                                         await new PromoRoom().insertIhpDetailPromo(db, kode_rcp, kode_ivc, isgetTotalPromoRoom);
                                         total_tarif_kamar = total_tarif_kamar - isgetTotalPromoRoom;
@@ -3012,9 +3040,20 @@ async function _procExtendRoom(req, res) {
                                         //menghitung promo sewa kamar extend 
                                         var isgetTotalPromoRoomExtend = await new PromoRoom().getTotalPromoExtendRoom(db, kode_rcp);
                                         if (isgetTotalPromoRoomExtend != false) {
+
+                                            //bay pass perhitungan promo yang salah hitung karena terlalu besar
+                                            //karena promo extend lebih besar dari sewa kamar extend
+                                            if (isgetTotalPromoRoomExtend > isgetTotalTarifExtendDanOverpax.sewa_kamar) {
+                                                logger.info(kode_rcp + 
+                                                    " isgetTotalPromoRoomExtend " + isgetTotalPromoRoomExtend+
+                                                    " > isgetTotalTarifExtendDanOverpax " +  isgetTotalTarifExtendDanOverpax.sewa_kamar);
+                                                isgetTotalPromoRoomExtend = isgetTotalTarifExtendDanOverpax.sewa_kamar;
+                                            }
+
                                             await new CheckinProses().updateIhpIvcNilaiInvoiceDiskonExtendKamar(db, isgetTotalPromoRoomExtend, kode_rcp);
                                             await new PromoRoom().insertIhpDetailPromo(db, kode_rcp, kode_ivc, isgetTotalPromoRoom + isgetTotalPromoRoomExtend);
                                             await new PromoRoom().getDeleteInsertIhpDetailDiskonSewaKamarExtend(db, kode_rcp);
+
                                             total_tarif_kamar_extend = total_tarif_kamar_extend - isgetTotalPromoRoomExtend;
                                             console.log(kode_rcp + " total_tarif_kamar_extend " + total_tarif_kamar_extend);
                                             logger.info(kode_rcp + " total_tarif_kamar_extend " + total_tarif_kamar_extend);
