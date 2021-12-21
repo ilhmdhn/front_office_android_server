@@ -1438,7 +1438,7 @@ async function _pocSubmitEmail(req, res) {
             "Dear " + nama_penerima + "\n" +
             "Member ID : " + nomor_member + "\n\n" +
             "Thank you for visiting Blackhole KTV.\n\n" +
-            "Attached e-receipt in this email is a summary of your recent visit on  " +
+            "Attached e-receipt in this email is a summary of your recent visit on " +
             //hari + ", " + day + " " + bulan + " " + tahun + " Pukul " + jam + ":" + Menit + ".\n" +
             tanggal + " at " + jam + " " +
             "with invoice number " + invoice[0][0].invoice + ".\n\n" +
@@ -1501,6 +1501,7 @@ function harinya(hari) {
       var hari00 = hari;
       var isinya2;
       var hari0 = hari00.getUTCDay();
+
       if (hari0 == 1) {
         isinya2 = "Monday";
         resolve(isinya2);
@@ -1634,6 +1635,7 @@ function formatTanggel(tanggal_) {
       var bulan = tanggal.getUTCMonth();
       var tahun = tanggal.getUTCFullYear();
       var bulannya;
+
       if (hari == 1) {
         harinya = "Monday";
       }
@@ -2076,17 +2078,20 @@ function createPdf(
 
           for (i = 0; i < pembayaran.length; i++) {
             doc.font(fontpath).fontSize(fontSize).text(pembayaran[i].payment_type, batas_kiri_halaman, batasAtas);
-            doc.font(fontpath).fontSize(fontSize).text(pembayaran[i].bank_type, left2, batasAtas);
-            doc.font(fontpath).fontSize(fontSize).text(":",
+            
+            doc.font(fontpath).fontSize(fontSize).text(pembayaran[i].bank_type,  
+              (left2 + (1 * batas_kiri_halaman)), batasAtas);
+            
+              doc.font(fontpath).fontSize(fontSize).text(":",
               (9 * batasKiriKolom), batasAtas);
 
             if ((pembayaran[i].id_payment == 1) || (pembayaran[i].id_payment == 2)) {
-              doc.font(fontpath).fontSize(fontSize).text("*********" + pembayaran[i].bank_akun_number,
+              doc.font(fontpath).fontSize(fontSize).text("***" + pembayaran[i].bank_akun_number,
                 //"***" + pembayaran[i].bank_akun_number.substring(
                 //3, 6)+"***"+
                 //pembayaran[i].bank_akun_number.substring(
                 //9, 12)+"****",                
-                (left2 + (3 * batas_kiri_halaman)), batasAtas);
+                (left2 + (6 * batas_kiri_halaman)), batasAtas);
             }
             doc.font(fontpath).fontSize(fontSize).text(convertRupiah.convert(pembayaran[i].nominal.toFixed(0)),
               (9 * batasKiriKolom), batasAtas, { width: lebarAngkaRupiah, align: 'right' });
