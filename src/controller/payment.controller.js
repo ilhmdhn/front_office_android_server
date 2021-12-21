@@ -417,7 +417,11 @@ async function _procSubmitPayment(req, res) {
           else if (listPayment[a].approval_code_credit == "") ErrorMsg = "No Approval, tidak boleh kosong";
           //else if(Payment[a].ExpireDate == "") ErrorMsg = "Taggal, tidak boleh kosong";
           //else if(!ValidateDate(Payment[a].ExpireDate)) ErrorMsg = "Taggal, format tidak sesuai (dd/mm/yyyy)";
-          nomor_edc = await getNomorEdc(req.body.order_room_payment[a].edc_credit);
+          //var nomor_edc = await getNomorEdc(req.body.order_room_payment[a].edc_credit);
+          var nomor_edc=listPayment[a].edc_credit;         
+          if(isNaN(nomor_edc)){
+            nomor_edc = await getNomorEdc(listPayment[a].edc_credit);
+           }
 
           paymentValueDet.push(1); //ID_Payment
           paymentValueDet.push(listPayment[a].payment_type); //Nama_Payment
@@ -431,7 +435,7 @@ async function _procSubmitPayment(req, res) {
           paymentValueDet.push("");
           paymentValueDet.push("");
           //paymentValueDet.push(listPayment[a].type_edc.nomor_edc); //EDC_Machine          
-          paymentValueDet.push(listPayment[a].edc_credit); //EDC_Machine          
+          paymentValueDet.push(nomor_edc); //EDC_Machine          
           paymentValueDet.push(0); //Status
         }
         //DEBET CARD
@@ -443,7 +447,12 @@ async function _procSubmitPayment(req, res) {
           else if (listPayment[a].approval_code_debet == "") ErrorMsg = "No Approval, tidak boleh kosong";
           //else if(Payment[a].ExpireDate == "") ErrorMsg = "Taggal, tidak boleh kosong";
           //else if(!ValidateDate(Payment[a].ExpireDate)) ErrorMsg = "Taggal, format tidak sesuai (dd/mm/yyyy)";
-          nomor_edc = await getNomorEdc(req.body.order_room_payment[a].edc_debet);
+          
+          //var nomor_edc = await getNomorEdc(req.body.order_room_payment[a].edc_debet);
+          var nomor_edc_debet=listPayment[a].edc_debet;         
+          if(isNaN(nomor_edc_debet)){
+            nomor_edc_debet = await getNomorEdc(listPayment[a].edc_debet);
+           }
 
           paymentValueDet.push(2); //ID_Payment
           paymentValueDet.push(listPayment[a].payment_type); //Nama_Payment
@@ -458,7 +467,7 @@ async function _procSubmitPayment(req, res) {
           paymentValueDet.push("");
           paymentValueDet.push("");
           //paymentValueDet.push(listPayment[a].type_edc.nomor_edc);
-          paymentValueDet.push(listPayment[a].edc_debet);
+          paymentValueDet.push(nomor_edc_debet);
           paymentValueDet.push(0); //Status
         }
 
