@@ -2019,7 +2019,7 @@ function createPdf(
           }
           doc.font(fontpathBold).fontSize(fontSize).text("Total Sales", batas_kiri_halaman, (batasAtas + (9 * spasiAntarBaris) + 1), { width: lebarSubjectDiskon, align: 'right' });
 
-          if(sewa_kamar<0){
+          if((sewa_kamar<0)&&(sewa_kamar>-10)){
             sewa_kamar=0;
           }
           
@@ -2279,7 +2279,7 @@ function createPdf(
 
           doc.font(fontpathBold).fontSize(fontSize).text("Total", batas_kiri_halaman, (batasAtas + (7 * spasiAntarBaris) + 1), { width: lebarSubjectDiskon, align: 'right' });
 
-          if(sewa_kamar<0){
+          if((sewa_kamar<0)&&(sewa_kamar>-10)){
             sewa_kamar=0;
           }
 
