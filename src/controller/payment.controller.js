@@ -1535,7 +1535,7 @@ function harinya(hari) {
         isinya2 = "Saturday";
         resolve(isinya2);
       }
-      else if (hari0 == 7) {
+      else if (hari0 == 0) {
         isinya2 = "Sunday";
         resolve(isinya2);
       }
@@ -1663,7 +1663,7 @@ function formatTanggel(tanggal_) {
       else if (hari == 6) {
         harinya = "Saturday";
       }
-      else if (hari == 7) {
+      else if (hari == 0) {
         harinya = "Sunday";
       }
 
