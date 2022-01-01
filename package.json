@@ -28,7 +28,9 @@
     "admin-lte": "^3.0.5",
     "cookie-parser": "^1.4.5",
     "dateformat": "^4.3.1",
+    "dgram": "^1.0.1",
     "ejs": "^3.1.5",
+    "electron-packager": "^9.0.1",
     "express": "^4.17.1",
     "express-form-data": "^2.0.14",
     "jquery": "^3.5.1",
@@ -43,8 +45,7 @@
     "serve-favicon": "^2.5.0",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
-    "winston": "^2.4.4",
-    "dgram": "^1.0.1"
+    "winston": "^2.4.4"
   },
   "standard": {
     "globals": [
