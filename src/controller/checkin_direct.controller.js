@@ -1166,6 +1166,7 @@ async function _procDirectEditCheckInRoom(req, res) {
                             qf4,
                             pax,
                             hp,
+                            status_promo,
                             id_payment_uang_muka,
                             uang_muka,
                             uang_voucher,
@@ -1562,8 +1563,17 @@ async function _procDirectEditCheckInRoom(req, res) {
                                 nilai_service_room +
                                 nilai_pajak_room -
                                 nilai_uang_voucher -
-                                discount_member_kamar);
+                                nilai_uang_voucher);
                             total_kamar = total_kamar.toFixed(0);
+                            console.log(`cek perhitungan
+                                        total_tarif_kamar ${total_tarif_kamar} +,
+                                        charge_overpax ${charge_overpax} +,
+                                        nilai_service_room ${nilai_service_room} +,
+                                        nilai_pajak_room ${nilai_pajak_room} -,
+                                        nilai_uang_voucher ${nilai_uang_voucher} -
+                                        nilai_uang_voucher ${nilai_uang_voucher}
+                            `)
+                            console.log(`total kamars ${total_kamar}`)
 
                             var isProsesQueryUpdateIhp_ivc = await new CheckinProses().updateIhpIvcNilaiInvoice(
                                 db,
@@ -2706,7 +2716,7 @@ async function _procExtendRoom(req, res) {
         var durasi_jam_ = req.body.durasi_jam;
         var durasi_jam = parseInt(durasi_jam_);
         //membatasi extend hanya 60 menit saja
-        durasi_jam = 1;
+        // durasi_jam = 1;
 
         var durasi_menit_ = req.body.durasi_menit;
         var durasi_menit = parseInt(durasi_menit_);
@@ -3007,12 +3017,12 @@ async function _procExtendRoom(req, res) {
                                         
                                         //bay pass perhitungan promo kamar yang salah hitung karena terlalu besar
                                         //karena promo lebih besar dari tarif kamar
-                                        if (isgetTotalPromoRoom > isgetTotalTarifKamarDanOverpax.sewa_kamar) {
-                                            logger.info(kode_rcp + 
-                                                " isgetTotalPromoRoom " + isgetTotalPromoRoom+
-                                                " > isgetTotalTarifKamarDanOverpax " +  isgetTotalTarifKamarDanOverpax.sewa_kamar);
-                                            isgetTotalPromoRoom = isgetTotalTarifKamarDanOverpax.sewa_kamar;
-                                        }
+                                        // if (isgetTotalPromoRoom > isgetTotalTarifKamarDanOverpax.sewa_kamar) {
+                                        //     logger.info(kode_rcp + 
+                                        //         " isgetTotalPromoRoom " + isgetTotalPromoRoom+
+                                        //         " > isgetTotalTarifKamarDanOverpax " +  isgetTotalTarifKamarDanOverpax.sewa_kamar);
+                                        //     isgetTotalPromoRoom = isgetTotalTarifKamarDanOverpax.sewa_kamar;
+                                        // }
 
                                         await new CheckinProses().updateIhpIvcNilaiInvoiceDiskonSewaKamar(db, isgetTotalPromoRoom, kode_rcp);
                                         await new PromoRoom().insertIhpDetailPromo(db, kode_rcp, kode_ivc, isgetTotalPromoRoom);

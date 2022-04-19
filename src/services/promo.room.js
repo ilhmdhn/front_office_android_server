@@ -1954,6 +1954,79 @@ class PromoRoom {
             var rcp = rcp_;
             //you must use set dateformat dmy
             var isiQuery = "" +
+            `SET DATEFORMAT dmy
+            SELECT DISTINCT
+               IHP_Ext.Start_Extend,
+               IHP_Ext.End_Extend,
+               IHP_Rcp_DetailsRoom.Date_Time_Start as jam_kena_tarif_awal,
+               IHP_Rcp_DetailsRoom.Date_Time_Finish as jam_kena_tarif_akhir,
+               IHP_Rcp_DetailsRoom.Tarif,
+               IHP_Promo_Rcp.Promo,
+               IHP_Rcp_DetailsRoom.Tarif * (IHP_Promo_Rcp.Diskon_Persen/100) as promo_yang_didapat
+            FROM
+               HP112.dbo.IHP_Rcp_DetailsRoom,
+               hp112.dbo.IHP_Ext,
+               hp112.dbo.IHP_Rcp,
+               hp112.dbo.IHP_Promo_Rcp
+            WHERE
+--               IHP_Ext.Start_Extend BETWEEN IHP_Rcp_DetailsRoom.Date_Time_Start AND IHP_Rcp_DetailsRoom.Date_Time_Finish AND
+               IHP_Rcp_DetailsRoom.Date_Time_Start BETWEEN IHP_Ext.Start_Extend AND IHP_Ext.End_Extend AND
+               IHP_Rcp_DetailsRoom.Reception = IHP_Rcp.Reception AND
+               IHP_Ext.Reception = IHP_Rcp.Reception AND
+               IHP_Promo_Rcp.Reception = IHP_Rcp.Reception AND
+               IHP_Promo_Rcp.FlagExtend = 1 AND
+               IHP_Promo_Rcp.Status_Promo = 1 AND
+               IHP_Rcp.Reception = '${rcp}'`   
+            ;
+
+            db.request().query(isiQuery, function (err, dataReturn) {
+               if (err) {
+                  sql.close();
+                  logger.error(err);
+                  console.log(err);
+                  logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                  resolve(false);
+               } else {
+                  sql.close();
+                  var promo_kamar = parseFloat(0);
+                  if (dataReturn.recordset.length > 0) {
+                     for (var a = 0; a < dataReturn.recordset.length; a++) {
+                        var promo_kamar_ = dataReturn.recordset[a].promo_yang_didapat;
+                        var promo_kamar__ = parseFloat(promo_kamar_);
+                        promo_kamar = promo_kamar + promo_kamar__;
+
+                        console.log(rcp + " jam " + dataReturn.recordset[a].Start_Extend+ " promo extend room yang di dapatkan=" + dataReturn.recordset[a].promo_yang_didapat);
+                        logger.info(rcp + " jam " + dataReturn.recordset[a].Start_Extend + " promo extend room yang di dapatkan=" + dataReturn.recordset[a].promo_yang_didapat);
+
+                     }
+                     console.log(rcp + " Promo Room extend " + promo_kamar);
+                     logger.info(rcp + " Promo Room extend " + promo_kamar);
+
+                     resolve(promo_kamar);
+                  }
+                  else {
+                     console.log(rcp + " Promo Room extend 0 ");
+                     logger.info(rcp + " Promo Room extend 0 ");
+                     resolve(promo_kamar);
+                  }
+               }
+            });
+         } catch (error) {
+            console.log(error);
+            logger.error(error.message);
+            logger.error('Catch Error prosesQuery ');
+            resolve(false);
+         }
+      });
+   }
+
+   getTotalPromoExtendRoomOld(db_, rcp_) {
+      return new Promise((resolve, reject) => {
+         try {
+            db = db_;
+            var rcp = rcp_;
+            //you must use set dateformat dmy
+            var isiQuery = "" +
                `
                set
    dateformat dmy 
@@ -11799,7 +11872,7 @@ where
          , DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)), 114), 1, 12) 
                   end
          , 103) as End_Promo, 1 as Status_Promo, 0 Syarat_Kamar, IHP_PromoRoom.[Room] as Kamar, 0 Syarat_Jenis_kamar, '[NONE]' as Jenis_Kamar, 0 as Syarat_Durasi, 0 as Durasi, 0 as Syarat_Hari, IHP_PromoRoom.[Hari] as hari, 0 as Syarat_Jam, IHP_PromoRoom.[Date_Start] as Date_Start, IHP_PromoRoom.[Time_Start] as Time_Start, IHP_PromoRoom.[Date_Finish] as Date_Finish, IHP_PromoRoom.[Time_Finish] as Time_Finish, 0 Syarat_Quantity, 0 Quantity, IHP_PromoRoom.[Diskon_Persen] as Diskon_Persen, IHP_PromoRoom.[Diskon_Rp] as Diskon_Rp, 0 Syarat_Inventory, '' as Inventory, 0 as Sign_Inventory, 0 as Sign_Diskon_Persen, 0 as Sign_Diskon_Rp, 1 as FlagExtend,
-         IHP_Ext.Start_Exten,
+         IHP_Ext.Start_Extend,
          DATEADD(minute,${durasi_menit}, IHP_Ext.Start_Extend)
                FROM
                   IHP_PromoRoom , IHP_Rcp , IHP_Room ,IHP_Ext 
@@ -12262,7 +12335,6 @@ where
          }
       });
    }
-
 
 }
 module.exports = PromoRoom;
