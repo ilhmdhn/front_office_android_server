@@ -740,6 +740,7 @@ exports.getCheckinResult = async function (req, res) {
             let getExtendRoom_ = getExtendRoom(invoiceSelected);
             let getPromoRcpRoom_ = getPromoRcpRoom(invoiceSelected);
             let getPromoRcpFood_ = getPromoRcpFood(invoiceSelected);
+            let getRcpTIme_ = getTimeRcp(invoiceSelected);
 
             return Promise.all([
                 getOrderPenjualan_,
@@ -748,7 +749,8 @@ exports.getCheckinResult = async function (req, res) {
                 getTarifPerjamHargaKamar_,
                 getExtendRoom_,
                 getPromoRcpRoom_,
-                getPromoRcpFood_
+                getPromoRcpFood_,
+                getRcpTIme_
             ]);
 
         })
@@ -761,6 +763,12 @@ exports.getCheckinResult = async function (req, res) {
             let eExtendRoom = data[4];
             let ePromoRcpRoom = data[5];
             let ePromoRcpFood = data[6];
+            let time = data[7]
+            let eTimeRcp = {
+                checkin: time[0].Checkin,
+                durasi: time[0].jam_sewa,
+                checkout: time[0].Checkout
+            };
             let summaryOrderInventory = _orderInventoryService.getSummaryOrderInventory(
                 _orderInventoryService.getSummaryProgressOrderInventory(eOrderPenjualan),
                 _orderInventoryService.getSummaryCancelOrderInventory(eOrderCancelation)
@@ -778,7 +786,8 @@ exports.getCheckinResult = async function (req, res) {
                 order_inventory_progress: eSlipOrderStatus,
                 order_promo_room: ePromoRcpRoom,
                 order_promo_food: ePromoRcpFood,
-                invoice: invoice
+                invoice: invoice,
+                time: eTimeRcp
             };
 
             res.send(new ResponseFormat(true, roomOrder));
@@ -861,6 +870,46 @@ function getInvoice(roomCode, rcp) {
         }
     });
 }
+// added 22 april 2022
+function getTimeRcp(ivc) {
+    return new Promise((resolve, reject) => {
+        try {
+
+            var isiQuery = `
+            SELECT Reception, 
+            RIGHT('0'+CAST(DATEPART(hour, Checkin) as varchar(2)),2) + ':' +
+            RIGHT('0'+CAST(DATEPART(minute, Checkin)as varchar(2)),2) as Checkin
+            ,(Jam_Sewa + ISNULL((SELECT SUM(Jam_Extend) FROM HP112.dbo.IHP_Ext WHERE Reception = (SELECT Reception FROM HP112.dbo.IHP_Rcp WHERE Invoice = '${ivc}')),0)) as jam_sewa
+            ,isnull(
+             RIGHT('0'+CAST(DATEPART(hour, (SELECT MAX(End_Extend) FROM HP112.dbo.IHP_Ext WHERE Reception = (SELECT Reception FROM HP112.dbo.IHP_Rcp WHERE Invoice = '${ivc}'))) as varchar(2)),2) + ':' +
+             RIGHT('0'+CAST(DATEPART(minute, (SELECT MAX(End_Extend) FROM HP112.dbo.IHP_Ext WHERE Reception = (SELECT Reception FROM HP112.dbo.IHP_Rcp WHERE Invoice = '${ivc}')))as varchar(2)),2)
+            ,RIGHT('0'+CAST(DATEPART(hour, Checkout) as varchar(2)),2) + ':' +
+             RIGHT('0'+CAST(DATEPART(minute, Checkout)as varchar(2)),2)) as Checkout
+             FROM hp112.dbo.IHP_Rcp
+             WHERE Invoice = '${ivc}'`;
+
+            db.request().query(isiQuery, function (err, dataReturn) {
+                if (err) {
+                    logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+                    reject(err.message);
+                } else {
+                    if (dataReturn.recordset.length > 0) {
+                        resolve(dataReturn.recordset);
+                    }
+                    else {
+                        reject("Data Reception Not Found");
+                    }
+                }
+            });
+
+        } catch (err) {
+            console.log(err);
+            logger.error(err.message);
+            reject(err.message);
+        }
+    });
+}
+
 // TODO :: 03 Join Rcp Ivc always result
 function getReceptionInvoiceDetail(ivc, statusTransfer) {
     return new Promise((resolve, reject) => {

@@ -1964,10 +1964,10 @@ class PromoRoom {
                IHP_Promo_Rcp.Promo,
                IHP_Rcp_DetailsRoom.Tarif * (IHP_Promo_Rcp.Diskon_Persen/100) as promo_yang_didapat
             FROM
-               HP112.dbo.IHP_Rcp_DetailsRoom,
-               hp112.dbo.IHP_Ext,
-               hp112.dbo.IHP_Rcp,
-               hp112.dbo.IHP_Promo_Rcp
+               IHP_Rcp_DetailsRoom,
+               IHP_Ext,
+               IHP_Rcp,
+               IHP_Promo_Rcp
             WHERE
 --               IHP_Ext.Start_Extend BETWEEN IHP_Rcp_DetailsRoom.Date_Time_Start AND IHP_Rcp_DetailsRoom.Date_Time_Finish AND
                IHP_Rcp_DetailsRoom.Date_Time_Start BETWEEN IHP_Ext.Start_Extend AND IHP_Ext.End_Extend AND
