@@ -1721,6 +1721,7 @@ function getSulSud(ivc) {
                 " ,[IHP_Sul].[Kamar] as kamar" +
                 " ,[IHP_Sul].[Bayar] as bayar" +
                 " ,[IHP_Sul].[Kembali] as kembali" +
+                " ,[IHP_Sul].[Chusr] as Chusr" +
                 " ,[IHP_Sud].[Summary] as summary" +
                 " ,[IHP_Sud].[ID_Payment] as id_payment" +
                 " ,[IHP_Sud].[Nama_Payment] as payment_type" +
@@ -1764,6 +1765,7 @@ function getSulSud(ivc) {
         }
     });
 }
+
 
 // TODO :: 03 Join Rcp Ivc always result
 function getReceptionInvoiceDetailHistory(ivc, statusTransfer) {
