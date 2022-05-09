@@ -41,6 +41,7 @@ module.exports = function (callback) {
     var neworderRoute = require('./routes/neworder.route');
     var reportRoute = require('./routes/report.route');
     var rsvRoute = require('./routes/reservation.route');
+    var approvalRoute = require('./routes/submit_approval.route');
 
     var versi = "V2020_09.04 Updated 02 Oktober 2020";
     var cek_koneksi_internet;
@@ -135,6 +136,7 @@ module.exports = function (callback) {
     app.use('/neworder', neworderRoute);
     app.use('/report', reportRoute);
     app.use('/rsv', rsvRoute);
+    app.use('/approval', approvalRoute);
 
     app.use('/web', webRoute);
 

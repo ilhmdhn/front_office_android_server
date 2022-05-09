@@ -685,7 +685,8 @@ async function _procSubmitPayment(req, res) {
     await new CheckinProses().deleteIhpUangMukaNonCash(db, Invoice.Reception);
   }
 
-  var cek_voucher = await new CheckinProses().getNomorVoucher(db, room.Reception);
+//  var cek_voucher = await new CheckinProses().getNomorVoucher(db, room.Reception);
+  var cek_voucher = false
 
   if (cek_voucher != false) {
     await new CheckinProses().updateStatusIhpVcrDisableEnableSedangDipakaiCheckin(db, cek_voucher, 0);

@@ -3080,7 +3080,8 @@ async function _procExtendRoom(req, res) {
                                         discount_member_kamar = discount_member_kamar + discount_member_kamar_extend;
 
                                         if ((isgetTotalPromoRoom > 0) || (discount_member_kamar > 0) || (isgetTotalPromoRoomExtend > 0)) {
-                                            var voucher = await new CheckinProses().getNomorVoucher(db, kode_rcp);
+                                            //var voucher = await new CheckinProses().getNomorVoucher(db, kode_rcp);
+                                            var voucher = false
                                             if (voucher != false) {
                                                 //disable voucher jika promo sewa kamar >0
                                                 logger.info(kode_rcp + " Disable voucher " + voucher + " karena Promo Room " +

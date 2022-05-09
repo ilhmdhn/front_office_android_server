@@ -6,8 +6,59 @@ var db ;
 
 var UtilitiesModel = require('./../model/UtilitiesModel');
 var InvoiceModel = require('./../model/IHP_InvoiceModel');
+var encryption = require('../util/encryption')
 var moment = require('moment');
 var dateFormat = require('dateformat');
+const { Console } = require('console');
+
+
+exports.getUser = async function (req, res) {
+    db = await new DBConnection().getPoolConnection();
+    try{
+
+      var levelUserTemp = req.query.level_user;
+      var levelUser = await encryption.enkripsi_dekripsi_1(levelUserTemp);
+      levelUser = await encryption.enkripsi_dekripsi_2(levelUser, true);
+      
+      var isiQuery  = `SELECT * from IHP_User WHERE Level_User = ${levelUser}`;
+
+      db.request().query(isiQuery, function (err, dataReturn) {
+        if (err) {
+            logger.error(err.message);
+            res.send(new ResponseFormat(false, null, err.message));
+        } else {
+            if (dataReturn.rowsAffected>0) {
+              showDataUser(dataReturn, res)
+            }
+            else {
+                res.send(new ResponseFormat(false, null, "Data Not Found"));
+            }
+        }
+    });
+
+    } catch(error){
+      logger.error(error);
+      logger.error(error.message);
+      dataResponse = new ResponseFormat(false, null, error.message);
+      res.send(dataResponse);
+    }
+}
+
+async function showDataUser(login_, res){
+  var username = [];
+
+  var login = login_;
+
+
+  for (var a=0; login.rowsAffected > a; a++){  
+  var user_id_temp = await encryption.enkripsi_dekripsi_1(login.recordset[a].User_ID);
+  var user_id = await encryption.enkripsi_dekripsi_2(user_id_temp,false);
+  username.push({
+      username: user_id
+  })      
+  }
+  res.send(new ResponseFormat(false, username));
+}
 
 exports.getCash = async function (req, res) {
   db = await new DBConnection().getPoolConnection();
