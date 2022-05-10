@@ -6,10 +6,12 @@ var db ;
 
 var UtilitiesModel = require('./../model/UtilitiesModel');
 var InvoiceModel = require('./../model/IHP_InvoiceModel');
+var report = require('../services/report');
 var encryption = require('../util/encryption')
 var moment = require('moment');
 var dateFormat = require('dateformat');
 const { Console } = require('console');
+const Report = require('../services/report');
 
 
 exports.getUser = async function (req, res) {
@@ -57,7 +59,7 @@ async function showDataUser(login_, res){
       username: user_id
   })      
   }
-  res.send(new ResponseFormat(false, username));
+  res.send(new ResponseFormat(true, username));
 }
 
 exports.getCash = async function (req, res) {
@@ -1635,4 +1637,44 @@ async function _getCash(req, res) {
     dataResponse = new ResponseFormat(true, Parameter);
     res.send(dataResponse);
   }
+}
+
+exports.getStatusReportKas = async function (req, res){
+  db = await new DBConnection().getPoolConnection();
+  logger = req.log;
+  _getStatusReportKas(req, res);
+}
+
+async function _getStatusReportKas(req, res){
+    try{
+      var start = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
+      logger.info("-> Start proses laporan kas " + start);
+      console.log("-> Start proses laporan kas " + start);
+
+      var tanggal = req.query.tanggal;
+      var shift = req.query.shift;
+      var chusr = req.query.chusr;
+
+      var getCINPaid  = await new Report().getCINPaid(db, tanggal, shift, chusr)
+      var getJumlahBayarPaid = await new Report().getJumlahJamPaid(db, tanggal, shift, chusr);
+      var getCINPiutang = await new Report().getCINPiutang(db, tanggal, shift, chusr);
+      var getJumlahJamPiutang = await new Report().getJumlahJamPiutang(db, tanggal, shift, chusr);
+
+      var response = {
+        tanggal: getJumlahBayarPaid.tanggal,
+        jumlah_checkin_sudah_bayar: getCINPaid.jumlahCheckinPaid,
+        jumlah_jam_sudah_bayar: getJumlahBayarPaid.jumlah_jam_sudah_bayar,
+        jumlah_tamu_sudah_bayar: getCINPaid.jumlahTamuPaid,
+        jumlah_checkin_piutang: getCINPiutang.jumlah_checkin_piutang,
+        jumlah_jam_piutang:  getJumlahJamPiutang.jumlah_jam_piutang,
+        jumlah_tamu_piutang: getCINPiutang.jumlah_tamu_piutang
+      }
+
+      res.send(new ResponseFormat(true, response))
+    } catch{
+      logger.error(error);
+      logger.error(error.message);
+      dataResponse = new ResponseFormat(false, null, error.message);
+      res.send(dataResponse);
+    }
 }
