@@ -2,52 +2,57 @@ var sql = require("mssql");
 var logger = require ('../util/logger');
 var db;
 var isiQuery;
+var dateFormat = require('dateformat');
 
 class Report{
     constructor(){ }
 
-    getCINPaid(db_, tanggal_, shift_, chusr_){
+    getCINPaid(db_, tanggalIn_, tanggalOut_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
         return new Promise((resolve, reject) =>{
             try{
             db = db_;
-            var tanggal = tanggal_;
+            var tanggalIn = tanggalIn_;
+            var tanggalOut = tanggalOut_;
+            var tanggalAwal = tanggalAwal_;
+            var tanggalAkhir = tanggalAkhir_;
             var chusr = chusr_;
             var shift = shift_;
-            var isiQuery;
 
             if (chusr != '-'){
-                isiQuery = `Set dateformat dmy
+                isiQuery = `
                 Select Count(Rcp.Reception) as jumlah_checkin_sudah_bayar,
                 isnull(sum(RCP.Pax),0) as jumlah_tamu_sudah_bayar
                 from hp112.dbo.IHP_Rcp Rcp, hp112.dbo.Ihp_Room Room 
                 where
-                Rcp.CheckIn >= cast('${tanggal} 08:00:00' as datetime) and
-                Rcp.CheckIn <= DATEADD(DAY, 1, cast('${tanggal} 05:00:00' as datetime)) and
+                Rcp.CheckIn >= '${dateFormat(tanggalIn, "yyyy-mm-dd HH:MM:ss")}'  and
+                Rcp.CheckIn <= '${dateFormat(tanggalOut, "yyyy-mm-dd HH:MM:ss")}' and
                 RCp.kamar = Room.Kamar and 
                 (Room.Jenis_Kamar <> 'LOBBY' and
                 Room.Jenis_Kamar <> 'BAR' and
                 Room.Jenis_Kamar <> 'LOUNGE'and
                 Room.Jenis_Kamar <> 'RESTO') and
-                Rcp.reception in (select reception from hp112.dbo.ihp_Sul where date_trans >= cast('${tanggal} 08:00:00' as datetime)) and
-                date_trans <= DATEADD(DAY, 1, cast('${tanggal} 05:00:00' as datetime)) and
+                Rcp.reception in (select reception from hp112.dbo.ihp_Sul where 
+                    date_trans >= '${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' and
+                    date_trans <= '${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}' and
                 Shift = ${shift} and 
-                Rcp.Chusr = '${chusr}'`    
+                Chusr = '${chusr}')`    
             } else {
-                isiQuery = `Set dateformat dmy
+                isiQuery = `
                 Select Count(Rcp.Reception) as jumlah_checkin_sudah_bayar,
                 isnull(sum(RCP.Pax),0) as jumlah_tamu_sudah_bayar
                 from hp112.dbo.IHP_Rcp Rcp, hp112.dbo.Ihp_Room Room 
                 where
-                Rcp.CheckIn >= cast('${tanggal} 08:00:00' as datetime) and
-                Rcp.CheckIn <= DATEADD(DAY, 1, cast('${tanggal} 05:00:00' as datetime)) and
+                Rcp.CheckIn >= '${dateFormat(tanggalIn, "yyyy-mm-dd HH:MM:ss")}' and
+                Rcp.CheckIn <= '${dateFormat(tanggalOut, "yyyy-mm-dd HH:MM:ss")}' and
                 RCp.kamar = Room.Kamar and 
                 (Room.Jenis_Kamar <> 'LOBBY' and
                 Room.Jenis_Kamar <> 'BAR' and
                 Room.Jenis_Kamar <> 'LOUNGE'and
                 Room.Jenis_Kamar <> 'RESTO') and
-                Rcp.reception in (select reception from hp112.dbo.ihp_Sul where date_trans >= cast('${tanggal} 08:00:00' as datetime)) and
-                date_trans <= DATEADD(DAY, 1, cast('${tanggal} 05:00:00' as datetime)) and
-                Shift = ${shift}` 
+                Rcp.reception in (select reception from hp112.dbo.ihp_Sul where 
+                date_trans >= '${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' and
+                date_trans <= '${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}' and
+                Shift = ${shift})` 
             }
 
             db.request().query(isiQuery, function(err, dataReturn){
@@ -83,59 +88,70 @@ class Report{
         })
     }
 
-    getJumlahJamPaid(db_, tanggal_, shift_, chusr_){
+    getJumlahJamPaid(db_, tanggalIn_, tanggalOut_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
         return new Promise ((resolve, reject) =>{
             try{
                 db = db_;
-                var tanggal = tanggal_;
+                var tanggalIn = tanggalIn_;
+                var tanggalOut = tanggalOut_;
+                var tanggalAwal = tanggalAwal_;
+                var tanggalAkhir = tanggalAkhir_;
                 var chusr = chusr_;
                 var shift = shift_;
-                var isiQuery;
     
                  if (chusr != '-'){
-                isiQuery = ` set dateformat dmy
+                isiQuery = `
                 select distinct
                 CONVERT(char,r.date_trans,105) as tanggal,
                 isnull(sum(r.jam_sewa),0) + isnull(sum(e.jam_extend),0) as jumlah_jam_sudah_bayar,
                 isnull(sum(r.pax),0) as jumlah_tamu_sudah_bayar
                 from
-                hp112.dbo.ihp_rcp as r
-                left join hp112.dbo.ihp_ext as e on r.reception = e.reception and
+                ihp_rcp as r
+                left join ihp_ext as e on 
+                r.reception = e.reception and
                 e.status = 1, 
-                hp112.dbo.IHP_room room 
+                IHP_room room 
                 where 
-                CONVERT(varchar,r.date_trans,105) = CONVERT(varchar,'${tanggal}',105) and
-                
+                CONVERT(char,r.date_trans,105) = '${dateFormat(tanggalAwal, "dd-mm-yyyy")}' and
                 r.kamar = room.kamar and
                 (
                 Room.Jenis_Kamar <> 'LOBBY' and
                 Room.Jenis_Kamar <> 'BAR' and
                 Room.Jenis_Kamar <> 'LOUNGE' and
                 Room.Jenis_Kamar <> 'RESTO') and
-                r.reception in (select reception from hp112.dbo.ihp_Sul where CONVERT(char,date_trans,105) >= CONVERT(char,'${tanggal}',105) and CONVERT(char,date_trans,105) <= CONVERT(char, DATEADD(day, 1, '${tanggal}'),105) and Shift = '${shift}' and r.Chusr = '${chusr}' )
+                r.reception in (
+                    select reception from ihp_Sul 
+                    where 
+                    date_trans >= cast('${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' as datetime) and 
+                    date_trans <= cast('${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}'  as datetime) and 
+                    Shift = ${shift} and Chusr = '${chusr}')
                 group by CONVERT(char,r.date_trans,105)`
-                
-            } else {
-                isiQuery = `set dateformat dmy
+                } else {
+                isiQuery = `
                 select distinct
                 CONVERT(char,r.date_trans,105) as tanggal,
                 isnull(sum(r.jam_sewa),0) + isnull(sum(e.jam_extend),0) as jumlah_jam_sudah_bayar,
                 isnull(sum(r.pax),0) as jumlah_tamu_sudah_bayar
                 from
-                hp112.dbo.ihp_rcp as r
-                left join hp112.dbo.ihp_ext as e on r.reception = e.reception and
+                ihp_rcp as r
+                left join ihp_ext as e on 
+                r.reception = e.reception and
                 e.status = 1, 
-                hp112.dbo.IHP_room room 
+                IHP_room room 
                 where 
-                CONVERT(varchar,r.date_trans,105) = CONVERT(varchar,'${tanggal}',105) and
-                
+                CONVERT(char,r.date_trans,105) = '${dateFormat(tanggalAwal, "dd-mm-yyyy")}' and
                 r.kamar = room.kamar and
                 (
                 Room.Jenis_Kamar <> 'LOBBY' and
                 Room.Jenis_Kamar <> 'BAR' and
                 Room.Jenis_Kamar <> 'LOUNGE' and
                 Room.Jenis_Kamar <> 'RESTO') and
-                r.reception in (select reception from hp112.dbo.ihp_Sul where CONVERT(char,date_trans,105) >= CONVERT(char,'${tanggal}',105) and CONVERT(char,date_trans,105) <= CONVERT(char,DATEADD(day, 1,'${tanggal}'),105) and Shift = '${shift}' )
+                r.reception in (
+                    select reception from ihp_Sul 
+                    where 
+                    date_trans >= cast('${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' as datetime) and 
+                    date_trans <= cast('${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}'  as datetime) and 
+                    Shift = ${shift} )
                 group by CONVERT(char,r.date_trans,105)`
                 }
 
@@ -174,22 +190,24 @@ class Report{
         })
     }
 
-    getCINPiutang(db_, tanggal_, shift_,  chusr_){
+    getCINPiutang(db_, tanggalIn_, tanggalOut_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
         return new Promise((resolve, reject) =>{
             try{
                 db = db_;
-                var tanggal = tanggal_;
+                var tanggalIn = tanggalIn_;
+                var tanggalOut = tanggalOut_;
+                var tanggalAwal = tanggalAwal_;
+                var tanggalAkhir = tanggalAkhir_;
                 var chusr = chusr_;
                 var shift = shift_;
-                var isiQuery;
                 
                 if (chusr != '-'){
-                    isiQuery = `Set dateformat dmy
+                    isiQuery = `
                     Select Count(Rcp.Reception) as jumlah_checkin_piutang,
                     isnull(sum(RCP.Pax),0) as jumlah_tamu_piutang 
                     from hp112.dbo.IHP_Rcp Rcp, hp112.dbo.Ihp_Room Room
-                    WHERE (Rcp.CheckIn >= cast('${tanggal} 08:00:00' as datetime) and
-                           Rcp.CheckIn <= DATEADD(DAY, 1, cast('${tanggal} 05:00:00' as datetime))) and
+                    WHERE (Rcp.CheckIn >= '${dateFormat(tanggalIn, "yyyy-mm-dd HH:MM:ss")}' and
+                           Rcp.CheckIn <= '${dateFormat(tanggalOut, "yyyy-mm-dd HH:MM:ss")}') and
                             Rcp.kamar = Room.Kamar and
                             (
                                 Room.Jenis_Kamar <> 'LOBBY' and
@@ -198,17 +216,18 @@ class Report{
                                 Room.Jenis_Kamar <> 'RESTO'
                             ) and 
                             Rcp.Shift = '${shift}' and
-                            Rcp.reception not in (select reception from hp112.dbo.ihp_Sul 
-                                where date_trans >= cast('${tanggal} 08:00:00' as datetime) and 
-                                date_trans <= DATEADD(DAY, 1, cast('${tanggal} 05:00:00' as datetime)) 
-                                and Shift = '${shift}' and Rcp.Chusr = '${chusr}')`
+                            and Rcp.Chusr = '${chusr} and
+                            Rcp.reception not in (select reception from hp112.dbo.ihp_Sul where 
+                                date_trans >= '${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' and 
+                                date_trans <= '${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}' 
+                                and Shift = ${shift}')`
                 }else{
-                    isiQuery = `Set dateformat dmy
+                    isiQuery = `
                     Select Count(Rcp.Reception) as jumlah_checkin_piutang,
                     isnull(sum(RCP.Pax),0) as jumlah_tamu_piutang 
                     from hp112.dbo.IHP_Rcp Rcp, hp112.dbo.Ihp_Room Room
-                    WHERE (Rcp.CheckIn >= cast('${tanggal} 08:00:00' as datetime) and
-                           Rcp.CheckIn <= DATEADD(DAY, 1, cast('${tanggal} 05:00:00' as datetime))) and
+                    WHERE (Rcp.CheckIn >= '${dateFormat(tanggalIn, "yyyy-mm-dd HH:MM:ss")}' and
+                           Rcp.CheckIn <= '${dateFormat(tanggalOut, "yyyy-mm-dd HH:MM:ss")}') and
                             Rcp.kamar = Room.Kamar and
                             (
                                 Room.Jenis_Kamar <> 'LOBBY' and
@@ -218,9 +237,9 @@ class Report{
                             ) and 
                             Rcp.Shift = '${shift}' and
                             Rcp.reception not in (select reception from hp112.dbo.ihp_Sul 
-                                where date_trans >= cast('${tanggal} 08:00:00' as datetime) and 
-                                date_trans <= DATEADD(DAY, 1, cast('${tanggal} 05:00:00' as datetime)) 
-                                and Shift = '${shift}')`
+                                where date_trans >= '${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' and 
+                                date_trans <= '${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}' 
+                                and Shift = ${shift})`
                 }
 
                 db.request().query(isiQuery, function(err, dataReturn){
@@ -256,66 +275,79 @@ class Report{
         })
     }
 
-    getJumlahJamPiutang(db_, tanggal_, shift_, chusr_){
+    getJumlahJamPiutang(db_, tanggalIn_, tanggalOut_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
         return new Promise((resolve, reject) => {
             try{
                 db = db_;
-                var tanggal = tanggal_;
+                var tanggalIn = tanggalIn_;
+                var tanggalOut = tanggalOut_;
+                var tanggalAwal = tanggalAwal_;
+                var tanggalAkhir = tanggalAkhir_;
                 var chusr = chusr_;
                 var shift = shift_;
 
                 if (chusr != '-'){
-                    isiQuery = ` set dateformat dmy
+                    isiQuery = `
                     select distinct
                     CONVERT(char,r.date_trans,105) as tanggal,
                     isnull(sum(r.jam_sewa),0) + isnull(sum(e.jam_extend),0) as jumlah_jam_piutang,
                     isnull(sum(r.pax),0) as jumlah_tamu_piutang
                     from
-                    hp112.dbo.ihp_rcp as r
-                    left join hp112.dbo.ihp_ext as e on r.reception = e.reception and
+                    ihp_rcp as r
+                    left join ihp_ext as e on 
+                    r.reception = e.reception and
                     e.status = 1, 
-                    hp112.dbo.IHP_room room 
+                    IHP_room room 
                     where 
-                    CONVERT(varchar,r.date_trans,105) = CONVERT(varchar,'${tanggal}',105) and
-                    
+                    CONVERT(char,r.date_trans,105) = '${dateFormat(tanggalAwal, "dd-mm-yyyy")}' and
                     r.kamar = room.kamar and
                     (
                     Room.Jenis_Kamar <> 'LOBBY' and
                     Room.Jenis_Kamar <> 'BAR' and
                     Room.Jenis_Kamar <> 'LOUNGE' and
                     Room.Jenis_Kamar <> 'RESTO') and
-                    r.reception not in (select reception from hp112.dbo.ihp_Sul where CONVERT(char,date_trans,105) >= CONVERT(char,'${tanggal}',105) and CONVERT(char,date_trans,105) <= CONVERT(char, DATEADD(day, 1, '${tanggal}') ,105) and Shift = '${shift}' and r.Chusr = '${chusr}' )
+                    r.reception not in (
+                        select reception from ihp_Sul 
+                        where 
+                        date_trans >= cast('${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' as datetime) and 
+                        date_trans <= cast('${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}'  as datetime) and 
+                        Shift = ${shift} and Chusr = '${chusr}')
                     group by CONVERT(char,r.date_trans,105)`
-                    
                 } else {
-                    isiQuery = `set dateformat dmy
+                    isiQuery = `
                     select distinct
                     CONVERT(char,r.date_trans,105) as tanggal,
                     isnull(sum(r.jam_sewa),0) + isnull(sum(e.jam_extend),0) as jumlah_jam_piutang,
                     isnull(sum(r.pax),0) as jumlah_tamu_piutang
                     from
-                    hp112.dbo.ihp_rcp as r
-                    left join hp112.dbo.ihp_ext as e on r.reception = e.reception and
+                    ihp_rcp as r
+                    left join ihp_ext as e on 
+                    r.reception = e.reception and
                     e.status = 1, 
-                    hp112.dbo.IHP_room room 
+                    IHP_room room 
                     where 
-                    CONVERT(varchar,r.date_trans,105) = CONVERT(varchar,'${tanggal}',105) and
-                    
+                    CONVERT(char,r.date_trans,105) = '${dateFormat(tanggalAwal, "dd-mm-yyyy")}' and
                     r.kamar = room.kamar and
                     (
                     Room.Jenis_Kamar <> 'LOBBY' and
                     Room.Jenis_Kamar <> 'BAR' and
                     Room.Jenis_Kamar <> 'LOUNGE' and
                     Room.Jenis_Kamar <> 'RESTO') and
-                    r.reception not in (select reception from hp112.dbo.ihp_Sul where CONVERT(char,date_trans,105) >= CONVERT(char,'${tanggal}',105) and CONVERT(char,date_trans,105) <= CONVERT(char,DATEADD(day, 1, '${tanggal}'),105) and Shift = '${shift}' )
+                    r.reception not in (
+                        select reception from ihp_Sul 
+                        where 
+                        date_trans >= cast('${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' as datetime) and 
+                        date_trans <= cast('${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}'  as datetime) and 
+                        Shift = ${shift} )
                     group by CONVERT(char,r.date_trans,105)`
-                    }
+                }
+                    
 
                 db.request().query(isiQuery, function(err, dataReturn){
                     if(err){
                         sql.close();
                         logger.error(err);
-                        console.log(err);
+                        // console.log(err);
                         logger.error(err.message + ' Error prosesQuery ' + isiQuery);
                         resolve(false); 
                     } else{
@@ -343,5 +375,626 @@ class Report{
             }
         })
     }
+
+    getJumlahCash(db_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
+        return new Promise((resolve, reject) =>{
+            try{
+                db = db_;
+                var tanggalAwal = tanggalAwal_;
+                var tanggalAkhir = tanggalAkhir_;
+                var chusr = chusr_;
+                var shift = shift_;
+
+                if (chusr != '-'){
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'CASH' and Sud.id_payment = '0'
+                    and Sul.Shift = ${shift}
+                    and Sul.CHusr = ${chusr}`
+                } else {
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'CASH' and Sud.id_payment = '0'
+                    and Sul.Shift = ${shift}`
+                }
+
+                db.request().query(isiQuery, function(err, dataReturn){
+                    if(err){
+                        sql.close();
+                        logger.error(err);
+                        logger.error(err.message + 'Error ProsesQuery'+  isiQuery)
+                        resolve(false);
+                    } else{
+                        sql.close()
+                        if(dataReturn.recordset.length > 0){
+                            var jumlah = dataReturn.recordset[0].jumlah;
+                        
+                        console.log("Data CASH "+ jumlah);
+                        logger.info("Data CASH "+ jumlah);
+                        resolve(jumlah);
+                        } else{
+                        console.log("Data CASH 0 ");
+                        logger.info("Data CASH 0 ");
+                        resolve(0);
+                        }
+                    }
+                })
+            } catch{
+                console.log(error);
+                logger.error(error.message);
+                logger.error('Catch Error prosesQuery ');
+                resolve(0);
+            }
+        })
+    }
+
+    getJumlahCreditCard(db_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
+        return new Promise((resolve, reject) =>{
+            try{
+                db = db_;
+                var tanggalAwal = tanggalAwal_;
+                var tanggalAkhir = tanggalAkhir_;
+                var chusr = chusr_;
+                var shift = shift_;
+
+                if (chusr != '-'){
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'CREDIT CARD' and Sud.id_payment = '1'
+                    and Sul.Shift = ${shift}
+                    and Sul.CHusr = ${chusr}`
+                } else {
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'CREDIT CARD' and Sud.id_payment = '1'
+                    and Sul.Shift = ${shift}`
+                }
+
+                db.request().query(isiQuery, function(err, dataReturn){
+                    if(err){
+                        sql.close();
+                        logger.error(err);
+                        logger.error(err.message + 'Error ProsesQuery'+  isiQuery)
+                        resolve(0);
+                    } else{
+                        sql.close()
+                        if(dataReturn.recordset.length > 0){
+                            var jumlah = dataReturn.recordset[0].jumlah;
+                        
+                        console.log("Data CC "+ jumlah);
+                        logger.info("Data CC "+ jumlah);
+                        resolve(jumlah);
+                        } else{
+                        console.log("Data CC 0 ");
+                        logger.info("Data CC 0 ");
+                        resolve(0);
+                        }
+                    }
+                })
+            } catch{
+                console.log(error);
+                logger.error(error.message);
+                logger.error('Catch Error prosesQuery ');
+                resolve(0);
+            }
+        })
+    }
+
+    getJumlahDebetCard(db_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
+        return new Promise((resolve, reject) =>{
+            try{
+                db = db_;
+                var tanggalAwal = tanggalAwal_;
+                var tanggalAkhir = tanggalAkhir_;
+                var chusr = chusr_;
+                var shift = shift_;
+
+                if (chusr != '-'){
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'DEBET CARD' and Sud.id_payment = '2'
+                    and Sul.Shift = ${shift}
+                    and Sul.CHusr = ${chusr}`
+                } else {
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'DEBET CARD' and Sud.id_payment = '2'
+                    and Sul.Shift = ${shift}`
+                }
+
+                db.request().query(isiQuery, function(err, dataReturn){
+                    if(err){
+                        sql.close();
+                        logger.error(err);
+                        logger.error(err.message + 'Error ProsesQuery'+  isiQuery)
+                        resolve(0);
+                    } else{
+                        sql.close()
+                        if(dataReturn.recordset.length > 0){
+                            var jumlah = dataReturn.recordset[0].jumlah;
+                        
+                        console.log("Data DEBET CARD "+ jumlah);
+                        logger.info("Data DEBET CARD "+ jumlah);
+                        resolve(jumlah);
+                        } else{
+                        console.log("Data DEBET CARD 0 ");
+                        logger.info("Data DEBET CARD 0 ");
+                        resolve(0);
+                        }
+                    }
+                })
+            } catch{
+                console.log(error);
+                logger.error(error.message);
+                logger.error('Catch Error prosesQuery ');
+                resolve(0);
+            }
+        })
+    }
+
+    getJumlahPiutang(db_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
+        return new Promise((resolve, reject) =>{
+            try{
+                db = db_;
+                var tanggalAwal = tanggalAwal_;
+                var tanggalAkhir = tanggalAkhir_;
+                var chusr = chusr_;
+                var shift = shift_;
+
+                if (chusr != '-'){
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'PIUTANG' and Sud.id_payment = '3'
+                    and Sul.Shift = ${shift}
+                    and Sul.CHusr = ${chusr}`
+                } else {
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'PIUTANG' and Sud.id_payment = '3'
+                    and Sul.Shift = ${shift}`
+                }
+
+                db.request().query(isiQuery, function(err, dataReturn){
+                    if(err){
+                        sql.close();
+                        logger.error(err);
+                        logger.error(err.message + 'Error ProsesQuery'+  isiQuery)
+                        resolve(0);
+                    } else{
+                        sql.close()
+                        if(dataReturn.recordset.length > 0){
+                            var jumlah = dataReturn.recordset[0].jumlah;
+                        
+                        console.log("Data PIUTANG "+ jumlah);
+                        logger.info("Data PIUTANG "+ jumlah);
+                        resolve(jumlah);
+                        } else{
+                        console.log("Data PIUTANG 0 ");
+                        logger.info("Data PIUTANG ");
+                        resolve(0);
+                        }
+                    }
+                })
+            } catch{
+                console.log(error);
+                logger.error(error.message);
+                logger.error('Catch Error prosesQuery ');
+                resolve(0);
+            }
+        })
+    }
+
+    getJumlahComplimentary(db_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
+        return new Promise((resolve, reject) =>{
+            try{
+                db = db_;
+                var tanggalAwal = tanggalAwal_;
+                var tanggalAkhir = tanggalAkhir_;
+                var chusr = chusr_;
+                var shift = shift_;
+
+                if (chusr != '-'){
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'COMPLIMENTARY' and Sud.id_payment = '4'
+                    and Sul.Shift = ${shift}
+                    and Sul.CHusr = ${chusr}`
+                } else {
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'COMPLIMENTARY' and Sud.id_payment = '4'
+                    and Sul.Shift = ${shift}`
+                }
+
+                db.request().query(isiQuery, function(err, dataReturn){
+                    if(err){
+                        sql.close();
+                        logger.error(err);
+                        logger.error(err.message + 'Error ProsesQuery'+  isiQuery)
+                        resolve(0);
+                    } else{
+                        sql.close()
+                        if(dataReturn.recordset.length > 0){
+                            var jumlah = dataReturn.recordset[0].jumlah;
+                        
+                        console.log("Data COMPLIMENTARY "+ jumlah);
+                        logger.info("Data COMPLIMENTARY "+ jumlah);
+                        resolve(jumlah);
+                        } else{
+                        console.log("Data COMPLIMENTARY 0 ");
+                        logger.info("Data COMPLIMENTARY ");
+                        resolve(0);
+                        }
+                    }
+                })
+            } catch{
+                console.log(error);
+                logger.error(error.message);
+                logger.error('Catch Error prosesQuery ');
+                resolve(0);
+            }
+        })
+    }
+
+    getJumlahEmoney(db_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
+        return new Promise((resolve, reject) =>{
+            try{
+                db = db_;
+                var tanggalAwal = tanggalAwal_;
+                var tanggalAkhir = tanggalAkhir_;
+                var chusr = chusr_;
+                var shift = shift_;
+
+                if (chusr != '-'){
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'E-MONEY' and Sud.id_payment = '31'
+                    and Sul.Shift = ${shift}
+                    and Sul.CHusr = ${chusr}`
+                } else {
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'E-MONEY' and Sud.id_payment = '31'
+                    and Sul.Shift = ${shift}`
+                }
+
+                db.request().query(isiQuery, function(err, dataReturn){
+                    if(err){
+                        sql.close();
+                        logger.error(err);
+                        logger.error(err.message + 'Error ProsesQuery'+  isiQuery)
+                        resolve(0);
+                    } else{
+                        sql.close()
+                        if(dataReturn.recordset.length > 0){
+                            var jumlah = dataReturn.recordset[0].jumlah;
+                        
+                        console.log("Data E-MONEY "+ jumlah);
+                        logger.info("Data E-MONEY "+ jumlah);
+                        resolve(jumlah);
+                        } else{
+                        console.log("Data E-MONEY 0 ");
+                        logger.info("Data E-MONEY ");
+                        resolve(0);
+                        }
+                    }
+                })
+            } catch{
+                console.log(error);
+                logger.error(error.message);
+                logger.error('Catch Error prosesQuery ');
+                resolve(0);
+            }
+        })
+    }
+
+    getJumlahTransfer(db_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
+        return new Promise((resolve, reject) =>{
+            try{
+                db = db_;
+                var tanggalAwal = tanggalAwal_;
+                var tanggalAkhir = tanggalAkhir_;
+                var chusr = chusr_;
+                var shift = shift_;
+
+                if (chusr != '-'){
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'TRANSFER' and Sud.id_payment = '32'
+                    and Sul.Shift = ${shift}
+                    and Sul.CHusr = ${chusr}`
+                } else {
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'TRANSFER' and Sud.id_payment = '32'
+                    and Sul.Shift = ${shift}`
+                }
+
+                db.request().query(isiQuery, function(err, dataReturn){
+                    if(err){
+                        sql.close();
+                        logger.error(err);
+                        logger.error(err.message + 'Error ProsesQuery'+  isiQuery)
+                        resolve(0);
+                    } else{
+                        sql.close()
+                        if(dataReturn.recordset.length > 0){
+                            var jumlah = dataReturn.recordset[0].jumlah;
+                        
+                        console.log("Data TRANSFER "+ jumlah);
+                        logger.info("Data TRANSFER "+ jumlah);
+                        resolve(jumlah);
+                        } else{
+                        console.log("Data TRANSFER 0 ");
+                        logger.info("Data TRANSFER ");
+                        resolve(0);
+                        }
+                    }
+                })
+            } catch{
+                console.log(error);
+                logger.error(error.message);
+                logger.error('Catch Error prosesQuery ');
+                resolve(0);
+            }
+        })
+    }
+
+    getJumlahVoucher(db_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
+        return new Promise((resolve, reject) =>{
+            try{
+                db = db_;
+                var tanggalAwal = tanggalAwal_;
+                var tanggalAkhir = tanggalAkhir_;
+                var chusr = chusr_;
+                var shift = shift_;
+
+                if (chusr != '-'){
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'VOUCHER' and Sud.id_payment = '5'
+                    and Sul.Shift = ${shift}
+                    and Sul.CHusr = ${chusr}`
+                } else {
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'VOUCHER' and Sud.id_payment = '5'
+                    and Sul.Shift = ${shift}`
+                }
+
+                db.request().query(isiQuery, function(err, dataReturn){
+                    if(err){
+                        sql.close();
+                        logger.error(err);
+                        logger.error(err.message + 'Error ProsesQuery'+  isiQuery)
+                        resolve(0);
+                    } else{
+                        sql.close()
+                        if(dataReturn.recordset.length > 0){
+                            var jumlah = dataReturn.recordset[0].jumlah;
+                        
+                        console.log("Data VOUCHER "+ jumlah);
+                        logger.info("Data VOUCHER "+ jumlah);
+                        resolve(jumlah);
+                        } else{
+                        console.log("Data VOUCHER 0 ");
+                        logger.info("Data VOUCHER 0 ");
+                        resolve(0);
+                        }
+                    }
+                })
+            } catch{
+                console.log(error);
+                logger.error(error.message);
+                logger.error('Catch Error prosesQuery ');
+                resolve(0);
+            }
+        })
+    }
+
+    getJumlahUangMuka(db_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
+        return new Promise((resolve, reject) =>{
+            try{
+                db = db_;
+                var tanggalAwal = tanggalAwal_;
+                var tanggalAkhir = tanggalAkhir_;
+                var chusr = chusr_;
+                var shift = shift_;
+
+                if (chusr != '-'){
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'UANG MUKA' and Sud.id_payment = '6'
+                    and Sul.Shift = ${shift}
+                    and Sul.CHusr = ${chusr}`
+                } else {
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'UANG MUKA' and Sud.id_payment = '6'
+                    and Sul.Shift = ${shift}`
+                }
+
+                db.request().query(isiQuery, function(err, dataReturn){
+                    if(err){
+                        sql.close();
+                        logger.error(err);
+                        logger.error(err.message + 'Error ProsesQuery'+  isiQuery)
+                        resolve(0);
+                    } else{
+                        sql.close()
+                        if(dataReturn.recordset.length > 0){
+                            var jumlah = dataReturn.recordset[0].jumlah;
+                        
+                        console.log("Data UANG MUKA "+ jumlah);
+                        logger.info("Data UANG MUKA "+ jumlah);
+                        resolve(jumlah);
+                        } else{
+                        console.log("Data UANG MUKA 0 ");
+                        logger.info("Data UANG MUKA 0 ");
+                        resolve(0);
+                        }
+                    }
+                })
+            } catch{
+                console.log(error);
+                logger.error(error.message);
+                logger.error('Catch Error prosesQuery ');
+                resolve(0);
+            }
+        })
+    }
+
+    getJumlahSmartCard(db_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
+        return new Promise((resolve, reject) =>{
+            try{
+                db = db_;
+                var tanggalAwal = tanggalAwal_;
+                var tanggalAkhir = tanggalAkhir_;
+                var chusr = chusr_;
+                var shift = shift_;
+
+                if (chusr != '-'){
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'SMART CARD' and Sud.id_payment = '7'
+                    and Sul.Shift = ${shift}
+                    and Sul.CHusr = ${chusr}`
+                } else {
+                    isiQuery = `set dateformat dmy
+                    SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
+                    FROM IHP_Sul Sul, IHP_Sud Sud
+                    WHERE 
+                    Sul.date_trans >= cast('${dateFormat(tanggalAwal, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.date_trans <= cast('${dateFormat(tanggalAkhir, "dd/mm/yyyy HH:MM:ss")}' as datetime) and
+                    Sul.summary = Sud.summary and 
+                    Sud.nama_payment = 'SMART CARD' and Sud.id_payment = '7'
+                    and Sul.Shift = ${shift}`
+                }
+
+                db.request().query(isiQuery, function(err, dataReturn){
+                    if(err){
+                        sql.close();
+                        logger.error(err);
+                        logger.error(err.message + 'Error ProsesQuery'+  isiQuery)
+                        resolve(0);
+                    } else{
+                        sql.close()
+                        if(dataReturn.recordset.length > 0){
+                            var jumlah = dataReturn.recordset[0].jumlah;
+                        
+                        console.log("Data SMART CARD "+ jumlah);
+                        logger.info("Data SMART CARD "+ jumlah);
+                        resolve(jumlah);
+                        } else{
+                        console.log("Data SMART CARD 0 ");
+                        logger.info("Data SMART CARD 0 ");
+                        resolve(0);
+                        }
+                    }
+                })
+            } catch{
+                console.log(error);
+                logger.error(error.message);
+                logger.error('Catch Error prosesQuery ');
+                resolve(0);
+            }
+        })
+    }
+
 }
 module.exports = Report;

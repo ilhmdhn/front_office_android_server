@@ -1655,19 +1655,52 @@ async function _getStatusReportKas(req, res){
       var shift = req.query.shift;
       var chusr = req.query.chusr;
 
-      var getCINPaid  = await new Report().getCINPaid(db, tanggal, shift, chusr)
-      var getJumlahBayarPaid = await new Report().getJumlahJamPaid(db, tanggal, shift, chusr);
-      var getCINPiutang = await new Report().getCINPiutang(db, tanggal, shift, chusr);
-      var getJumlahJamPiutang = await new Report().getJumlahJamPiutang(db, tanggal, shift, chusr);
+      var tanggalIn = moment(tanggal + " 00:00:00", "DD/MM/YYYY HH:mm:ss");
+      var tanggalOut = moment(tanggal + " 23:59:59", "DD/MM/YYYY HH:mm:ss");
+    
+      var tanggalAwal = moment(tanggal + " 08:00:00", "DD/MM/YYYY HH:mm:ss");
+      var tanggalAkhir = moment(tanggal + " 05:00:00", "DD/MM/YYYY HH:mm:ss").add(1, 'days');
+
+      console.log(`cek  jam awal: ${tanggalIn}
+                        jam akhir ${tanggalOut}
+                        tanggal awal ${tanggalAwal}
+                        tanggal akhir ${tanggalAkhir}`);
+
+      var getCINPaid  = await new Report().getCINPaid(db, tanggalIn, tanggalOut, tanggalAwal, tanggalAkhir, shift, chusr);
+      var getJumlahJamPaid = await new Report().getJumlahJamPaid(db, tanggalIn, tanggalOut, tanggalAwal, tanggalAkhir, shift, chusr);
+      var getCINPiutang = await new Report().getCINPiutang(db, tanggalIn, tanggalOut, tanggalAwal, tanggalAkhir, shift, chusr);
+      var getJumlahJamPiutang = await new Report().getJumlahJamPiutang(db, tanggalIn, tanggalOut, tanggalAwal, tanggalAkhir, shift, chusr);
+      var getJumlahCash = await new Report().getJumlahCash(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahCreditCard = await new Report().getJumlahCreditCard(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahDebetCard = await new Report().getJumlahDebetCard(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahPiutang = await new Report().getJumlahPiutang(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahComplimentary = await new Report().getJumlahComplimentary(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahEmoney = await new Report().getJumlahEmoney(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahTransfer = await new Report().getJumlahTransfer(db, tanggalAwal, tanggalAkhir, shift, chusr)
+     var getJumlahVoucher = await new Report().getJumlahVoucher(db, tanggalAwal, tanggalAkhir, shift, chusr)
+     var getJumlahUangMuka = await new Report().getJumlahUangMuka(db, tanggalAwal, tanggalAkhir, shift, chusr)
+     var getJumlahSmartCard = await new Report().getJumlahSmartCard(db, tanggalAwal, tanggalAkhir, shift, chusr)
+
+      console.log(`monitor ${getJumlahJamPaid}`)
 
       var response = {
-        tanggal: getJumlahBayarPaid.tanggal,
+        tanggal: getJumlahJamPaid.tanggal,
         jumlah_checkin_sudah_bayar: getCINPaid.jumlahCheckinPaid,
-        jumlah_jam_sudah_bayar: getJumlahBayarPaid.jumlah_jam_sudah_bayar,
+        jumlah_jam_sudah_bayar: getJumlahJamPaid.jumlah_jam_sudah_bayar,
         jumlah_tamu_sudah_bayar: getCINPaid.jumlahTamuPaid,
         jumlah_checkin_piutang: getCINPiutang.jumlah_checkin_piutang,
         jumlah_jam_piutang:  getJumlahJamPiutang.jumlah_jam_piutang,
-        jumlah_tamu_piutang: getCINPiutang.jumlah_tamu_piutang
+        jumlah_tamu_piutang: getCINPiutang.jumlah_tamu_piutang,
+        jumlah_pembayaran_cash: getJumlahCash,
+        jumlah_pembayaran_credit_card: getJumlahCreditCard,
+        jumlah_pembayaran_debet_card: getJumlahDebetCard,
+        jumlah_pembayaran_piutang: getJumlahPiutang,
+        jumlah_pembayaran_complimentary: getJumlahComplimentary,
+        jumlah_pembayaran_emoney: getJumlahEmoney,
+        jumlah_pembayaran_transfer: getJumlahTransfer,
+        jumlah_pembayaran_voucher: getJumlahVoucher, 
+        jumlah_pembayaran_uang_muka: getJumlahUangMuka,
+        jumlah_pembayaran_smart_card: getJumlahSmartCard
       }
 
       res.send(new ResponseFormat(true, response))
