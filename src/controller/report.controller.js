@@ -1680,8 +1680,9 @@ async function _getStatusReportKas(req, res){
      var getJumlahVoucher = await new Report().getJumlahVoucher(db, tanggalAwal, tanggalAkhir, shift, chusr)
      var getJumlahUangMuka = await new Report().getJumlahUangMuka(db, tanggalAwal, tanggalAkhir, shift, chusr)
      var getJumlahSmartCard = await new Report().getJumlahSmartCard(db, tanggalAwal, tanggalAkhir, shift, chusr)
+     var getJumlahPendapatanLain = await new Report().getJumlahPendapatanLain(db, tanggalAwal, tanggalAkhir, shift, chusr)
+     var getJumlahUangMukaCheckinBelumBayar = await new Report().getJumlahUangMukaCheckinBelumBayar(db, tanggalAwal, tanggalAkhir, shift, chusr)
 
-      console.log(`monitor ${getJumlahJamPaid}`)
 
       var response = {
         tanggal: getJumlahJamPaid.tanggal,
@@ -1700,11 +1701,14 @@ async function _getStatusReportKas(req, res){
         jumlah_pembayaran_transfer: getJumlahTransfer,
         jumlah_pembayaran_voucher: getJumlahVoucher, 
         jumlah_pembayaran_uang_muka: getJumlahUangMuka,
-        jumlah_pembayaran_smart_card: getJumlahSmartCard
+        jumlah_pembayaran_smart_card: getJumlahSmartCard,
+        jumlah_pendapatan_lain: getJumlahPendapatanLain,
+        jumlah_uang_muka_checkin_belum_bayar: getJumlahUangMukaCheckinBelumBayar
       }
 
       res.send(new ResponseFormat(true, response))
     } catch{
+      res.send(new ResponseFormat(false, null, "Error"))
       logger.error(error);
       logger.error(error.message);
       dataResponse = new ResponseFormat(false, null, error.message);
