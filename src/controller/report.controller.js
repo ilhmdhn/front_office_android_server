@@ -1677,24 +1677,31 @@ async function _getStatusReportKas(req, res){
       var getJumlahComplimentary = await new Report().getJumlahComplimentary(db, tanggalAwal, tanggalAkhir, shift, chusr)
       var getJumlahEmoney = await new Report().getJumlahEmoney(db, tanggalAwal, tanggalAkhir, shift, chusr)
       var getJumlahTransfer = await new Report().getJumlahTransfer(db, tanggalAwal, tanggalAkhir, shift, chusr)
-     var getJumlahVoucher = await new Report().getJumlahVoucher(db, tanggalAwal, tanggalAkhir, shift, chusr)
-     var getJumlahUangMuka = await new Report().getJumlahUangMuka(db, tanggalAwal, tanggalAkhir, shift, chusr)
-     var getJumlahSmartCard = await new Report().getJumlahSmartCard(db, tanggalAwal, tanggalAkhir, shift, chusr)
-     var getJumlahPendapatanLain = await new Report().getJumlahPendapatanLain(db, tanggalAwal, tanggalAkhir, shift, chusr)
-     var getJumlahUangMukaCheckinBelumBayar = await new Report().getJumlahUangMukaCheckinBelumBayar(db, tanggalAwal, tanggalAkhir, shift, chusr)
-
+      var getJumlahVoucher = await new Report().getJumlahVoucher(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahUangMuka = await new Report().getJumlahUangMuka(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahSmartCard = await new Report().getJumlahSmartCard(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahPendapatanLain = await new Report().getJumlahPendapatanLain(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahUangMukaCheckinBelumBayar = await new Report().getJumlahUangMukaCheckinBelumBayar(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahUangMukaCheckinCashAndTransfer = await new Report().getJumlahUangMukaCheckinCashAndTransfer(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahUangMukaCheckinCreditCard = await new Report().getJumlahUangMukaCheckinCreditCard(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahUangMukaCheckinDebetCard = await new Report().getJumlahUangMukaCheckinDebetCard(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahInvoice = await new Report().getJumlahInvoice(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahReservasiBelumCheckin = await new Report().getJumlahReservasiBelumCheckin(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahReservasiSudahCheckin = await new Report().getJumlahReservasiSudahCheckin(db, tanggalAwal, tanggalAkhir, shift, chusr)
 
       var response = {
         tanggal: getJumlahJamPaid.tanggal,
+        //STATUS KAMAR
         jumlah_checkin_sudah_bayar: getCINPaid.jumlahCheckinPaid,
         jumlah_jam_sudah_bayar: getJumlahJamPaid.jumlah_jam_sudah_bayar,
         jumlah_tamu_sudah_bayar: getCINPaid.jumlahTamuPaid,
         jumlah_checkin_piutang: getCINPiutang.jumlah_checkin_piutang,
         jumlah_jam_piutang:  getJumlahJamPiutang.jumlah_jam_piutang,
         jumlah_tamu_piutang: getCINPiutang.jumlah_tamu_piutang,
-        jumlah_pembayaran_cash: getJumlahCash,
-        jumlah_pembayaran_credit_card: getJumlahCreditCard,
-        jumlah_pembayaran_debet_card: getJumlahDebetCard,
+        // PEMBAYARAN
+        jumlah_pembayaran_cash: (getJumlahCash + getJumlahUangMukaCheckinCashAndTransfer),
+        jumlah_pembayaran_credit_card: (getJumlahCreditCard + getJumlahUangMukaCheckinCreditCard),
+        jumlah_pembayaran_debet_card: (getJumlahDebetCard + getJumlahUangMukaCheckinDebetCard),
         jumlah_pembayaran_piutang: getJumlahPiutang,
         jumlah_pembayaran_complimentary: getJumlahComplimentary,
         jumlah_pembayaran_emoney: getJumlahEmoney,
@@ -1702,8 +1709,22 @@ async function _getStatusReportKas(req, res){
         jumlah_pembayaran_voucher: getJumlahVoucher, 
         jumlah_pembayaran_uang_muka: getJumlahUangMuka,
         jumlah_pembayaran_smart_card: getJumlahSmartCard,
+        total_pembayaran: (getJumlahCash + getJumlahUangMukaCheckinCashAndTransfer + 
+                            getJumlahCreditCard + getJumlahUangMukaCheckinCreditCard +
+                            getJumlahDebetCard + getJumlahUangMukaCheckinDebetCard +
+                            getJumlahPiutang +
+                            getJumlahComplimentary +
+                            getJumlahEmoney +
+                            getJumlahTransfer +
+                            getJumlahVoucher +
+                            getJumlahUangMuka +
+                            getJumlahSmartCard),
+        // PENJUALAN
         jumlah_pendapatan_lain: getJumlahPendapatanLain,
-        jumlah_uang_muka_checkin_belum_bayar: getJumlahUangMukaCheckinBelumBayar
+        jumlah_uang_muka_checkin_belum_bayar: getJumlahUangMukaCheckinBelumBayar,
+        jumlah_nilai_kamar: getJumlahInvoice,
+        jumlah_reservasi_belum_checkin: getJumlahReservasiBelumCheckin,
+        jumlah_reservasi_sudah_checkin: getJumlahReservasiSudahCheckin
       }
 
       res.send(new ResponseFormat(true, response))
