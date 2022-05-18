@@ -1,5 +1,6 @@
 var ResponseFormat = require('../util/response');
 var DBConnection = require('../util/db.pool');
+var sql = require("mssql");
 var logger;
 var fs = require('fs');
 var db ;
@@ -12,6 +13,7 @@ var moment = require('moment');
 var dateFormat = require('dateformat');
 const { Console } = require('console');
 const Report = require('../services/report');
+const { ppid } = require('process');
 
 
 exports.getUser = async function (req, res) {
@@ -1682,7 +1684,8 @@ async function _getStatusReportKas(req, res){
       var getJumlahSmartCard = await new Report().getJumlahSmartCard(db, tanggalAwal, tanggalAkhir, shift, chusr)
       var getJumlahPendapatanLain = await new Report().getJumlahPendapatanLain(db, tanggalAwal, tanggalAkhir, shift, chusr)
       var getJumlahUangMukaCheckinBelumBayar = await new Report().getJumlahUangMukaCheckinBelumBayar(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahUangMukaCheckinCashAndTransfer = await new Report().getJumlahUangMukaCheckinCashAndTransfer(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahUangMukaCheckinCash = await new Report().getJumlahUangMukaCheckinCash(db, tanggalAwal, tanggalAkhir, shift, chusr)
+      var getJumlahUangMukaCheckinTransfer = await new Report().getJumlahUangMukaCheckinTransfer(db, tanggalAwal, tanggalAkhir, shift, chusr)
       var getJumlahUangMukaCheckinCreditCard = await new Report().getJumlahUangMukaCheckinCreditCard(db, tanggalAwal, tanggalAkhir, shift, chusr)
       var getJumlahUangMukaCheckinDebetCard = await new Report().getJumlahUangMukaCheckinDebetCard(db, tanggalAwal, tanggalAkhir, shift, chusr)
       var getJumlahInvoice = await new Report().getJumlahInvoice(db, tanggalAwal, tanggalAkhir, shift, chusr)
@@ -1691,6 +1694,7 @@ async function _getStatusReportKas(req, res){
 
       var response = {
         tanggal: getJumlahJamPaid.tanggal,
+
         //STATUS KAMAR
         jumlah_checkin_sudah_bayar: getCINPaid.jumlahCheckinPaid,
         jumlah_jam_sudah_bayar: getJumlahJamPaid.jumlah_jam_sudah_bayar,
@@ -1698,18 +1702,20 @@ async function _getStatusReportKas(req, res){
         jumlah_checkin_piutang: getCINPiutang.jumlah_checkin_piutang,
         jumlah_jam_piutang:  getJumlahJamPiutang.jumlah_jam_piutang,
         jumlah_tamu_piutang: getCINPiutang.jumlah_tamu_piutang,
+
         // PEMBAYARAN
-        jumlah_pembayaran_cash: (getJumlahCash + getJumlahUangMukaCheckinCashAndTransfer),
+        jumlah_pembayaran_transfer: ( getJumlahTransfer + getJumlahUangMukaCheckinTransfer),
+        jumlah_pembayaran_poin_membership: 0,
+        jumlah_pembayaran_emoney: getJumlahEmoney,
+        jumlah_pembayaran_cash: (getJumlahCash + getJumlahUangMukaCheckinCash),
         jumlah_pembayaran_credit_card: (getJumlahCreditCard + getJumlahUangMukaCheckinCreditCard),
         jumlah_pembayaran_debet_card: (getJumlahDebetCard + getJumlahUangMukaCheckinDebetCard),
+        jumlah_pembayaran_voucher: getJumlahVoucher,
         jumlah_pembayaran_piutang: getJumlahPiutang,
         jumlah_pembayaran_complimentary: getJumlahComplimentary,
-        jumlah_pembayaran_emoney: getJumlahEmoney,
-        jumlah_pembayaran_transfer: getJumlahTransfer,
-        jumlah_pembayaran_voucher: getJumlahVoucher, 
         jumlah_pembayaran_uang_muka: getJumlahUangMuka,
         jumlah_pembayaran_smart_card: getJumlahSmartCard,
-        total_pembayaran: (getJumlahCash + getJumlahUangMukaCheckinCashAndTransfer + 
+        total_pembayaran: (getJumlahCash + getJumlahUangMukaCheckinCash + getJumlahUangMukaCheckinTransfer + 
                             getJumlahCreditCard + getJumlahUangMukaCheckinCreditCard +
                             getJumlahDebetCard + getJumlahUangMukaCheckinDebetCard +
                             getJumlahPiutang +
@@ -1719,12 +1725,20 @@ async function _getStatusReportKas(req, res){
                             getJumlahVoucher +
                             getJumlahUangMuka +
                             getJumlahSmartCard),
+
         // PENJUALAN
         jumlah_pendapatan_lain: getJumlahPendapatanLain,
-        jumlah_uang_muka_checkin_belum_bayar: getJumlahUangMukaCheckinBelumBayar,
-        jumlah_nilai_kamar: getJumlahInvoice,
+        jumlah_uang_muka_checkin_sudah_belum_bayar: getJumlahUangMukaCheckinBelumBayar,
+        jumlah_reservasi_sudah_checkin_belum_bayar: 0,
         jumlah_reservasi_belum_checkin: getJumlahReservasiBelumCheckin,
-        jumlah_reservasi_sudah_checkin: getJumlahReservasiSudahCheckin
+        jumlah_reservasi_sudah_checkin: getJumlahReservasiSudahCheckin,
+        
+        total_hutang_reservasi: (getJumlahPendapatanLain + getJumlahUangMukaCheckinBelumBayar + getJumlahReservasiBelumCheckin + getJumlahReservasiSudahCheckin),
+        jumlah_nilai_kamar: getJumlahInvoice,
+        makanan_minuman: 0,
+        hutang_smart_card: 0,
+
+        total_penjualan: (getJumlahPendapatanLain + getJumlahUangMukaCheckinBelumBayar + getJumlahReservasiBelumCheckin + getJumlahReservasiSudahCheckin + getJumlahInvoice)
       }
 
       res.send(new ResponseFormat(true, response))
@@ -1735,4 +1749,217 @@ async function _getStatusReportKas(req, res){
       dataResponse = new ResponseFormat(false, null, error.message);
       res.send(dataResponse);
     }
+}
+
+exports.postCashDetail = async function(req, res){
+  db = await new DBConnection().getPoolConnection();
+  logger = req.log;
+
+  try{
+
+    var tanggal = req.body.tanggal;
+    var shift = req.body.shift;
+    var seratusRibu = req.body.seratus_ribu;
+    var limaPuluhRibu = req.body.lima_puluh_ribu;
+    var duaPuluhRibu = req.body.dua_puluh_ribu;
+    var sepuluhRibu = req.body.sepuluh_ribu;
+    var limaRibu = req.body.lima_ribu;
+    var duaRibu = req.body.dua_ribu;
+    var seribu = req.body.seribu;
+    var limaRatus = req.body.lima_ratus;
+    var duaRatus = req.body.dua_ratus;
+    var seratus = req.body.seratus;
+    var limaPuluh = req.body.lima_puluh;
+    var duaLima = req.body.dua_lima;
+
+    var query = `
+    INSERT INTO [IHP_CASH_Summary_Detail] (DATE
+      ,SHIFT
+      ,Seratus_Ribu
+      ,Lima_Puluh_Ribu
+      ,Dua_Puluh_Ribu
+      ,Sepuluh_Ribu
+      ,Lima_Ribu
+      ,Dua_Ribu
+      ,Seribu
+      ,Lima_Ratus
+      ,Dua_Ratus
+      ,Seratus
+      ,Lima_Puluh
+      ,Dua_Puluh_Lima
+      ,Status)
+
+      VALUES (
+        '${tanggal}',
+        '${shift}',
+        ${seratusRibu},
+        ${limaPuluhRibu},
+        ${duaPuluhRibu},
+        ${sepuluhRibu},
+        ${limaRibu},
+        ${duaRibu},
+        ${seribu},
+        ${limaRatus},
+        ${duaRatus},
+        ${seratus},
+        ${limaPuluh},
+        ${duaLima},
+        0
+      )
+    `
+
+    db.request().query(query,function (err, response){
+      if(err){
+        logger.error(err.message)
+      } else{
+        if(response.rowsAffected = 1){
+          res.send(new ResponseFormat(true, null, "Berhasil"))
+        } else{
+          res.send(new ResponseFormat(false, null, "Gagal insert data pecahan"))
+        }
+      }
+    })
+  } catch{
+    logger.error(error);
+    logger.error(error.message);
+    dataResponse = new ResponseFormat(false, null, error.message);
+    res.send(dataResponse);
+  }
+}
+
+exports.updateCashDetail = async function(req, res){
+  db = await new DBConnection().getPoolConnection();
+  logger = req.log;
+
+  try{
+
+    var tanggal = req.body.tanggal;
+    var shift = req.body.shift;
+    var seratusRibu = req.body.seratus_ribu;
+    var limaPuluhRibu = req.body.lima_puluh_ribu;
+    var duaPuluhRibu = req.body.dua_puluh_ribu;
+    var sepuluhRibu = req.body.sepuluh_ribu;
+    var limaRibu = req.body.lima_ribu;
+    var duaRibu = req.body.dua_ribu;
+    var seribu = req.body.seribu;
+    var limaRatus = req.body.lima_ratus;
+    var duaRatus = req.body.dua_ratus;
+    var seratus = req.body.seratus;
+    var limaPuluh = req.body.lima_puluh;
+    var duaLima = req.body.dua_lima;
+
+    var query = `
+    UPDATE [IHP_CASH_Summary_Detail] SET 
+      ,Seratus_Ribu = ${seratusRibu}
+      ,Lima_Puluh_Ribu = ${limaPuluhRibu}
+      ,Dua_Puluh_Ribu = ${duaPuluhRibu}
+      ,Sepuluh_Ribu = ${sepuluhRibu}
+      ,Lima_Ribu = ${limaRibu}
+      ,Dua_Ribu = ${duaRibu}
+      ,Seribu = ${seribu}
+      ,Lima_Ratus = ${limaRatus}
+      ,Dua_Ratus = ${duaRatus}
+      ,Seratus = ${seratus}
+      ,Lima_Puluh = ${limaPuluh}
+      ,Dua_Puluh_Lima = ${duaLima}
+
+      WHERE
+
+      tanggal = '${tanggal}' and
+      shift = '${shift}'
+    `
+
+    db.request().query(query,function (err, response){
+      if(err){
+        logger.error(err.message)
+      } else{
+        if(response.rowsAffected = 1){
+          res.send(new ResponseFormat(true, null, "Berhasil"))
+        } else{
+          res.send(new ResponseFormat(false, null, "Gagal update data"))
+        }
+      }
+    })
+  } catch{
+    logger.error(error);
+    logger.error(error.message);
+    dataResponse = new ResponseFormat(false, null, error.message);
+    res.send(dataResponse);
+  }
+}
+
+exports.getCashDetail =  async function(req, res){
+  db = await  new  DBConnection().getPoolConnection();
+  logger = req.log;
+
+  try{
+    var tanggal = moment(req.query.tanggal + " 00:00:00", "DD/MM/YYYY HH:mm:ss");
+    tanggal = dateFormat(tanggal, "dd/mm/yyyy HH:MM:ss")
+    var shift = req.query.shift;
+    
+    var query = `
+    SELECT isnull([DATE], 0) as tanggal
+      ,isnull([SHIFT], 0) as shift
+      ,isnull([Seratus_Ribu], 0) as seratus_ribu
+      ,isnull([Lima_Puluh_Ribu], 0) as lima_puluh_ribu
+      ,isnull([Dua_Puluh_Ribu], 0) as dua_puluh_ribu
+      ,isnull([Sepuluh_Ribu], 0) as sepuluh_ribu
+      ,isnull([Lima_Ribu], 0) as lima_ribu
+      ,isnull([Dua_Ribu], 0) as dua_ribu
+      ,isnull([Seribu], 0) as seribu
+      ,isnull([Lima_Ratus], 0) as lima_ratus
+      ,isnull([Dua_Ratus], 0) as dua_ratus
+      ,isnull([Seratus], 0) as seratus
+      ,isnull([Lima_Puluh], 0) as lima_puluh
+      ,isnull([Dua_Puluh_Lima], 0)  as dua_puluh_lima
+      ,isnull([Status], 0) as status
+  FROM [HP112].[dbo].[IHP_CASH_Summary_Detail]
+  WHERE 
+  DATE = '${tanggal}'
+  AND SHIFT = '${shift}'
+    `
+    db.request().query(query, function(err, dataReturn){
+      if(err){
+          sql.close();
+          logger.error(err);
+          console.log(err);
+          logger.error(err.message + ' Error prosesQuery ' + query);
+          resolve(false);    
+      } else{
+          sql.close();
+          if(dataReturn.recordset.length > 0){
+              var nilai = {
+                  tanggal: dataReturn.recordset[0].tanggal,
+                  shift: dataReturn.recordset[0].shift,
+                  seratus_ribu: dataReturn.recordset[0].seratus_ribu,
+                  lima_puluh_ribu: dataReturn.recordset[0].lima_puluh_ribu,
+                  dua_puluh_ribu: dataReturn.recordset[0].dua_puluh_ribu,
+                  sepuluh_ribu: dataReturn.recordset[0].sepuluh_ribu,
+                  lima_ribu: dataReturn.recordset[0].lima_ribu,
+                  dua_ribu: dataReturn.recordset[0].dua_ribu,
+                  seribu: dataReturn.recordset[0].seribu,
+                  lima_ratus: dataReturn.recordset[0].lima_ratus,
+                  dua_ratus: dataReturn.recordset[0].dua_ratus,
+                  seratus: dataReturn.recordset[0].seratus,
+                  lima_puluh: dataReturn.recordset[0].lima_puluh,
+                  dua_puluh_lima: dataReturn.recordset[0].dua_puluh_lima,
+                  status: dataReturn.recordset[0].status
+                }
+              console.log("Pecahan CASH " + nilai);
+              logger.info("Pecahan CASH " + nilai);
+              res.send(new ResponseFormat(true, nilai, "Berhasil"))
+          } else{
+              console.log("Pecahan Cash 0");
+              logger.info("Pecahan Cash 0");
+              res.send(new ResponseFormat(true, null, "Data Kosong")); 
+          }
+      }
+  })
+
+  } catch{
+    logger.error(error);
+    logger.error(error.message);
+    dataResponse = new ResponseFormat(false, null, error.message);
+    res.send(dataResponse);
+  }
 }

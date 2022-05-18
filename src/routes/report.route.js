@@ -11,4 +11,10 @@ router.route('/user')
 router.route('/getStatusReportKas')
     .get(Ctrl.getStatusReportKas)
 
+router.route('/getCashDetail')
+    .get(Ctrl.getCashDetail)
+
+router.route('/postCashDetail')
+    .post(Ctrl.postCashDetail)
+
 module.exports = router;

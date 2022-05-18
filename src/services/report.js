@@ -1114,7 +1114,7 @@ class Report{
         })
     }
 
-    getJumlahUangMukaCheckinCashAndTransfer(db_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
+    getJumlahUangMukaCheckinCash(db_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
         return new Promise((resolve, reject) =>{
             try{
                 db = db_;
@@ -1145,7 +1145,7 @@ class Report{
                     and Shift = ${shift} 
                     and Reservation = ''
                     and CHUsr = ${chusr}
-                    and (ID_Payment = '0' OR ID_Payment = '32') 
+                    and (ID_Payment = '0') 
                     and Reception not in (
                       select 
                         reception 
@@ -1184,7 +1184,128 @@ class Report{
                     ) 
                     and Shift = ${shift} 
                     and Reservation = ''
-                    and (ID_Payment = '0' OR ID_Payment = '32') 
+                    and (ID_Payment = '0') 
+                    and Reception not in (
+                      select 
+                        reception 
+                      from 
+                        ihp_Sul 
+                      where 
+                        date_trans >= CONVERT(
+                          datetime, '${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}', 
+                          120
+                        ) 
+                        and date_trans <= CONVERT(
+                          datetime, '${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}', 
+                          120
+                        ) 
+                        and shift = ${shift}
+                    )
+                  `
+                }
+
+                db.request().query(isiQuery, function(err, dataReturn){
+                    if(err){
+                        sql.close();
+                        logger.error(err);
+                        logger.error(err.message + 'Error ProsesQuery'+  isiQuery)
+                        resolve(0);
+                    } else{
+                        sql.close()
+                        if(dataReturn.recordset.length > 0){
+                            var jumlah = dataReturn.recordset[0].jumlah;
+                        
+                        console.log("Data Uang Muka Tunai "+ jumlah);
+                        logger.info("Data Uang Muka Tunai "+ jumlah);
+                        resolve(jumlah);
+                        } else{
+                        console.log("Data Uang Muka Tunai 0 ");
+                        logger.info("Data Uang Muka Tunai 0 ");
+                        resolve(0);
+                        }
+                    }
+                })
+            } catch{
+                console.log(error);
+                logger.error(error.message);
+                logger.error('Catch Error prosesQuery ');
+                resolve(0);
+            }
+        })
+    }
+
+    
+    getJumlahUangMukaCheckinTransfer(db_, tanggalAwal_, tanggalAkhir_, shift_, chusr_){
+        return new Promise((resolve, reject) =>{
+            try{
+                db = db_;
+                var tanggalAwal = tanggalAwal_;
+                var tanggalAkhir = tanggalAkhir_;
+                var chusr = chusr_;
+                var shift = shift_;
+
+                if (chusr != '-'){
+                    isiQuery = `Set 
+                    dateformat dmy 
+                  Select 
+                    isnull(
+                      SUM(Uang_Muka), 
+                      0
+                    ) as jumlah 
+                  from 
+                    IHP_Rcp 
+                  where 
+                    date_trans >= CONVERT(
+                      datetime, '${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}', 
+                      120
+                    ) 
+                    and date_trans <= CONVERT(
+                      datetime, '${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}', 
+                      120
+                    ) 
+                    and Shift = ${shift} 
+                    and Reservation = ''
+                    and CHUsr = ${chusr}
+                    and (ID_Payment = '32') 
+                    and Reception not in (
+                      select 
+                        reception 
+                      from 
+                        ihp_Sul 
+                      where 
+                        date_trans >= CONVERT(
+                          datetime, '${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}', 
+                          120
+                        ) 
+                        and date_trans <= CONVERT(
+                          datetime, '${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}', 
+                          120
+                        ) 
+                        and shift = ${shift}
+                    )
+                  `
+                } else {
+                    isiQuery = `Set 
+                    dateformat dmy 
+                  Select 
+                    isnull(
+                      SUM(Uang_Muka), 
+                      0
+                    ) as jumlah 
+                  from 
+                    IHP_Rcp 
+                  where 
+                    date_trans >= CONVERT(
+                      datetime, '${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}', 
+                      120
+                    ) 
+                    and date_trans <= CONVERT(
+                      datetime, '${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}', 
+                      120
+                    ) 
+                    and Shift = ${shift} 
+                    and Reservation = ''
+                    and (ID_Payment = '32') 
                     and Reception not in (
                       select 
                         reception 
