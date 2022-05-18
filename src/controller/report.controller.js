@@ -1663,11 +1663,6 @@ async function _getStatusReportKas(req, res){
       var tanggalAwal = moment(tanggal + " 08:00:00", "DD/MM/YYYY HH:mm:ss");
       var tanggalAkhir = moment(tanggal + " 05:00:00", "DD/MM/YYYY HH:mm:ss").add(1, 'days');
 
-      console.log(`cek  jam awal: ${tanggalIn}
-                        jam akhir ${tanggalOut}
-                        tanggal awal ${tanggalAwal}
-                        tanggal akhir ${tanggalAkhir}`);
-
       var getCINPaid  = await new Report().getCINPaid(db, tanggalIn, tanggalOut, tanggalAwal, tanggalAkhir, shift, chusr);
       var getJumlahJamPaid = await new Report().getJumlahJamPaid(db, tanggalIn, tanggalOut, tanggalAwal, tanggalAkhir, shift, chusr);
       var getCINPiutang = await new Report().getCINPiutang(db, tanggalIn, tanggalOut, tanggalAwal, tanggalAkhir, shift, chusr);
@@ -1757,7 +1752,8 @@ exports.postCashDetail = async function(req, res){
 
   try{
 
-    var tanggal = req.body.tanggal;
+    var tanggal = moment(req.body.tanggal + " 00:00:00", "DD/MM/YYYY HH:mm:ss");
+    tanggal = dateFormat(tanggal, "dd/mm/yyyy HH:MM:ss")
     var shift = req.body.shift;
     var seratusRibu = req.body.seratus_ribu;
     var limaPuluhRibu = req.body.lima_puluh_ribu;
@@ -1811,6 +1807,8 @@ exports.postCashDetail = async function(req, res){
     db.request().query(query,function (err, response){
       if(err){
         logger.error(err.message)
+        logger.error(err.message + ' Error prosesQuery ' + query);
+        res.send(new ResponseFormat(false, null, "Gagal insert data pecahan"));
       } else{
         if(response.rowsAffected = 1){
           res.send(new ResponseFormat(true, null, "Berhasil"))
@@ -1833,24 +1831,25 @@ exports.updateCashDetail = async function(req, res){
 
   try{
 
-    var tanggal = req.body.tanggal;
-    var shift = req.body.shift;
-    var seratusRibu = req.body.seratus_ribu;
-    var limaPuluhRibu = req.body.lima_puluh_ribu;
-    var duaPuluhRibu = req.body.dua_puluh_ribu;
-    var sepuluhRibu = req.body.sepuluh_ribu;
-    var limaRibu = req.body.lima_ribu;
-    var duaRibu = req.body.dua_ribu;
-    var seribu = req.body.seribu;
-    var limaRatus = req.body.lima_ratus;
-    var duaRatus = req.body.dua_ratus;
-    var seratus = req.body.seratus;
-    var limaPuluh = req.body.lima_puluh;
-    var duaLima = req.body.dua_lima;
+    var tanggal = moment(req.params.tanggal + " 00:00:00", "DD/MM/YYYY HH:mm:ss")
+    tanggal = dateFormat(tanggal, "dd/mm/yyyy HH:MM:ss")
+    var shift = req.params.shift;
+    var seratusRibu = req.query.seratus_ribu;
+    var limaPuluhRibu = req.query.lima_puluh_ribu;
+    var duaPuluhRibu = req.query.dua_puluh_ribu;
+    var sepuluhRibu = req.query.sepuluh_ribu;
+    var limaRibu = req.query.lima_ribu;
+    var duaRibu = req.query.dua_ribu;
+    var seribu = req.query.seribu;
+    var limaRatus = req.query.lima_ratus;
+    var duaRatus = req.query.dua_ratus;
+    var seratus = req.query.seratus;
+    var limaPuluh = req.query.lima_puluh;
+    var duaLima = req.query.dua_lima;
 
     var query = `
     UPDATE [IHP_CASH_Summary_Detail] SET 
-      ,Seratus_Ribu = ${seratusRibu}
+      Seratus_Ribu = ${seratusRibu}
       ,Lima_Puluh_Ribu = ${limaPuluhRibu}
       ,Dua_Puluh_Ribu = ${duaPuluhRibu}
       ,Sepuluh_Ribu = ${sepuluhRibu}
@@ -1865,16 +1864,19 @@ exports.updateCashDetail = async function(req, res){
 
       WHERE
 
-      tanggal = '${tanggal}' and
+      DATE = '${tanggal}' and
       shift = '${shift}'
     `
 
     db.request().query(query,function (err, response){
       if(err){
         logger.error(err.message)
+        logger.error(err.message + ' Error prosesQuery ' + query);
+        res.send(new ResponseFormat(false, null, "Gagal insert data pecahan"));
       } else{
         if(response.rowsAffected = 1){
           res.send(new ResponseFormat(true, null, "Berhasil"))
+          console.log(`querynyah ${query}`);
         } else{
           res.send(new ResponseFormat(false, null, "Gagal update data"))
         }
