@@ -1657,6 +1657,11 @@ async function _getStatusReportKas(req, res){
       var shift = req.query.shift;
       var chusr = req.query.chusr;
 
+      var nilaiInvoice = {
+        totalKamar: 0,
+        totalPenjualan:0
+      }
+
       var tanggalIn = moment(tanggal + " 00:00:00", "DD/MM/YYYY HH:mm:ss");
       var tanggalOut = moment(tanggal + " 23:59:59", "DD/MM/YYYY HH:mm:ss");
     
@@ -1689,7 +1694,36 @@ async function _getStatusReportKas(req, res){
       var getJumlahReservasiBelumCheckin = await new Report().getJumlahReservasiBelumCheckin(db, tanggalAwal, tanggalAkhir, shift, chusr);
       var getJumlahReservasiSudahCheckin = await new Report().getJumlahReservasiSudahCheckin(db, tanggalAwal, tanggalAkhir, shift, chusr)
       var getJumlahReservasiSudahCheckinBelumBayar = await new Report().getJumlahReservasiSudahCheckinBelumBayar(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahUangMukaReservasiBelumCheckinCash = await new Report().getJumlahReservasiBelumCheckin(db, tanggalAwal, tanggalAkhir, shift, chusr);
+      var getJumlahUangMukaReservasiBelumCheckinCash = await new Report().getJumlahUangMukaReservasiBelumCheckin(db, tanggalAwal, tanggalAkhir, shift, 0);
+      var getJumlahUangMukaReservasiBelumCheckinKredit = await new Report().getJumlahUangMukaReservasiBelumCheckin(db, tanggalAwal, tanggalAkhir, shift, 1);
+      var getJumlahUangMukaReservasiBelumCheckinDebit = await new Report().getJumlahUangMukaReservasiBelumCheckin(db, tanggalAwal, tanggalAkhir, shift, 2);
+      var getJumlahUangMukaReservasiSudahCheckinCash = await new Report().getJumlahUangMukaReservasiSudahCheckin(db, tanggalAwal, tanggalAkhir, shift, 0);
+      var getJumlahUangMukaReservasiSudahCheckinKredit = await new Report().getJumlahUangMukaReservasiSudahCheckin(db, tanggalAwal, tanggalAkhir, shift, 1);
+      var getJumlahUangMukaReservasiSudahCheckinDebit = await new Report().getJumlahUangMukaReservasiSudahCheckin(db, tanggalAwal, tanggalAkhir, shift, 2);
+      var getJumlahUangMukaReservasiSudahCheckinBelumBayarCash = await new Report().getJumlahUangMukaReservasiSudahCheckinBelumBayar(db, tanggalAwal, tanggalAkhir, shift, 0);
+      var getJumlahUangMukaReservasiSudahCheckinBelumBayarKredit = await new Report().getJumlahUangMukaReservasiSudahCheckinBelumBayar(db, tanggalAwal, tanggalAkhir, shift, 1);
+      var getJumlahUangMukaReservasiSudahCheckinBelumBayarDebit = await new Report().getJumlahUangMukaReservasiSudahCheckinBelumBayar(db, tanggalAwal, tanggalAkhir, shift, 2);
+      var getJumlahUangPendapatanLainCash = await new Report().getJumlahUangPendapatanLain(db, tanggalAwal, tanggalAkhir, shift, 0);
+      var getJumlahUangPendapatanLainKredit = await new Report().getJumlahUangPendapatanLain(db, tanggalAwal, tanggalAkhir, shift, 1);
+      var getJumlahUangPendapatanLainDebit = await new Report().getJumlahUangPendapatanLain(db, tanggalAwal, tanggalAkhir, shift, 2);
+      
+      if(getJumlahInvoice != false){
+
+        var invoice = "";
+         for (let i = 0; i < getJumlahInvoice.length; i++) {
+           nilaiInvoice.totalKamar = nilaiInvoice.totalKamar + getJumlahInvoice[i].Total_Kamar;
+           console.log(`cekulang ${nilaiInvoice.totalKamar}`)
+           invoice = getJumlahInvoice[i].Transfer;
+           console.log(`cekinvoice ${invoice}`)
+           if(invoice != ""){
+             do{
+              var transfer = await new Report().getTransferKamar(db, invoice);
+              nilaiInvoice.totalKamar = nilaiInvoice.totalKamar + transfer[0].total_transfer;
+              invoice = transfer[0].Transfer
+             } while(invoice != "")
+            }
+         }
+      } 
 
       var response = {
         tanggal: getJumlahJamPaid.tanggal,
@@ -1703,28 +1737,61 @@ async function _getStatusReportKas(req, res){
         jumlah_tamu_piutang: getCINPiutang.jumlah_tamu_piutang,
 
         // PEMBAYARAN
-        jumlah_pembayaran_transfer: ( getJumlahTransfer + getJumlahUangMukaCheckinTransfer),
+        jumlah_pembayaran_transfer: ( getJumlahTransfer + 
+                                      getJumlahUangMukaCheckinTransfer),
         jumlah_pembayaran_poin_membership: getJumlahPoinMembership,
         jumlah_pembayaran_emoney: getJumlahEmoney,
-        jumlah_pembayaran_cash: (getJumlahCash + getJumlahUangMukaCheckinCash),
-        jumlah_pembayaran_credit_card: (getJumlahCreditCard + getJumlahUangMukaCheckinCreditCard),
-        jumlah_pembayaran_debet_card: (getJumlahDebetCard + getJumlahUangMukaCheckinDebetCard),
+        jumlah_pembayaran_cash: (getJumlahCash + 
+                                getJumlahUangMukaCheckinCash + 
+                                getJumlahUangMukaReservasiBelumCheckinCash + 
+                                getJumlahUangMukaReservasiSudahCheckinCash + 
+                                getJumlahUangMukaReservasiSudahCheckinBelumBayarCash +
+                                getJumlahUangPendapatanLainCash),
+        jumlah_pembayaran_credit_card: (getJumlahCreditCard + 
+                                        getJumlahUangMukaCheckinCreditCard + 
+                                        getJumlahUangMukaReservasiBelumCheckinKredit + 
+                                        getJumlahUangMukaReservasiSudahCheckinKredit + 
+                                        getJumlahUangMukaReservasiSudahCheckinBelumBayarKredit +
+                                        getJumlahUangPendapatanLainKredit),
+        jumlah_pembayaran_debet_card: ( getJumlahDebetCard + 
+                                        getJumlahUangMukaCheckinDebetCard + 
+                                        getJumlahUangMukaReservasiBelumCheckinDebit + 
+                                        getJumlahUangMukaReservasiSudahCheckinDebit + 
+                                        getJumlahUangMukaReservasiSudahCheckinBelumBayarDebit +
+                                        getJumlahUangPendapatanLainDebit),
         jumlah_pembayaran_voucher: getJumlahVoucher,
         jumlah_pembayaran_piutang: getJumlahPiutang,
         jumlah_pembayaran_complimentary: getJumlahComplimentary,
         jumlah_pembayaran_uang_muka: getJumlahUangMuka,
         jumlah_pembayaran_smart_card: getJumlahSmartCard,
-        total_pembayaran: (getJumlahCash + getJumlahUangMukaCheckinCash + getJumlahUangMukaCheckinTransfer + 
-                            getJumlahCreditCard + getJumlahUangMukaCheckinCreditCard +
-                            getJumlahDebetCard + getJumlahUangMukaCheckinDebetCard +
-                            getJumlahPiutang +
-                            getJumlahComplimentary +
-                            getJumlahEmoney +
-                            getJumlahTransfer +
-                            getJumlahVoucher +
-                            getJumlahUangMuka +
-                            getJumlahSmartCard + 
-                            getJumlahPoinMembership),
+        total_pembayaran: (getJumlahCash + 
+                          getJumlahUangMukaCheckinCash + 
+                          getJumlahUangMukaCheckinTransfer + 
+                          getJumlahCreditCard + 
+                          getJumlahUangMukaCheckinCreditCard +
+                          getJumlahDebetCard + 
+                          getJumlahUangMukaCheckinDebetCard +
+                          getJumlahPiutang +
+                          getJumlahComplimentary +
+                          getJumlahEmoney +
+                          getJumlahTransfer +
+                          getJumlahVoucher +
+                          getJumlahUangMuka +
+                          getJumlahSmartCard + 
+                          getJumlahPoinMembership+
+                          getJumlahUangMukaReservasiBelumCheckinCash + 
+                          getJumlahUangMukaReservasiSudahCheckinCash + 
+                          getJumlahUangMukaReservasiSudahCheckinBelumBayarCash +
+                          getJumlahUangMukaReservasiBelumCheckinKredit + 
+                          getJumlahUangMukaReservasiSudahCheckinKredit + 
+                          getJumlahUangMukaReservasiSudahCheckinBelumBayarKredit +
+                          getJumlahUangMukaReservasiBelumCheckinDebit + 
+                          getJumlahUangMukaReservasiSudahCheckinDebit + 
+                          getJumlahUangMukaReservasiSudahCheckinBelumBayarDebit +
+                          getJumlahUangPendapatanLainCash +
+                          getJumlahUangPendapatanLainKredit +
+                          getJumlahUangPendapatanLainDebit
+                          ),
 
         // PENJUALAN
         jumlah_pendapatan_lain: getJumlahPendapatanLain,
@@ -1733,12 +1800,22 @@ async function _getStatusReportKas(req, res){
         jumlah_reservasi_belum_checkin: getJumlahReservasiBelumCheckin,
         jumlah_reservasi_sudah_checkin: getJumlahReservasiSudahCheckin,
         
-        total_hutang_reservasi: (getJumlahPendapatanLain + getJumlahUangMukaCheckinBelumBayar + getJumlahReservasiSudahCheckinBelumBayar+ getJumlahReservasiBelumCheckin + getJumlahReservasiSudahCheckin),
-        jumlah_nilai_kamar: getJumlahInvoice,
+        total_hutang_reservasi: ( getJumlahPendapatanLain + 
+                                  getJumlahUangMukaCheckinBelumBayar + 
+                                  getJumlahReservasiSudahCheckinBelumBayar+ 
+                                  getJumlahReservasiBelumCheckin + 
+                                  getJumlahReservasiSudahCheckin),
+        jumlah_nilai_kamar: nilaiInvoice.totalKamar,
         makanan_minuman: getJumlahPenjualan,
         hutang_smart_card: 0,
 
-        total_penjualan: (getJumlahPendapatanLain + getJumlahUangMukaCheckinBelumBayar + getJumlahReservasiBelumCheckin + getJumlahReservasiSudahCheckin + getJumlahInvoice + getJumlahPenjualan)
+        total_penjualan: (getJumlahPendapatanLain + 
+                          getJumlahUangMukaCheckinBelumBayar + 
+                          getJumlahReservasiBelumCheckin + 
+                          getJumlahReservasiSudahCheckin + 
+                          getJumlahReservasiSudahCheckinBelumBayar +
+                          nilaiInvoice.totalKamar + 
+                          getJumlahPenjualan)
       }
 
       res.send(new ResponseFormat(true, response))
