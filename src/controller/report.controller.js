@@ -1656,74 +1656,92 @@ async function _getStatusReportKas(req, res){
       var tanggal = req.query.tanggal;
       var shift = req.query.shift;
       var chusr = req.query.chusr;
+      var totalKamar = 0
+      var totalPenjualan = 0;
 
-      var nilaiInvoice = {
-        totalKamar: 0,
-        totalPenjualan:0
-      }
-
-      var tanggalIn = moment(tanggal + " 00:00:00", "DD/MM/YYYY HH:mm:ss");
-      var tanggalOut = moment(tanggal + " 23:59:59", "DD/MM/YYYY HH:mm:ss");
+      var tanggalIn = moment(tanggal + " 08:00:00", "DD/MM/YYYY HH:mm:ss");
+      var tanggalOut = moment(tanggal + " 05:00:00", "DD/MM/YYYY HH:mm:ss").add(1, 'days');
     
-      var tanggalAwal = moment(tanggal + " 08:00:00", "DD/MM/YYYY HH:mm:ss");
-      var tanggalAkhir = moment(tanggal + " 05:00:00", "DD/MM/YYYY HH:mm:ss").add(1, 'days');
+      var tanggalAwal = moment(tanggal + " 00:00:00", "DD/MM/YYYY HH:mm:ss");
+      var tanggalAkhir = moment(tanggal + " 23:59:59", "DD/MM/YYYY HH:mm:ss").add(1, 'days');
 
+      var jamMulai = moment(tanggal + " 00:00:00", "DD/MM/YYYY HH:mm:ss");
+      var jamAkhir = moment(tanggal + " 00:00:00", "DD/MM/YYYY HH:mm:ss").add(1, 'days');
+
+      // Status Kamar
       var getCINPaid  = await new Report().getCINPaid(db, tanggalIn, tanggalOut, tanggalAwal, tanggalAkhir, shift, chusr);
       var getJumlahJamPaid = await new Report().getJumlahJamPaid(db, tanggalIn, tanggalOut, tanggalAwal, tanggalAkhir, shift, chusr);
       var getCINPiutang = await new Report().getCINPiutang(db, tanggalIn, tanggalOut, tanggalAwal, tanggalAkhir, shift, chusr);
       var getJumlahJamPiutang = await new Report().getJumlahJamPiutang(db, tanggalIn, tanggalOut, tanggalAwal, tanggalAkhir, shift, chusr);
-      var getJumlahCash = await new Report().getJumlahCash(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahCreditCard = await new Report().getJumlahCreditCard(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahDebetCard = await new Report().getJumlahDebetCard(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahPiutang = await new Report().getJumlahPiutang(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahComplimentary = await new Report().getJumlahComplimentary(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahEmoney = await new Report().getJumlahEmoney(db, tanggalAwal, tanggalAkhir, shift, chusr);
-      var getJumlahPoinMembership = await new Report().getJumlahPoinMembership(db, tanggalAwal, tanggalAkhir, shift, chusr);
-      var getJumlahTransfer = await new Report().getJumlahTransfer(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahVoucher = await new Report().getJumlahVoucher(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahUangMuka = await new Report().getJumlahUangMuka(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahSmartCard = await new Report().getJumlahSmartCard(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahPendapatanLain = await new Report().getJumlahPendapatanLain(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahUangMukaCheckinBelumBayar = await new Report().getJumlahUangMukaCheckinBelumBayar(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahUangMukaCheckinCash = await new Report().getJumlahUangMukaCheckinCash(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahUangMukaCheckinTransfer = await new Report().getJumlahUangMukaCheckinTransfer(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahUangMukaCheckinCreditCard = await new Report().getJumlahUangMukaCheckinCreditCard(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahUangMukaCheckinDebetCard = await new Report().getJumlahUangMukaCheckinDebetCard(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahInvoice = await new Report().getJumlahInvoice(db, tanggalAwal, tanggalAkhir, shift, chusr);
-      var getJumlahPenjualan = await new Report().getJumlahPenjualan(db, tanggalAwal, tanggalAkhir, shift, chusr);
-      var getJumlahReservasiBelumCheckin = await new Report().getJumlahReservasiBelumCheckin(db, tanggalAwal, tanggalAkhir, shift, chusr);
-      var getJumlahReservasiSudahCheckin = await new Report().getJumlahReservasiSudahCheckin(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahReservasiSudahCheckinBelumBayar = await new Report().getJumlahReservasiSudahCheckinBelumBayar(db, tanggalAwal, tanggalAkhir, shift, chusr)
-      var getJumlahUangMukaReservasiBelumCheckinCash = await new Report().getJumlahUangMukaReservasiBelumCheckin(db, tanggalAwal, tanggalAkhir, shift, 0);
-      var getJumlahUangMukaReservasiBelumCheckinKredit = await new Report().getJumlahUangMukaReservasiBelumCheckin(db, tanggalAwal, tanggalAkhir, shift, 1);
-      var getJumlahUangMukaReservasiBelumCheckinDebit = await new Report().getJumlahUangMukaReservasiBelumCheckin(db, tanggalAwal, tanggalAkhir, shift, 2);
-      var getJumlahUangMukaReservasiSudahCheckinCash = await new Report().getJumlahUangMukaReservasiSudahCheckin(db, tanggalAwal, tanggalAkhir, shift, 0);
-      var getJumlahUangMukaReservasiSudahCheckinKredit = await new Report().getJumlahUangMukaReservasiSudahCheckin(db, tanggalAwal, tanggalAkhir, shift, 1);
-      var getJumlahUangMukaReservasiSudahCheckinDebit = await new Report().getJumlahUangMukaReservasiSudahCheckin(db, tanggalAwal, tanggalAkhir, shift, 2);
-      var getJumlahUangMukaReservasiSudahCheckinBelumBayarCash = await new Report().getJumlahUangMukaReservasiSudahCheckinBelumBayar(db, tanggalAwal, tanggalAkhir, shift, 0);
-      var getJumlahUangMukaReservasiSudahCheckinBelumBayarKredit = await new Report().getJumlahUangMukaReservasiSudahCheckinBelumBayar(db, tanggalAwal, tanggalAkhir, shift, 1);
-      var getJumlahUangMukaReservasiSudahCheckinBelumBayarDebit = await new Report().getJumlahUangMukaReservasiSudahCheckinBelumBayar(db, tanggalAwal, tanggalAkhir, shift, 2);
-      var getJumlahUangPendapatanLainCash = await new Report().getJumlahUangPendapatanLain(db, tanggalAwal, tanggalAkhir, shift, 0);
-      var getJumlahUangPendapatanLainKredit = await new Report().getJumlahUangPendapatanLain(db, tanggalAwal, tanggalAkhir, shift, 1);
-      var getJumlahUangPendapatanLainDebit = await new Report().getJumlahUangPendapatanLain(db, tanggalAwal, tanggalAkhir, shift, 2);
+      
+      // pembayaran
+      
+      var getJumlahCash = await new Report().getJumlahCash(db, jamMulai, jamAkhir, shift)
+      var getJumlahCreditCard = await new Report().getJumlahCreditCard(db, jamMulai, jamAkhir, shift)
+      var getJumlahDebetCard = await new Report().getJumlahDebetCard(db, jamMulai, jamAkhir, shift)
+      var getJumlahPiutang = await new Report().getJumlahPiutang(db, jamMulai, jamAkhir, shift)
+      var getJumlahComplimentary = await new Report().getJumlahComplimentary(db, jamMulai, jamAkhir, shift)
+      var getJumlahEmoney = await new Report().getJumlahEmoney(db, jamMulai, jamAkhir, shift);
+      var getJumlahPoinMembership = await new Report().getJumlahPoinMembership(db, jamMulai, jamAkhir, shift);
+      var getJumlahTransfer = await new Report().getJumlahTransfer(db, jamMulai, jamAkhir, shift)
+      var getJumlahVoucher = await new Report().getJumlahVoucher(db, jamMulai, jamAkhir, shift)
+      var getJumlahUangMuka = await new Report().getJumlahUangMuka(db, jamMulai, jamAkhir, shift)
+      var getJumlahSmartCard = await new Report().getJumlahSmartCard(db, jamMulai, jamAkhir, shift)
+      
+      
+      // penjualan
+      var getJumlahPendapatanLain = await new Report().getJumlahPendapatanLain(db, jamMulai, jamAkhir, shift)
+      var getJumlahUangMukaCheckinBelumBayar = await new Report().getJumlahUangMukaCheckinBelumBayar(db, jamMulai, jamAkhir, shift)
+      var getJumlahReservasiSudahCheckinBelumBayar = await new Report().getJumlahReservasiSudahCheckinBelumBayar(db, jamMulai, jamAkhir, shift)
+      var getJumlahReservasiBelumCheckin = await new Report().getJumlahReservasiBelumCheckin(db, jamMulai, jamAkhir, shift);
+      var getJumlahReservasiSudahCheckin = await new Report().getJumlahReservasiSudahCheckin(db, jamMulai, jamAkhir, shift)
+      var getJumlahInvoice = await new Report().getJumlahInvoice(db, jamMulai, jamAkhir, shift);
+
+      var getJumlahUangMukaCheckinCash = await new Report().getJumlahUangMukaCheckinCash(db, jamMulai, jamAkhir, shift)
+      var getJumlahUangMukaCheckinTransfer = await new Report().getJumlahUangMukaCheckinTransfer(db, jamMulai, jamAkhir, shift)
+      var getJumlahUangMukaCheckinCreditCard = await new Report().getJumlahUangMukaCheckinCreditCard(db, jamMulai, jamAkhir, shift)
+      var getJumlahUangMukaCheckinDebetCard = await new Report().getJumlahUangMukaCheckinDebetCard(db, jamMulai, jamAkhir, shift)
+      var getJumlahUangMukaReservasiBelumCheckinCash = await new Report().getJumlahUangMukaReservasiBelumCheckin(db, jamMulai, jamAkhir, shift, 0);
+      var getJumlahUangMukaReservasiBelumCheckinKredit = await new Report().getJumlahUangMukaReservasiBelumCheckin(db, jamMulai, jamAkhir, shift, 1);
+      var getJumlahUangMukaReservasiBelumCheckinDebit = await new Report().getJumlahUangMukaReservasiBelumCheckin(db, jamMulai, jamAkhir, shift, 2);
+      var getJumlahUangMukaReservasiSudahCheckinCash = await new Report().getJumlahUangMukaReservasiSudahCheckin(db, jamMulai, jamAkhir, shift, 0);
+      var getJumlahUangMukaReservasiSudahCheckinKredit = await new Report().getJumlahUangMukaReservasiSudahCheckin(db, jamMulai, jamAkhir, shift, 1);
+      var getJumlahUangMukaReservasiSudahCheckinDebit = await new Report().getJumlahUangMukaReservasiSudahCheckin(db, jamMulai, jamAkhir, shift, 2);
+      var getJumlahUangMukaReservasiSudahCheckinBelumBayarCash = await new Report().getJumlahUangMukaReservasiSudahCheckinBelumBayar(db, jamMulai, jamAkhir, shift, 0);
+      var getJumlahUangMukaReservasiSudahCheckinBelumBayarKredit = await new Report().getJumlahUangMukaReservasiSudahCheckinBelumBayar(db, jamMulai, jamAkhir, shift, 1);
+      var getJumlahUangMukaReservasiSudahCheckinBelumBayarDebit = await new Report().getJumlahUangMukaReservasiSudahCheckinBelumBayar(db, jamMulai, jamAkhir, shift, 2);
+      var getJumlahUangPendapatanLainCash = await new Report().getJumlahUangPendapatanLain(db, jamMulai, jamAkhir, shift, 0);
+      var getJumlahUangPendapatanLainKredit = await new Report().getJumlahUangPendapatanLain(db, jamMulai, jamAkhir, shift, 1);
+      var getJumlahUangPendapatanLainDebit = await new Report().getJumlahUangPendapatanLain(db, jamMulai, jamAkhir, shift, 2);
       
       if(getJumlahInvoice != false){
-
         var invoice = "";
-         for (let i = 0; i < getJumlahInvoice.length; i++) {
-           nilaiInvoice.totalKamar = nilaiInvoice.totalKamar + getJumlahInvoice[i].Total_Kamar;
-           nilaiInvoice.totalPenjualan = nilaiInvoice.totalPenjualan + getJumlahInvoice[i].Total_Penjualan;
-           invoice = getJumlahInvoice[i].Transfer;
+        var penjualan = 0;
+          for (let i = 0; i < getJumlahInvoice.length; i++) {
+            totalKamar = totalKamar + getJumlahInvoice[i].Total_Kamar;
+            invoice = getJumlahInvoice[i].Transfer;
+               if(getJumlahInvoice[i].Total_Penjualan == undefined){
+            penjualan = 0;
+          } else{
+            penjualan = getJumlahInvoice[i].Total_Penjualan;
+          }
+          totalPenjualan = totalPenjualan + penjualan;
+           
            if(invoice != ""){
              do{
               var transfer = await new Report().getTransferKamar(db, invoice);
-              nilaiInvoice.totalKamar = nilaiInvoice.totalKamar + transfer[0].total_transfer;
-              nilaiInvoice.totalPenjualan = nilaiInvoice.totalPenjualan + transfer[0].Total_Penjualan;
+              totalKamar = totalKamar + transfer[0].total_transfer;
+              if(transfer[0].total_penjualan == undefined){
+                penjualan = 0;
+              } else{
+                penjualan = transfer[0].total_penjualan;
+              }
+              totalPenjualan = totalPenjualan + penjualan;
               invoice = transfer[0].Transfer;
              } while(invoice != "")
             }
          }
-      } 
+        }
 
       var response = {
         tanggal: getJumlahJamPaid.tanggal,
@@ -1805,8 +1823,8 @@ async function _getStatusReportKas(req, res){
                                   getJumlahReservasiSudahCheckinBelumBayar+ 
                                   getJumlahReservasiBelumCheckin + 
                                   getJumlahReservasiSudahCheckin),
-        jumlah_nilai_kamar: nilaiInvoice.totalKamar,
-        makanan_minuman: getJumlahPenjualan,
+        jumlah_nilai_kamar: totalKamar,
+        makanan_minuman: totalPenjualan,
         hutang_smart_card: 0,
 
         total_penjualan: (getJumlahPendapatanLain + 
@@ -1814,11 +1832,12 @@ async function _getStatusReportKas(req, res){
                           getJumlahReservasiBelumCheckin + 
                           getJumlahReservasiSudahCheckin + 
                           getJumlahReservasiSudahCheckinBelumBayar +
-                          nilaiInvoice.totalKamar + 
-                          getJumlahPenjualan)
+                          totalKamar + 
+                          totalPenjualan)
       }
 
       res.send(new ResponseFormat(true, response))
+
     } catch{
       res.send(new ResponseFormat(false, null, "Error"))
       logger.error(error);

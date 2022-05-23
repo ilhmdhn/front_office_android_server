@@ -1969,8 +1969,13 @@ class PromoRoom {
                IHP_Rcp,
                IHP_Promo_Rcp
             WHERE
---               IHP_Ext.Start_Extend BETWEEN IHP_Rcp_DetailsRoom.Date_Time_Start AND IHP_Rcp_DetailsRoom.Date_Time_Finish AND
-               IHP_Rcp_DetailsRoom.Date_Time_Start BETWEEN IHP_Ext.Start_Extend AND IHP_Ext.End_Extend AND
+--             IHP_Rcp_DetailsRoom.Date_Time_Start BETWEEN IHP_Ext.Start_Extend AND IHP_Ext.End_Extend AND
+
+            --update query
+               dateadd(hour, datediff(hour, 0, IHP_Rcp_DetailsRoom.Date_Time_Start), 0) >= dateadd(hour, datediff(hour, 0, IHP_Ext.Start_Extend), 0) AND 
+               dateadd(hour, datediff(hour, 0, IHP_Rcp_DetailsRoom.Date_Time_Start), 0) <= dateadd(hour, datediff(hour, 0, IHP_Ext.End_Extend), 0) AND
+               dateadd(hour, datediff(hour, 0, IHP_Rcp_DetailsRoom.Date_Time_Finish), 0) <= dateadd(hour, datediff(hour, 0, IHP_Ext.End_Extend), 0) AND
+            --update query
                IHP_Rcp_DetailsRoom.Reception = IHP_Rcp.Reception AND
                IHP_Ext.Reception = IHP_Rcp.Reception AND
                IHP_Promo_Rcp.Reception = IHP_Rcp.Reception AND
