@@ -750,13 +750,13 @@ function getTimeRcp(ivc) {
             SELECT Reception, 
             RIGHT('0'+CAST(DATEPART(hour, Checkin) as varchar(2)),2) + ':' +
             RIGHT('0'+CAST(DATEPART(minute, Checkin)as varchar(2)),2) as Checkin
-            ,(Jam_Sewa + ISNULL((SELECT SUM(Jam_Extend) FROM HP112.dbo.IHP_Ext WHERE Reception = (SELECT Reception FROM HP112.dbo.IHP_Rcp WHERE Invoice = '${ivc}')),0)) as jam_sewa
+            ,(Jam_Sewa + ISNULL((SELECT SUM(Jam_Extend) FROM IHP_Ext WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}')),0)) as jam_sewa
             ,isnull(
-             RIGHT('0'+CAST(DATEPART(hour, (SELECT MAX(End_Extend) FROM HP112.dbo.IHP_Ext WHERE Reception = (SELECT Reception FROM HP112.dbo.IHP_Rcp WHERE Invoice = '${ivc}'))) as varchar(2)),2) + ':' +
-             RIGHT('0'+CAST(DATEPART(minute, (SELECT MAX(End_Extend) FROM HP112.dbo.IHP_Ext WHERE Reception = (SELECT Reception FROM HP112.dbo.IHP_Rcp WHERE Invoice = '${ivc}')))as varchar(2)),2)
+             RIGHT('0'+CAST(DATEPART(hour, (SELECT MAX(End_Extend) FROM IHP_Ext WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}'))) as varchar(2)),2) + ':' +
+             RIGHT('0'+CAST(DATEPART(minute, (SELECT MAX(End_Extend) FROM IHP_Ext WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}')))as varchar(2)),2)
             ,RIGHT('0'+CAST(DATEPART(hour, Checkout) as varchar(2)),2) + ':' +
              RIGHT('0'+CAST(DATEPART(minute, Checkout)as varchar(2)),2)) as Checkout
-             FROM hp112.dbo.IHP_Rcp
+             FROM IHP_Rcp
              WHERE Invoice = '${ivc}'`;
 
             db.request().query(isiQuery, function (err, dataReturn) {

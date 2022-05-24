@@ -1658,6 +1658,11 @@ async function _getStatusReportKas(req, res){
       var chusr = req.query.chusr;
       var totalKamar = 0
       var totalPenjualan = 0;
+      var invoicePiutang = {
+        totalKamar: 0, 
+        totalFnB: 0,
+        uangMuka: 0
+      }
 
       var tanggalIn = moment(tanggal + " 08:00:00", "DD/MM/YYYY HH:mm:ss");
       var tanggalOut = moment(tanggal + " 05:00:00", "DD/MM/YYYY HH:mm:ss").add(1, 'days');
@@ -1696,6 +1701,7 @@ async function _getStatusReportKas(req, res){
       var getJumlahReservasiBelumCheckin = await new Report().getJumlahReservasiBelumCheckin(db, jamMulai, jamAkhir, shift);
       var getJumlahReservasiSudahCheckin = await new Report().getJumlahReservasiSudahCheckin(db, jamMulai, jamAkhir, shift)
       var getJumlahInvoice = await new Report().getJumlahInvoice(db, jamMulai, jamAkhir, shift);
+      var getJumlahInvoicePiutang = await new Report().getJumlahInvoicePiutang(db, jamMulai, jamAkhir,shift)
 
       var getJumlahUangMukaCheckinCash = await new Report().getJumlahUangMukaCheckinCash(db, jamMulai, jamAkhir, shift)
       var getJumlahUangMukaCheckinTransfer = await new Report().getJumlahUangMukaCheckinTransfer(db, jamMulai, jamAkhir, shift)
@@ -1737,6 +1743,39 @@ async function _getStatusReportKas(req, res){
                 penjualan = transfer[0].total_penjualan;
               }
               totalPenjualan = totalPenjualan + penjualan;
+              invoice = transfer[0].Transfer;
+             } while(invoice != "")
+            }
+         }
+        }
+
+        if(getJumlahInvoicePiutang != false){
+          var invoice = "";
+          var penjualan = 0;
+          for (let i = 0; i < getJumlahInvoicePiutang.length; i++) {
+            invoicePiutang.uangMuka = invoicePiutang.uangMuka +  getJumlahInvoicePiutang[i].Uang_Muka;
+            invoicePiutang.totalKamar = invoicePiutang.totalKamar + getJumlahInvoicePiutang[i].Total_Kamar;
+          
+          if(getJumlahInvoicePiutang[i].Total_Penjualan == undefined){
+            penjualan = 0;
+          } else{
+            penjualan = getJumlahInvoicePiutang[i].Total_Penjualan;
+          }
+          invoicePiutang.totalPenjualan = invoicePiutang.totalPenjualan + penjualan;
+          
+          invoice = getJumlahInvoicePiutang[i].Transfer;
+           if(invoice != ""){
+             do{
+              var transfer = await new Report().getTransferKamar(db, invoice);
+              invoicePiutang.totalKamar = invoicePiutang.totalKamar + transfer[0].total_transfer;
+              
+              if(transfer[0].total_penjualan == undefined){
+                penjualan = 0;
+              } else{
+                penjualan = transfer[0].total_penjualan;
+              }
+              invoicePiutang.totalPenjualan = invoicePiutang.totalPenjualan + penjualan;
+              
               invoice = transfer[0].Transfer;
              } while(invoice != "")
             }
@@ -1833,7 +1872,11 @@ async function _getStatusReportKas(req, res){
                           getJumlahReservasiSudahCheckin + 
                           getJumlahReservasiSudahCheckinBelumBayar +
                           totalKamar + 
-                          totalPenjualan)
+                          totalPenjualan),
+
+        piutangRoom: invoicePiutang.totalKamar,
+        piutangFnB: invoicePiutang.totalFnB,
+        uangMuka: invoicePiutang.uangMuka
       }
 
       res.send(new ResponseFormat(true, response))
@@ -2016,7 +2059,7 @@ exports.getCashDetail =  async function(req, res){
       ,isnull([Lima_Puluh], 0) as lima_puluh
       ,isnull([Dua_Puluh_Lima], 0)  as dua_puluh_lima
       ,isnull([Status], 0) as status
-  FROM [HP112].[dbo].[IHP_CASH_Summary_Detail]
+  FROM [IHP_CASH_Summary_Detail]
   WHERE 
   DATE = '${tanggal}'
   AND SHIFT = '${shift}'

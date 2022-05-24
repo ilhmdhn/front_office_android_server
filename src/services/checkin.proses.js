@@ -2499,7 +2499,7 @@ class CheckinProses {
           `
           select case when Date_Time_Start is null then 'false' else 'true' end
           as date_time_start 
-          FROM [HP112].[dbo].[IHP_Rcp_DetailsRoom]  where reception='${kode_rcp}'
+          FROM [IHP_Rcp_DetailsRoom]  where reception='${kode_rcp}'
           `
           ;
 

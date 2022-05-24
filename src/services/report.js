@@ -21,7 +21,7 @@ class Report{
             isiQuery = `
                 Select Count(Rcp.Reception) as jumlah_checkin_sudah_bayar,
                 isnull(sum(RCP.Pax),0) as jumlah_tamu_sudah_bayar
-                from hp112.dbo.IHP_Rcp Rcp, hp112.dbo.Ihp_Room Room 
+                from IHP_Rcp Rcp, Ihp_Room Room 
                 where
                 Rcp.CheckIn >= '${dateFormat(tanggalIn, "yyyy-mm-dd HH:MM:ss")}' and
                 Rcp.CheckIn <= '${dateFormat(tanggalOut, "yyyy-mm-dd HH:MM:ss")}' and
@@ -30,7 +30,7 @@ class Report{
                 Room.Jenis_Kamar <> 'BAR' and
                 Room.Jenis_Kamar <> 'LOUNGE'and
                 Room.Jenis_Kamar <> 'RESTO') and
-                Rcp.reception in (select reception from hp112.dbo.ihp_Sul where 
+                Rcp.reception in (select reception from ihp_Sul where 
                 date_trans >= '${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' and
                 date_trans <= '${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}' and
                 Shift = ${shift})` 
@@ -156,7 +156,7 @@ class Report{
                     isiQuery = `
                     Select Count(Rcp.Reception) as jumlah_checkin_piutang,
                     isnull(sum(RCP.Pax),0) as jumlah_tamu_piutang 
-                    from hp112.dbo.IHP_Rcp Rcp, hp112.dbo.Ihp_Room Room
+                    from IHP_Rcp Rcp, Ihp_Room Room
                     WHERE (Rcp.CheckIn >= '${dateFormat(tanggalIn, "yyyy-mm-dd HH:MM:ss")}' and
                            Rcp.CheckIn <= '${dateFormat(tanggalOut, "yyyy-mm-dd HH:MM:ss")}') and
                             Rcp.kamar = Room.Kamar and
@@ -167,7 +167,7 @@ class Report{
                                 Room.Jenis_Kamar <> 'RESTO'
                             ) and 
                             Rcp.Shift = '${shift}' and
-                            Rcp.reception not in (select reception from hp112.dbo.ihp_Sul 
+                            Rcp.reception not in (select reception from ihp_Sul 
                                 where date_trans >= '${dateFormat(tanggalAwal, "yyyy-mm-dd HH:MM:ss")}' and 
                                 date_trans <= '${dateFormat(tanggalAkhir, "yyyy-mm-dd HH:MM:ss")}' 
                                 and Shift = ${shift})`
@@ -1097,7 +1097,7 @@ class Report{
                 isiQuery = `Set 
                     dateformat dmy 
                   Select 
-                  isnull([Total_Kamar],0) + isnull([Total_Extend], 0)  as Total_Kamar, 
+                  isnull([Total_Kamar],0)  as Total_Kamar, 
                   isnull([Total_Penjualan],0) as Total_Penjualan, 
                   [Reception], 
                   [Transfer] 
@@ -1166,7 +1166,7 @@ class Report{
                 var jumlah = 0;
     
                     isiQuery = `Select 
-                    isnull([Total_Kamar],0) + isnull(Total_Extend, 0) as total_transfer,
+                    isnull([Total_Kamar],0) as total_transfer,
                     isnull([Total_Penjualan],0) as total_penjualan, 
                     [Transfer] from IHP_Ivc 
                     where Invoice = '${invoice}'`
@@ -1737,5 +1737,60 @@ class Report{
         })
     }
 
+    //Nilai Invoice Piutang
+    getJumlahInvoicePiutang(db_, jamMulai_, jamAkhir_, shift_){
+        return new Promise((resolve, reject) =>{
+            try{
+                db = db_;
+                var jamMulai = jamMulai_;
+                var jamAkhir = jamAkhir_;
+                var shift = shift_;
+
+                isiQuery = `Set dateformat dmy
+                Select 
+                isnull([Total_Kamar],0) as Total_Kamar, 
+                isnull([Total_Penjualan],0) as Total_Penjualan, 
+                isnull([Uang_Muka],0) as Uang_Muka,
+                [Reception], 
+                [Transfer]
+                from IHP_Ivc where date_trans >= CONVERT(datetime, '${dateFormat(jamMulai, "yyyy-mm-dd HH:MM:ss")}', 120) and
+                date_trans <= CONVERT(datetime, '${dateFormat(jamAkhir, "yyyy-mm-dd HH:MM:ss")}', 120)
+                and status <> 0 and
+                Shift = ${shift} and
+                reception not in
+                (select reception from ihp_Sul
+                where date_trans >= CONVERT(datetime, '${dateFormat(jamMulai, "yyyy-mm-dd HH:MM:ss")}', 120)
+                and
+                date_trans <= CONVERT(datetime, '${dateFormat(jamAkhir, "yyyy-mm-dd HH:MM:ss")}', 120) 
+                and
+                Shift = ${shift})`
+
+                db.request().query(isiQuery, function(err, dataReturn){
+                    if(err){
+                        sql.close();
+                        logger.error(err);
+                        logger.error(err.message + 'Error ProsesQuery'+  isiQuery)
+                        resolve(false);
+                    } else{
+                        sql.close()
+                        if(dataReturn.recordset.length > 0){
+                        console.log("Data invoice piutang "+ JSON.stringify(dataReturn.recordset));
+                        logger.info("Data invoice piutang "+ JSON.stringify(dataReturn.recordset));
+                        resolve(dataReturn.recordset);
+                        } else{
+                        console.log("Data invoice piutang 0 ");
+                        logger.info("Data invoice piutang 0 ");
+                        resolve(false);
+                        }
+                    }
+                })
+            } catch{
+                console.log(error);
+                logger.error(error.message);
+                logger.error('Catch Error prosesQuery ');
+                resolve(0);
+            }
+        })
+    }
 }
 module.exports = Report;

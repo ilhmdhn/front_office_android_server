@@ -14,7 +14,7 @@ exports.submitApproval = async function(req, res){
         if(user_id == undefined || level_user == undefined || room == undefined || keterangan == undefined){
             res.send(new ResponseFormat(false, null, 'Data tidak lengkap'))
         } else{
-            var query = `INSERT INTO hp112.dbo.IHP_Login_History (User_ID, LoginTime, Level_User, Kamar,  Nama_Computer, Keterangan) VALUES ('${user_id}', getdate(), '${level_user}', '${room}', 'FO Android', '${keterangan}')`
+            var query = `INSERT INTO IHP_Login_History (User_ID, LoginTime, Level_User, Kamar,  Nama_Computer, Keterangan) VALUES ('${user_id}', getdate(), '${level_user}', '${room}', 'FO Android', '${keterangan}')`
         
             db.request().query(query, function(err, response){
                 if(err){
