@@ -1668,7 +1668,7 @@ async function _getStatusReportKas(req, res){
       var tanggalOut = moment(tanggal + " 05:00:00", "DD/MM/YYYY HH:mm:ss").add(1, 'days');
     
       var tanggalAwal = moment(tanggal + " 00:00:00", "DD/MM/YYYY HH:mm:ss");
-      var tanggalAkhir = moment(tanggal + " 23:59:59", "DD/MM/YYYY HH:mm:ss").add(1, 'days');
+      var tanggalAkhir = moment(tanggal + " 23:59:59", "DD/MM/YYYY HH:mm:ss");
 
       var jamMulai = moment(tanggal + " 00:00:00", "DD/MM/YYYY HH:mm:ss");
       var jamAkhir = moment(tanggal + " 00:00:00", "DD/MM/YYYY HH:mm:ss").add(1, 'days');
@@ -1874,9 +1874,9 @@ async function _getStatusReportKas(req, res){
                           totalKamar + 
                           totalPenjualan),
 
-        piutangRoom: invoicePiutang.totalKamar,
-        piutangFnB: invoicePiutang.totalFnB,
-        uangMuka: invoicePiutang.uangMuka
+        piutang_room: invoicePiutang.totalKamar,
+        piutang_fnb: invoicePiutang.totalFnB,
+        uang_muka: invoicePiutang.uangMuka
       }
 
       res.send(new ResponseFormat(true, response))
