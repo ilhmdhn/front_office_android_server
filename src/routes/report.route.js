@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Ctrl = require('./../controller/report.controller');
+var mysalesController = require('./../controller/report_mysales.controller');
 
 router.route('/cash')
     .post(Ctrl.getCash);
@@ -19,5 +20,14 @@ router.route('/cashdetail')
 
 router.route('/cashdetail/:tanggal/:shift')
     .put(Ctrl.updateCashDetail);
+
+router.route('/mysales/weekly')
+    .get(mysalesController.getMySalesWeekly);
+
+router.route('/mysales/today')
+    .get(mysalesController.getMySalesToday);
+
+router.route('/mysales/monthly')
+    .get(mysalesController.getMySalesMonthly);
 
 module.exports = router;

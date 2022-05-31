@@ -2097,7 +2097,7 @@ exports.getCashDetail =  async function(req, res){
           } else{
               console.log("Pecahan Cash 0");
               logger.info("Pecahan Cash 0");
-              res.send(new ResponseFormat(true, null, "Data Kosong")); 
+              res.send(new ResponseFormat(false, null, "Data Kosong")); 
           }
       }
   })

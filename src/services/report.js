@@ -115,7 +115,7 @@ class Report{
                         logger.error(err);
                         console.log(err);
                         logger.error(err.message + ' Error prosesQuery ' + isiQuery);
-                        resolve(false);    
+                        resolve(0);    
                     } else{
                         sql.close();
                         if(dataReturn.recordset.length > 0){
@@ -129,7 +129,7 @@ class Report{
                         } else{
                             console.log("service= Room 0 ");
                             logger.info("service= Room 0 ");
-                            resolve(false); 
+                            resolve(0); 
                         }
                     }
                 })
@@ -251,7 +251,7 @@ class Report{
                         logger.error(err);
                         // console.log(err);
                         logger.error(err.message + ' Error prosesQuery ' + isiQuery);
-                        resolve(false); 
+                        resolve(0); 
                     } else{
                         sql.close();
                         if(dataReturn.recordset.length > 0){
@@ -265,7 +265,7 @@ class Report{
                         } else{
                             console.log("PIUTANG CHECKIN DATA 0 ");
                             logger.info("PIUTANG CHECKIN DATA 0 ");
-                            resolve(false);
+                            resolve(0);
                         }
                     }
                 })
