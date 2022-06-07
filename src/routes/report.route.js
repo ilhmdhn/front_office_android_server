@@ -30,4 +30,7 @@ router.route('/mysales/today')
 router.route('/mysales/monthly')
     .get(mysalesController.getMySalesMonthly);
 
+router.route('/salesitem')
+    .get(mysalesController.getSalesItem);
+
 module.exports = router;

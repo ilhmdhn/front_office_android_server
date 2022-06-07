@@ -10,11 +10,12 @@ exports.submitApproval = async function(req, res){
         var level_user = req.body.level_user;
         var room = req.body.room;
         var keterangan = req.body.keterangan;
+        var nama_device = req.body.device_name;
 
         if(user_id == undefined || level_user == undefined || room == undefined || keterangan == undefined){
             res.send(new ResponseFormat(false, null, 'Data tidak lengkap'))
         } else{
-            var query = `INSERT INTO IHP_Login_History (User_ID, LoginTime, Level_User, Kamar,  Nama_Computer, Keterangan) VALUES ('${user_id}', getdate(), '${level_user}', '${room}', 'FO Android', '${keterangan}')`
+            var query = `INSERT INTO IHP_Login_History (User_ID, LoginTime, Level_User, Kamar,  Nama_Computer, Keterangan) VALUES ('${user_id}', getdate(), '${level_user}', '${room}', '${nama_device}', '${keterangan}')`
         
             db.request().query(query, function(err, response){
                 if(err){
