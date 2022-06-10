@@ -4114,36 +4114,37 @@ WHERE
 
 
 
-  // getNomorVoucher(db_, kode_rcp_) {
-  //   return new Promise((resolve, reject) => {
-  //     try {
-  //       var kode_rcp = kode_rcp_;
+  getNomorVoucher(db_, kode_rcp_) {
+    return new Promise((resolve, reject) => {
+      try {
+        db = db_;
+        var kode_rcp = kode_rcp_;
 
-  //       var isiQuery = "" +
-  //         `
-  //       select Voucher from IHP_UangVoucher where Reception= '${kode_rcp}' 
-  //       `;
+        var isiQuery = "" +
+          `
+        select Voucher from IHP_UangVoucher where Reception= '${kode_rcp}' 
+        `;
 
-  //       db.request().query(isiQuery, function (err, dataReturn) {
-  //         if (err) {
-  //           logger.error(err.message);
-  //           reject(err.message);
-  //         } else {
-  //           if (dataReturn.recordset.length > 0) {
-  //             var voucher = dataReturn.recordset[0].Voucher;
-  //             resolve(voucher);
-  //           } else {
-  //             resolve(false);
-  //           }
-  //         }
-  //       });
+        db.request().query(isiQuery, function (err, dataReturn) {
+          if (err) {
+            logger.error(err.message);
+            reject(err.message);
+          } else {
+            if (dataReturn.recordset.length > 0) {
+              var voucher = dataReturn.recordset[0].Voucher;
+              resolve(voucher);
+            } else {
+              resolve(false);
+            }
+          }
+        });
 
-  //     } catch (err) {
-  //       logger.error(err.message);
-  //       reject(err.message);
-  //     }
-  //   });
-  // }
+      } catch (err) {
+        logger.error(err.message);
+        reject(err.message);
+      }
+    });
+  }
 
 }
 module.exports = CheckinProses;

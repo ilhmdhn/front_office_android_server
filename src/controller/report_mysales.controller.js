@@ -33,7 +33,7 @@ exports.getMySalesToday = async function(req, res){
         if(salesItem != false){
             res.send(new ResponseFormat(true,  salesItem))
         } else{
-            res.send(new ResponseFormat(false, null, "Data Kosong"))
+            res.send(new ResponseFormat(true, null, "Data Kosong"))
         }
 
     } catch(error){
@@ -67,7 +67,7 @@ exports.getMySalesWeekly = async function(req, res){
         if(salesItem != false){
             res.send(new ResponseFormat(true,  salesItem))
         } else{
-            res.send(new ResponseFormat(false, null, "Data Kosong"))
+            res.send(new ResponseFormat(true, null, "Data Kosong"))
         }
     } catch(error){
         logger.error(error);
@@ -140,7 +140,7 @@ exports.getMySalesMonthly = async function(req, res){
             }
             res.send(new ResponseFormat(true,  salesItem))
         } else{
-            res.send(new ResponseFormat(false, null, "Data Kosong"))
+            res.send(new ResponseFormat(true, null, "Data Kosong"))
         }
     } catch(error){
         logger.error(error);
@@ -192,7 +192,7 @@ exports.getSalesItem = async function (req, res){
     if(salesItem != false){
         res.send(new ResponseFormat(true, salesItem));
     } else{
-        res.send(new ResponseFormat(false, null,  "Data Kosong"));
+        res.send(new ResponseFormat(true, null,  "Data Kosong"));
     }
 
     }catch(error){

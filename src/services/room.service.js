@@ -1685,5 +1685,124 @@ class RoomService {
     });
   }
 
+  removeDetailDiskonSewaKamar(db_, rcp_){
+  return new Promise((resolve) => {
+    try{
+      var db = db_;
+      var rcp = rcp_;
+      var query = `
+      DELETE [IHP_Detail_Diskon_Sewa_Kamar] WHERE Reception = '${rcp}'
+      `;
+
+      db.request().query(query, function (err, dataReturn) {
+        if (err) {
+          sql.close();
+          logger.error(err.message + ' Error prosesQuery ' + query);
+          resolve(false);
+        } else {
+          sql.close();
+          logger.info("Berhasil removeDetailDiskonSewaKamar");
+            resolve(true);
+        }
+      });
+    }catch(error){
+      sql.close();
+      console.log(err);
+      logger.error(err.message);
+      logger.error('Catch Error prosesQuery ');
+      resolve(false);
+    }
+  });
+  }
+
+  removeDetailDiskonSewaKamarExtend(db_, rcp_){
+  return new Promise((resolve) => {
+    try{
+      var db = db_;
+      var rcp = rcp_;
+      var query = `
+      DELETE [IHP_Detail_Diskon_Sewa_Kamar_Extend] WHERE Reception = '${rcp}'
+      `;
+
+      db.request().query(query, function (err, dataReturn) {
+        if (err) {
+          sql.close();
+          logger.error(err.message + ' Error prosesQuery ' + query);
+          resolve(false);
+        } else {
+          sql.close();
+          logger.info("Berhasil removeDetailDiskonSewaKamarExtend");
+            resolve(true);
+        }
+      });
+    }catch(error){
+      sql.close();
+      console.log(err);
+      logger.error(err.message);
+      logger.error('Catch Error prosesQuery ');
+      resolve(false);
+    }
+  });
+  }
+
+  removeDetailPromo(db_, rcp_){
+  return new Promise((resolve) => {
+    try{
+      var db = db_;
+      var rcp = rcp_;
+      var query = `
+      DELETE [IHP_Detail_Promo] WHERE Reception = '${rcp}'
+      `;
+
+      db.request().query(query, function (err, dataReturn) {
+        if (err) {
+          sql.close();
+          logger.error(err.message + ' Error prosesQuery ' + query);
+          resolve(false);
+        } else {
+          sql.close();
+          logger.info("Berhasil removeDetailPromo");
+            resolve(true);
+        }
+      });
+    }catch(error){
+      sql.close();
+      console.log(err);
+      logger.error(err.message);
+      logger.error('Catch Error prosesQuery ');
+      resolve(false);
+    }
+  });
+  }
+
+  removePromoRcp(db_, rcp_){
+  return new Promise((resolve) => {
+    try{
+      var db = db_;
+      var rcp = rcp_;
+      var query = `
+      DELETE [IHP_Promo_Rcp] WHERE Reception = '${rcp}'
+      `;
+
+      db.request().query(query, function (err, dataReturn) {
+        if (err) {
+          sql.close();
+          logger.error(err.message + ' Error prosesQuery ' + query);
+          resolve(false);
+        } else {
+          sql.close();
+          logger.info("Berhasil removePromoRcp");
+            resolve(true);
+        }
+      });
+    }catch(error){
+      sql.close();
+      console.log(err);
+      logger.error(err.message);
+      logger.error('Catch Error prosesQuery ');
+      resolve(false);
+    }
+  });
+  }
 }
 module.exports = RoomService;

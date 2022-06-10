@@ -27,6 +27,7 @@ var db;
 var path = require('path');
 var shift;
 var dgram = require('dgram');
+const RoomService = require('../services/room.service.js');
 var pesan;
 var ip_address;
 var port;
@@ -1576,6 +1577,8 @@ async function _procDirectEditCheckInRoom(req, res) {
                                         nilai_uang_voucher ${nilai_uang_voucher}
                             `)
                             console.log(`total kamars ${total_kamar}`)
+
+                            //ambil bawah ini
 
                             var isProsesQueryUpdateIhp_ivc = await new CheckinProses().updateIhpIvcNilaiInvoice(
                                 db,
@@ -5769,8 +5772,20 @@ exports.removePromoRoom = async function (req, res){
 
 async function _removePromoRoom(req, res){
     try{
-        var kodeRcp = req.body.rcp;
+
+        var kode_rcp = req.query.rcp;
+
+        var removeDetailDiskonSewaKamar = await new RoomService().removeDetailDiskonSewaKamar(db, kode_rcp);
+        var removeDetailDiskonSewaKamarExtend = await new RoomService().removeDetailDiskonSewaKamarExtend(db, kode_rcp);
+        var removeDetailPromo = await new RoomService().removeDetailPromo(db, kode_rcp);
+        var removePromoRcp = await new RoomService().removePromoRcp(db, kode_rcp);
         
+        if(removeDetailDiskonSewaKamar == true && removeDetailDiskonSewaKamarExtend == true  && removeDetailPromo == true && removePromoRcp == true){
+            res.send(new ResponseFormat(true, null, "Berhasil"))
+        } else{
+            res.send(new ResponseFormat(false, null, "Gagal Menghapus Promo, Ulangi proses"))
+        }
+
     } catch(error){
         logger.error(error);
         dataResponse = new ResponseFormat(false, null, error.message);

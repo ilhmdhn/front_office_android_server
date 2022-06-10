@@ -30,4 +30,7 @@ router.route('/transfer-lobby-to-room')
 router.route('/sign-image')
     .post(checkinDirectCtrl.submitSignImage);
 
+router.route('/remove_promo')
+    .delete(checkinDirectCtrl.removePromoRoom);
+
 module.exports = router;

@@ -685,7 +685,7 @@ async function _procSubmitPayment(req, res) {
     await new CheckinProses().deleteIhpUangMukaNonCash(db, Invoice.Reception);
   }
 
-//  var cek_voucher = await new CheckinProses().getNomorVoucher(db, room.Reception);
+   var cek_voucher = await new CheckinProses().getNomorVoucher(db, room.Reception);
   var cek_voucher = false
 
   if (cek_voucher != false) {
@@ -798,6 +798,7 @@ async function _procSubmitPayment(req, res) {
     hasil_order_penjualan = [];
     hasil_nilai_invoice = [];
     var email_bcc = "adm.blackholektvsub@gmail.com";
+    var email_bcc2 = "noreply.receipt@blackholektv.id"
     var email_to = "adm.blackholektvsub@gmail.com";
 
     var nama_penerima;
@@ -908,6 +909,7 @@ async function _procSubmitPayment(req, res) {
             from: '"Blackhole KTV Receipts " <noreply.receipt@blackholektv.id>',
             to: email_address,
             bcc: email_bcc,
+            bcc: email_bcc2,
             subject: "Your E-Receipt at Blackhole KTV  (" + invoice[0][0].invoice + ")",
             text:
               "Dear " + nama_penerima + "\n" +
@@ -1438,6 +1440,7 @@ async function _pocSubmitEmail(req, res) {
           //to: "bar@example.com, baz@example.com", // list of receivers
           to: email_address, // list of receivers
           bcc: 'adm.blackholektvsub@gmail.com',
+          bcc: email_bcc2,
           //bcc: 'sub.lenmarc@tuttobono.id',
           //subject: "Hello ✔", // Subject line
           subject: "Your E-Receipt at Blackhole KTV  (" + invoice[0][0].invoice + ")",

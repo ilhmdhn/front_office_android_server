@@ -1882,7 +1882,6 @@ async function _getStatusReportKas(req, res){
       res.send(new ResponseFormat(true, response))
 
     } catch(error){
-      res.send(new ResponseFormat(false, null, "Error"))
       logger.error(error);
       logger.error(error.message);
       dataResponse = new ResponseFormat(false, null, error.message);
