@@ -798,7 +798,7 @@ async function _procSubmitPayment(req, res) {
     hasil_order_penjualan = [];
     hasil_nilai_invoice = [];
     var email_bcc = "adm.blackholektvsub@gmail.com";
-    var email_bcc2 = "noreply.receipt@blackholektv.id"
+    var email_bcc2 = "noreply_receipt@blackholektv.com"
     var email_to = "adm.blackholektvsub@gmail.com";
 
     var nama_penerima;
@@ -896,7 +896,7 @@ async function _procSubmitPayment(req, res) {
             port: 587,
             secure: false, // true for 465, false for other ports
             auth: {
-              user: "noreply.receipt@blackholektv.id", // generated ethereal user
+              user: "noreply_receipt@blackholektv.com", // generated ethereal user
               pass: "Masainul123", // generated ethereal password
             },
             tls: {
@@ -906,7 +906,7 @@ async function _procSubmitPayment(req, res) {
             debug: false // include SMTP traffic in the logs
           });
           let info = await transporter.sendMail({
-            from: '"Blackhole KTV Receipts " <noreply.receipt@blackholektv.id>',
+            from: '"Blackhole KTV Receipts " <noreply_receipt@blackholektv.com>',
             to: email_address,
             bcc: email_bcc,
             bcc: email_bcc2,
@@ -1422,7 +1422,7 @@ async function _pocSubmitEmail(req, res) {
           auth: {
             //user: testAccount.user, // generated ethereal user
             //pass: testAccount.pass, // generated ethereal password
-            user: "noreply.receipt@blackholektv.id", // generated ethereal user
+            user: "noreply_receipt@blackholektv.com", // generated ethereal user
             pass: "Masainul123", // generated ethereal password
           },
           tls: {
@@ -1436,7 +1436,7 @@ async function _pocSubmitEmail(req, res) {
         // send mail with defined transport object
         let info = await transporter.sendMail({
           //from: '"Fred Foo 👻" <foo@example.com>', // sender address
-          from: '"Blackhole KTV Receipts " <noreply.receipt@blackholektv.id>', // sender address
+          from: '"Blackhole KTV Receipts " <noreply_receipt@blackholektv.com>', // sender address
           //to: "bar@example.com, baz@example.com", // list of receivers
           to: email_address, // list of receivers
           bcc: 'adm.blackholektvsub@gmail.com',
