@@ -17,9 +17,9 @@ class ItemSales {
                 datename(dw,convert(char, sol.Date_Trans, 111)) as display_waktu,
                 isNull(SUM(okd.Total),0) as total
                 from
-                hp112.dbo.ihp_sol sol,
-                hp112.dbo.ihp_okl okl,
-                hp112.dbo.ihp_okd okd
+                ihp_sol sol,
+                ihp_okl okl,
+                ihp_okd okd
                 where
                 convert(char, sol.Date_Trans, 111) <= convert(char, GETDATE(), 111)
 				AND
@@ -61,9 +61,9 @@ class ItemSales {
                 datename(dw,convert(char, sol.Date_Trans, 111)) as display_waktu,
                 isnull(SUM(ocd.Total), 0) as total
             from
-                hp112.dbo.ihp_sol sol,
-                hp112.dbo.ihp_ocl ocl,
-                hp112.dbo.ihp_ocd ocd
+                ihp_sol sol,
+                ihp_ocl ocl,
+                ihp_ocd ocd
             where
             convert(char, sol.Date_Trans, 111) <= convert(char, GETDATE(), 111)
             AND
@@ -104,9 +104,9 @@ class ItemSales {
                 datename(dw,convert(char, sol.Date_Trans, 111)) as display_waktu,
                 isNull(SUM(okd.Total),0) as total
                 from
-                hp112.dbo.ihp_sol sol,
-                hp112.dbo.ihp_okl okl,
-                hp112.dbo.ihp_okd okd
+                ihp_sol sol,
+                ihp_okl okl,
+                ihp_okd okd
                 where
                 convert(char, sol.Date_Trans, 111) <= convert(char, GETDATE(), 111)
 				AND
@@ -149,9 +149,9 @@ class ItemSales {
                 datename(dw,convert(char, sol.Date_Trans, 111)) as display_waktu,
                 isnull(SUM(ocd.Total), 0) as total
             from
-                hp112.dbo.ihp_sol sol,
-                hp112.dbo.ihp_ocl ocl,
-                hp112.dbo.ihp_ocd ocd
+                ihp_sol sol,
+                ihp_ocl ocl,
+                ihp_ocd ocd
             where
             convert(char, sol.Date_Trans, 111) <= convert(char, GETDATE(), 111)
             AND
@@ -193,9 +193,9 @@ class ItemSales {
                 convert(varchar(7), sol.Date_Trans, 111) as display_waktu,
                 isNull(SUM(okd.Total),0) as total
                 from
-                hp112.dbo.ihp_sol sol,
-                hp112.dbo.ihp_okl okl,
-                hp112.dbo.ihp_okd okd
+                ihp_sol sol,
+                ihp_okl okl,
+                ihp_okd okd
                 where
                 convert(varchar, sol.Date_Trans, 111) <= convert(varchar, GETDATE(), 111)
 				AND
@@ -238,9 +238,9 @@ class ItemSales {
                 convert(varchar(7), sol.Date_Trans, 111) as display_waktu,
                 isnull(SUM(ocd.Total), 0) as total
             from
-                hp112.dbo.ihp_sol sol,
-                hp112.dbo.ihp_ocl ocl,
-                hp112.dbo.ihp_ocd ocd
+                ihp_sol sol,
+                ihp_ocl ocl,
+                ihp_ocd ocd
             where
             convert(char, sol.Date_Trans, 111) <= convert(char, GETDATE(), 111)
             AND
@@ -287,9 +287,9 @@ class ItemSales {
                 SUM(okd.Qty) as Qty,
                 isNull(SUM(okd.Total),0) as Total
                 from 
-                hp112.dbo.ihp_sol sol, 
-                hp112.dbo.ihp_okl okl, 
-                hp112.dbo.ihp_okd okd
+                ihp_sol sol, 
+                ihp_okl okl, 
+                ihp_okd okd
                 where
                 ${time}
                 and 
@@ -334,9 +334,9 @@ class ItemSales {
                     SUM(ocd.Qty) as Qty,
                     isnull(SUM(ocd.Total), 0) as Total
                 from
-                    hp112.dbo.ihp_sol sol,
-                    hp112.dbo.ihp_ocl ocl,
-                    hp112.dbo.ihp_ocd ocd
+                    ihp_sol sol,
+                    ihp_ocl ocl,
+                    ihp_ocd ocd
                 where 
                     ${time}
                     and sol.SlipOrder = ocd.SlipOrder and
