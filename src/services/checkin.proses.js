@@ -785,6 +785,7 @@ class CheckinProses {
             sql.close();
             console.log(kode_rcp + " Sukses insertIhpExt");
             logger.info(kode_rcp + " Sukses insertIhpExt");
+            logger.info(kode_rcp + " query" + isiQuery);
             resolve(true);
           }
         });

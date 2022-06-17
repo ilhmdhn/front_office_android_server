@@ -2715,6 +2715,9 @@ async function _procExtendRoom(req, res) {
         var nilai_ivc_uang_muka = parseFloat(0);
         var nilai_ivc_uang_voucher = parseFloat(0);
 
+        var minusjam = req.body.minus;
+        var jamextend;
+
         var room = req.body.room;
         var chusr = req.body.chusr;
 
@@ -2818,13 +2821,25 @@ async function _procExtendRoom(req, res) {
                 console.log(room + " Ready untuk Extend, Durasi Extend " + totalDurasiCekinMenit + " Menit");
                 logger.info(room + " Ready untuk  Extend, Durasi Extend " + totalDurasiCekinMenit + " Menit");
 
-                dateTambahan = "DATEADD(minute," + totalDurasiCekinMenit + ",'" + isgetPengecekanRoomReady.data[0].jam_checkout_ + "')";
+                dateTambahan = "DATEADD(minute, " + totalDurasiCekinMenit + ",'" + isgetPengecekanRoomReady.data[0].jam_checkout_ + "')";
+            
+                
+
+                if (minusjam == true){
+                    dateTambahan = "DATEADD(minute, -" + totalDurasiCekinMenit + ",'" + isgetPengecekanRoomReady.data[0].jam_checkout_ + "')";
+                    jamextend = -durasi_jam;
+                } else{
+                    jamextend = durasi_jam;
+                }
+
+                console.log("cekminut "+minusjam + "" + jamextend);
 
                 var isprosesQueryInsertIHP_Ext = await
                     new CheckinProses().insertIhpExt(
                         db,
                         kode_rcp,
-                        durasi_jam,
+                        // diminus
+                        jamextend,
                         durasi_menit,
                         chusr,
                         date_trans_Query,

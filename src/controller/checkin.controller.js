@@ -637,7 +637,7 @@ exports.getCheckinResult = async function (req, res) {
             let time = data[7]
             let eTimeRcp = {
                 checkin: time[0].Checkin,
-                durasi: time[0].jam_sewa,
+                durasi: 'sementara dihilangkan',
                 checkout: time[0].Checkout
             };
             let summaryOrderInventory = _orderInventoryService.getSummaryOrderInventory(
@@ -746,18 +746,13 @@ function getTimeRcp(ivc) {
     return new Promise((resolve, reject) => {
         try {
 
-            var isiQuery = `
-            SELECT Reception, 
-            RIGHT('0'+CAST(DATEPART(hour, Checkin) as varchar(2)),2) + ':' +
-            RIGHT('0'+CAST(DATEPART(minute, Checkin)as varchar(2)),2) as Checkin
-            ,(Jam_Sewa + ISNULL((SELECT SUM(Jam_Extend) FROM IHP_Ext WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}')),0)) as jam_sewa
-            ,isnull(
-             RIGHT('0'+CAST(DATEPART(hour, (SELECT MAX(End_Extend) FROM IHP_Ext WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}'))) as varchar(2)),2) + ':' +
-             RIGHT('0'+CAST(DATEPART(minute, (SELECT MAX(End_Extend) FROM IHP_Ext WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}')))as varchar(2)),2)
-            ,RIGHT('0'+CAST(DATEPART(hour, Checkout) as varchar(2)),2) + ':' +
-             RIGHT('0'+CAST(DATEPART(minute, Checkout)as varchar(2)),2)) as Checkout
-             FROM IHP_Rcp
-             WHERE Invoice = '${ivc}'`;
+             var isiQuery = `
+                SELECT Reception,
+                convert(varchar(5), Checkin, 8) as Checkin,
+                convert(varchar(5),DATEADD(HH, Jam_Sewa + (SELECT SUM(Jam_Extend) FROM [IHP_Ext] WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}')), convert(varchar(5), Checkin, 8)),8) as Checkout
+                FROM IHP_Rcp
+                WHERE Invoice = '${ivc}'
+`
 
             db.request().query(isiQuery, function (err, dataReturn) {
                 if (err) {
