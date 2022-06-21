@@ -8,6 +8,7 @@ var db;
 
 const { resolve } = require('dns');
 const { data } = require('jquery');
+const { query } = require('winston');
 
 
 exports.getMySalesToday = async function(req, res){
@@ -203,3 +204,102 @@ exports.getSalesItem = async function (req, res){
     }
 }
 
+exports.getCancelSalesItem = async function (req, res){
+
+    db = await new DBConnection().getPoolConnection();
+    logger = req.log;
+
+    try{
+
+    var query = `
+    set dateformat dmy
+	select distinct
+		CONVERT(varchar(5),ocl.Date_Trans,108) as jam,
+		ocd.nama as nama_item,
+		sol.Kamar as kamar,
+		ocl.Nama as nama_tamu,
+		ocd.Qty as jumlah_item,
+		ocl.Chusr as chusr
+    from
+        ihp_sol sol,
+        ihp_ocl ocl,
+        ihp_ocd ocd
+	where 
+		convert(char, sol.Date_Trans, 111) = CONVERT(char, GETDATE(), 111) AND
+		sol.SlipOrder = ocd.SlipOrder and
+        ocl.ordercancelation = ocd.ordercancelation
+        order by ocd.Nama asc`
+
+    db.request().query(query, function(err, dataReturn){
+
+        if(err){
+            sql.close();
+            logger.error(err.message + 'Error Process Query' + query);
+            res.send(new ResponseFormat(false, null, err.message));
+        } else{
+            if(dataReturn.recordset.length > 0){
+                res.send(new ResponseFormat(true, dataReturn.recordset));
+            } else{
+                res.send(new ResponseFormat(true, null, "Data Kosong"));
+            }
+        }
+    });
+
+    }catch(error){
+        logger.error(error.message);
+        res.send(new ResponseFormat(false, null, error.message));
+    }
+}
+
+exports.getSalesByItemName = async function (req,  res){
+    db = await new DBConnection().getPoolConnection();
+    logger = req.log;
+
+    try{
+        var duration = req.query.durasi;
+        var itemName = req.query.item_name;
+        var chusr = req.query.chusr;
+        var time;
+        var salesItem;
+        var cancelItem;
+    
+        if(duration == 'dialy'){
+            time = `convert(char, sol.Date_Trans, 111) = CONVERT(char, GETDATE(), 111)` 
+        } else if(duration == 'weekly'){
+            time = 
+            `convert(char, sol.Date_Trans, 111) <= convert(char, GETDATE(), 111)
+            AND
+            convert(char, sol.Date_Trans, 111) > convert(char, DATEADD(day, -7, GETDATE()), 111)` 
+        } else if(duration == 'monthly'){
+            time = 
+            `convert(char, sol.Date_Trans, 111) <= convert(char, GETDATE(), 111)
+            AND
+            convert(char, sol.Date_Trans, 111) > convert(char, DATEADD(year, -1, GETDATE()), 111)`  
+        }
+
+        salesItem = await new SalesService().getSalesByItemNameQuery(db, time, itemName, chusr);
+        cancelItem = await new SalesService().getCancelSalesByItemName(db, time, itemName, chusr);
+
+        if(cancelItem != false){
+            for(var i = 0;  i<cancelItem.length; i++){
+                for(var j=0; j<salesItem.length; j++){
+                    if(salesItem[j].so == cancelItem[i].so  && salesItem[j].nama_item == cancelItem[i].nama_item){
+                        salesItem[j].jumlah = salesItem[j].jumlah - cancelItem[i].jumlah;
+                        salesItem[j].Total = salesItem[j].Total-cancelItem[i].Total;
+                    }
+                }
+            }
+        }
+
+    if(salesItem != false){
+        res.send(new ResponseFormat(true, salesItem));
+    } else{
+        res.send(new ResponseFormat(true, null,  "Data Kosong"));
+    }
+
+    } catch(error){
+        logger.error(error +" "+error.message);
+        dataResponse = new ResponseFormat(false, null, error.message);
+        res.send(dataResponse);
+    }
+}

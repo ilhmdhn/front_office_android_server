@@ -33,4 +33,10 @@ router.route('/mysales/monthly')
 router.route('/salesitem')
     .get(mysalesController.getSalesItem);
 
+router.route('/cancelitems')
+    .get(mysalesController.getCancelSalesItem);
+
+router.route('/salesbyitemname')
+    .get(mysalesController.getSalesByItemName);
+
 module.exports = router;

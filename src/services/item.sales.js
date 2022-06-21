@@ -364,6 +364,106 @@ class ItemSales {
             }
         })
     }
+
+    getSalesByItemNameQuery(db_, time_, item_name_, chusr_){
+        return new Promise((resolve) =>{
+            try{
+                
+                db = db_;
+                var time = time_;
+                var item_name = item_name_;
+                var chusr = chusr_;
+
+                query = `
+                set dateformat dmy
+                select distinct
+	                sol.SlipOrder as so,
+	                CONVERT(varchar, sol.Date_Trans, 103) as tanggal,
+	                okd.nama as nama_item,
+	                sol.Kamar as room,
+	                okd.Qty as jumlah
+                from 
+	                ihp_sol sol, 
+                    ihp_okl okl, 
+                    ihp_okd okd
+                where
+                    ${time}
+                    and 
+                    sol.SlipOrder = okd.SlipOrder
+                    and okl.orderpenjualan = okd.orderpenjualan
+                    and okd.nama = '${item_name}'
+                    and sol.CHusr = '${chusr}'
+                `
+
+                db.request().query(query, function(err, dataReturn){
+                    if(err){
+                        sql.close();
+                        logger.error(err.message +  `Error Prosses Query ${query}`);
+                    } else{
+                        if(dataReturn.recordset.length > 0){
+                            resolve(dataReturn.recordset);
+                        } else{
+                            resolve(false);
+                        }
+                    }
+                })
+            } catch(error){
+                logger.error(error.message);
+                logger.error("query "+ query);
+                resolve(false);
+            }
+        })
+    }
+
+    getCancelSalesByItemName(db_, time_, item_name_, chusr_){
+        return new Promise((resolve) =>{
+            try{
+                
+                db = db_;
+                var time = time_;
+                var item_name = item_name_;
+                var chusr = chusr_;
+
+                query = `
+                set dateformat dmy
+                select distinct
+	                sol.SlipOrder as so,
+                    ocd.nama as nama_item,
+                    ocd.Qty as jumlah,
+                    ocd.Total as Total
+                from
+                    ihp_sol sol,
+                    ihp_ocl ocl,
+                    ihp_ocd ocd
+                where 
+		            ${time}
+                    AND
+                    sol.SlipOrder = ocd.SlipOrder and
+                    sol.CHusr = '${chusr}'
+                    and.ocd.Nama = '${item_name}' and
+                    ocl.ordercancelation = ocd.ordercancelation
+                    order by ocd.Nama asc
+                `
+
+                db.request().query(query, function(err, dataReturn){
+                    if(err){
+                        sql.close();
+                        logger.error(err.message +  `Error Prosses Query ${query}`);
+                    } else{
+                        if(dataReturn.recordset.length > 0){
+                            resolve(dataReturn.recordset);
+                        } else{
+                            resolve(false);
+                        }
+                    }
+                })
+            } catch(error){
+                logger.error(error.message);
+                logger.error("query "+ query);
+                resolve(false);
+            }
+        })
+    }
 }
 
 module.exports = ItemSales;
