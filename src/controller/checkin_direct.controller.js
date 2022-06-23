@@ -16,6 +16,7 @@ var ResetTransaksi = require('../services/reset.transaksi.js');
 var IpAddressService = require('../services/ip.address.service.js');
 var RoomNoService = require('../services/room.no.service.js');
 var ConfigPos = require('../services/config.pos.js');
+var ReduceDuration = require('../services/reduce.duration.js');
 
 var moment = require('moment');
 var fs = require('fs');
@@ -2716,7 +2717,6 @@ async function _procExtendRoom(req, res) {
         var nilai_ivc_uang_voucher = parseFloat(0);
 
         var minusjam = req.body.minus;
-        var jamextend;
 
         var room = req.body.room;
         var chusr = req.body.chusr;
@@ -2822,32 +2822,34 @@ async function _procExtendRoom(req, res) {
                 logger.info(room + " Ready untuk  Extend, Durasi Extend " + totalDurasiCekinMenit + " Menit");
 
                 dateTambahan = "DATEADD(minute, " + totalDurasiCekinMenit + ",'" + isgetPengecekanRoomReady.data[0].jam_checkout_ + "')";
-            
-                
-
-                if (minusjam == true){
-                    dateTambahan = "DATEADD(minute, -" + totalDurasiCekinMenit + ",'" + isgetPengecekanRoomReady.data[0].jam_checkout_ + "')";
-                    jamextend = -durasi_jam;
-                } else{
-                    jamextend = durasi_jam;
-                }
-
-                console.log("cekminut "+minusjam + "" + jamextend);
-
-                var isprosesQueryInsertIHP_Ext = await
+                var isprosesQueryInsertIHP_Ext
+                console.log('minus jam ' + minusjam);
+                if (minusjam == 'true'){
+                    console.log('sampe  sini ga 1')
+                    for(var i = 0; i<durasi_jam; i++){
+                        console.log('sampe  sini ga 2')
+                        var reduce = await new ReduceDuration().reduceExtend(db, kode_rcp);
+                        if(reduce == 'move'){
+                            await new ReduceDuration().reduceRcp(db, kode_rcp);
+                        }
+                    }
+                    isprosesQueryInsertIHP_Ext = undefined;
+                } else if(minusjam == 'false'){
+                    isprosesQueryInsertIHP_Ext = await
                     new CheckinProses().insertIhpExt(
                         db,
                         kode_rcp,
                         // diminus
-                        jamextend,
+                        durasi_jam,
                         durasi_menit,
                         chusr,
                         date_trans_Query,
                         status_promo,
                         isgetPengecekanRoomReady.data[0].jam_checkout_,
                         dateTambahan);
+                }
 
-                if (isprosesQueryInsertIHP_Ext != false) {
+                if (isprosesQueryInsertIHP_Ext != false || reduce != false) {
 
                     var isgetJamCheckoutExtend = await new CheckinProses().getJamCheckoutExtend(db, kode_rcp);
                     if (isgetJamCheckoutExtend.state == true) {

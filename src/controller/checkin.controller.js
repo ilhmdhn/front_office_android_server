@@ -747,12 +747,14 @@ function getTimeRcp(ivc) {
         try {
 
              var isiQuery = `
-                SELECT Reception,
-                convert(varchar(5), Checkin, 8) as Checkin,
-                convert(varchar(5),DATEADD(HH, Jam_Sewa + (SELECT SUM(Jam_Extend) FROM [IHP_Ext] WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}')), convert(varchar(5), Checkin, 8)),8) as Checkout
-                FROM IHP_Rcp
-                WHERE Invoice = '${ivc}'
-`
+                SELECT Reception, 
+                    convert(varchar(5), Checkin, 8) as Checkin, 
+                    convert(varchar(5),DATEADD(HH,Jam_Sewa + isnull((SELECT SUM(Jam_Extend) FROM hp112new.dbo.[IHP_Ext] WHERE Reception = (SELECT Reception FROM hp112new.dbo.IHP_Rcp WHERE Invoice = '${ivc}')),0), convert(varchar(5), Checkin, 8)), 8) as Checkout 
+                FROM 
+                    hp112new.dbo.IHP_Rcp 
+                WHERE 
+                    Invoice = '${ivc}'
+                `
 
             db.request().query(isiQuery, function (err, dataReturn) {
                 if (err) {
