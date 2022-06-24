@@ -5,6 +5,42 @@ var db;
 class ModifikasiTable {
   constructor() { }
 
+  createTableIhpHistoryReduceDuration(db_) {
+    return new Promise((resolve, reject) => {
+      try {
+        db = db_;
+
+        var isiQuery = `IF NOT EXISTS (SELECT * FROM information_schema.TABLES where TABLE_NAME = 'IHP_History_Reduce_Duration') Begin
+                        CREATE TABLE [dbo].[IHP_History_Reduce_Duration](
+                        [Reception] [nvarchar](16) NOT NULL,
+                        [Durasi_Minus] [Int] NULL,
+                        [Kamar] [nvarchar](30) NULL,
+                        [Chusr] [nvarchar](30) NULL,
+                        [Date_Trans] [datetime] NULL) End`;
+        db.request().query(isiQuery, function (err, dataReturn) {
+          if (err) {
+            sql.close();
+            logger.error(err);
+            console.log(err);
+            logger.error(err.message + ' Error prosesQuery ' + isiQuery);
+            console.log(" Gagal Create Table IHP_History_Reduce_Duration");
+            logger.info(" Gagal Create Table IHP_History_Reduce_Duration");
+            resolve(false);
+          } else {
+            sql.close();
+            console.log(" Sukses Create Table IHP_History_Reduce_Duration");
+            logger.info(" Sukses Create Table IHP_History_Reduce_Duration");
+            resolve(true);
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        logger.error(error.message);
+        logger.error('Catch Error prosesQuery ');
+        resolve(false);
+      }
+    });
+  }
 
   penambahanKolomPrintedSlipCheckinIhpRcp(db_) {
     return new Promise((resolve, reject) => {
@@ -1658,7 +1694,5 @@ class ModifikasiTable {
       }
     });
   }
-
-
 }
 module.exports = ModifikasiTable;

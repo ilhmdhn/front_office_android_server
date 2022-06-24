@@ -105,6 +105,7 @@ new DBConnection().initializeConnection(function (err) {
             }
             else {
                 db = await new DBConnection().getPoolConnection();
+                new ModifikasiTable().createTableIhpHistoryReduceDuration(db);
                 new ModifikasiTable().createTableIhpHistoryNotif(db);
                 new ModifikasiTable().penambahanKolomPrintedSlipCheckinIhpRcp(db);
                 new ModifikasiTable().penambahanKolomSignIhpRcp(db);

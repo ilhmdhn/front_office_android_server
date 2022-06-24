@@ -172,6 +172,7 @@ module.exports = function (callback) {
                     }
                     else {
                         db = await new DBConnection().getPoolConnection();
+                        new ModifikasiTable().createTableIhpHistoryReduceDuration(db);
                         new ModifikasiTable().penambahanKolomPrintedSlipCheckinIhpRcp(db);
                         new ModifikasiTable().penambahanKolomSignIhpRcp(db);
                         new ModifikasiTable().melebarkanKolomPrintedIhpSul(db);

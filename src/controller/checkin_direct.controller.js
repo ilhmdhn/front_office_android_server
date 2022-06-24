@@ -17,6 +17,7 @@ var IpAddressService = require('../services/ip.address.service.js');
 var RoomNoService = require('../services/room.no.service.js');
 var ConfigPos = require('../services/config.pos.js');
 var ReduceDuration = require('../services/reduce.duration.js');
+var CatatReduce = require('../services/catat.reduce.js');
 
 var moment = require('moment');
 var fs = require('fs');
@@ -2823,16 +2824,14 @@ async function _procExtendRoom(req, res) {
 
                 dateTambahan = "DATEADD(minute, " + totalDurasiCekinMenit + ",'" + isgetPengecekanRoomReady.data[0].jam_checkout_ + "')";
                 var isprosesQueryInsertIHP_Ext
-                console.log('minus jam ' + minusjam);
                 if (minusjam == 'true'){
-                    console.log('sampe  sini ga 1')
                     for(var i = 0; i<durasi_jam; i++){
-                        console.log('sampe  sini ga 2')
                         var reduce = await new ReduceDuration().reduceExtend(db, kode_rcp);
                         if(reduce == 'move'){
-                            await new ReduceDuration().reduceRcp(db, kode_rcp);
+                           var reduceRcp =  await new ReduceDuration().reduceRcp(db, kode_rcp);
                         }
                     }
+                    await new CatatReduce().catatReduce(db, kode_rcp, durasi_jam, chusr);
                     isprosesQueryInsertIHP_Ext = undefined;
                 } else if(minusjam == 'false'){
                     isprosesQueryInsertIHP_Ext = await

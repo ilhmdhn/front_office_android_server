@@ -1953,7 +1953,7 @@ exports.postCashDetail = async function(req, res){
         logger.error(err.message + ' Error prosesQuery ' + query);
         res.send(new ResponseFormat(false, null, "Gagal insert data pecahan"));
       } else{
-        if(response.rowsAffected = 1){
+        if(response.rowsAffected == 1){
           res.send(new ResponseFormat(true, null, "Berhasil"))
         } else{
           res.send(new ResponseFormat(false, null, "Gagal insert data pecahan"))
