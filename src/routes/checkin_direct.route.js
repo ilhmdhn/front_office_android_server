@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var checkinDirectCtrl = require('../controller/checkin_direct.controller');
 var transferCtrl = require('../controller/transfer.controller');
+var reduceController = require('../controller/reduce.duration.controller');
 
 router.route('/direct-checkin')
     .post(checkinDirectCtrl.submitDirectCheckInRoom);
@@ -32,5 +33,8 @@ router.route('/sign-image')
 
 router.route('/remove_promo')
     .delete(checkinDirectCtrl.removePromoRoom);
+
+router.route('/reduce_duration')
+    .post(reduceController.reduceDuration)
 
 module.exports = router;
