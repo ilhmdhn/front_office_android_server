@@ -25,6 +25,7 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "dependencies": {
+    "@develoka/angka-rupiah-js": "^1.0.3",
     "@thiagoelg/node-printer": "^0.6.2",
     "admin-lte": "^3.0.5",
     "cookie-parser": "^1.4.5",

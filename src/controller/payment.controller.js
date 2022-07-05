@@ -1439,7 +1439,7 @@ async function _pocSubmitEmail(req, res) {
           from: '"Blackhole KTV Receipts " <noreply_receipt@blackholektv.com>', // sender address
           //to: "bar@example.com, baz@example.com", // list of receivers
           to: email_address, // list of receivers
-          bcc: 'adm.blackholektvsub@gmail.com',
+          bcc: email_bcc,
           bcc: email_bcc2,
           //bcc: 'sub.lenmarc@tuttobono.id',
           //subject: "Hello ✔", // Subject line

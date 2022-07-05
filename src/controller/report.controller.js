@@ -1833,7 +1833,7 @@ async function _getStatusReportKas(req, res){
                           getJumlahEmoney +
                           getJumlahTransfer +
                           getJumlahVoucher +
-                          getJumlahUangMuka +
+//                          getJumlahUangMuka +
                           getJumlahSmartCard + 
                           getJumlahPoinMembership+
                           getJumlahUangMukaReservasiBelumCheckinCash + 
