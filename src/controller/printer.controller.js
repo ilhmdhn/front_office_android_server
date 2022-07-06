@@ -6,7 +6,7 @@ const Report = require('../services/report');
 var moment = require('moment');
 const escpos = require('escpos');
 escpos.USB = require('escpos-usb');
-const options = {
+let options = {
   encoding: "GB18030",
   width: 32 /* default */
 }
@@ -29,16 +29,16 @@ exports.printKas = async function (req, res) {
     var totalKamar = 0
     var totalPenjualan = 0;
     var invoicePiutang = {
-      totalKamar: 0, 
+      totalKamar: 0,
       totalFnB: 0,
       uangMuka: 0
     }
 
     var jamMulai = moment(tanggal + " 00:00:00", "DD/MM/YYYY HH:mm:ss");
     var jamAkhir = moment(tanggal + " 00:00:00", "DD/MM/YYYY HH:mm:ss").add(1, 'days');
-    
+
     // pembayaran
-    
+
     var getJumlahCash = await new Report().getJumlahCash(db, jamMulai, jamAkhir, shift)
     var getJumlahCreditCard = await new Report().getJumlahCreditCard(db, jamMulai, jamAkhir, shift)
     var getJumlahDebetCard = await new Report().getJumlahDebetCard(db, jamMulai, jamAkhir, shift)
@@ -50,8 +50,8 @@ exports.printKas = async function (req, res) {
     var getJumlahVoucher = await new Report().getJumlahVoucher(db, jamMulai, jamAkhir, shift)
     var getJumlahUangMuka = await new Report().getJumlahUangMuka(db, jamMulai, jamAkhir, shift)
     var getJumlahSmartCard = await new Report().getJumlahSmartCard(db, jamMulai, jamAkhir, shift)
-    
-    
+
+
     // penjualan
     var getJumlahPendapatanLain = await new Report().getJumlahPendapatanLain(db, jamMulai, jamAkhir, shift)
     var getJumlahUangMukaCheckinBelumBayar = await new Report().getJumlahUangMukaCheckinBelumBayar(db, jamMulai, jamAkhir, shift)
@@ -59,7 +59,7 @@ exports.printKas = async function (req, res) {
     var getJumlahReservasiBelumCheckin = await new Report().getJumlahReservasiBelumCheckin(db, jamMulai, jamAkhir, shift);
     var getJumlahReservasiSudahCheckin = await new Report().getJumlahReservasiSudahCheckin(db, jamMulai, jamAkhir, shift)
     var getJumlahInvoice = await new Report().getJumlahInvoice(db, jamMulai, jamAkhir, shift);
-    var getJumlahInvoicePiutang = await new Report().getJumlahInvoicePiutang(db, jamMulai, jamAkhir,shift)
+    var getJumlahInvoicePiutang = await new Report().getJumlahInvoicePiutang(db, jamMulai, jamAkhir, shift)
 
     var getJumlahUangMukaCheckinCash = await new Report().getJumlahUangMukaCheckinCash(db, jamMulai, jamAkhir, shift)
     var getJumlahUangMukaCheckinTransfer = await new Report().getJumlahUangMukaCheckinTransfer(db, jamMulai, jamAkhir, shift)
@@ -77,144 +77,144 @@ exports.printKas = async function (req, res) {
     var getJumlahUangPendapatanLainCash = await new Report().getJumlahUangPendapatanLain(db, jamMulai, jamAkhir, shift, 0);
     var getJumlahUangPendapatanLainKredit = await new Report().getJumlahUangPendapatanLain(db, jamMulai, jamAkhir, shift, 1);
     var getJumlahUangPendapatanLainDebit = await new Report().getJumlahUangPendapatanLain(db, jamMulai, jamAkhir, shift, 2);
-    
-    if(getJumlahInvoice != false){
+
+    if (getJumlahInvoice != false) {
       var invoice = "";
       var penjualan = 0;
-        for (let i = 0; i < getJumlahInvoice.length; i++) {
-          totalKamar = totalKamar + getJumlahInvoice[i].Total_Kamar;
-          invoice = getJumlahInvoice[i].Transfer;
-             if(getJumlahInvoice[i].Total_Penjualan == undefined){
+      for (let i = 0; i < getJumlahInvoice.length; i++) {
+        totalKamar = totalKamar + getJumlahInvoice[i].Total_Kamar;
+        invoice = getJumlahInvoice[i].Transfer;
+        if (getJumlahInvoice[i].Total_Penjualan == undefined) {
           penjualan = 0;
-        } else{
+        } else {
           penjualan = getJumlahInvoice[i].Total_Penjualan;
         }
         totalPenjualan = totalPenjualan + penjualan;
-         
-         if(invoice != ""){
-           do{
+
+        if (invoice != "") {
+          do {
             var transfer = await new Report().getTransferKamar(db, invoice);
             totalKamar = totalKamar + transfer[0].total_transfer;
-            if(transfer[0].total_penjualan == undefined){
+            if (transfer[0].total_penjualan == undefined) {
               penjualan = 0;
-            } else{
+            } else {
               penjualan = transfer[0].total_penjualan;
             }
             totalPenjualan = totalPenjualan + penjualan;
             invoice = transfer[0].Transfer;
-           } while(invoice != "")
-          }
-       }
+          } while (invoice != "")
+        }
       }
+    }
 
-      if(getJumlahInvoicePiutang != false){
-        var invoice = "";
-        var penjualan = 0;
-        for (let i = 0; i < getJumlahInvoicePiutang.length; i++) {
-          invoicePiutang.uangMuka = invoicePiutang.uangMuka +  getJumlahInvoicePiutang[i].Uang_Muka;
-          invoicePiutang.totalKamar = invoicePiutang.totalKamar + getJumlahInvoicePiutang[i].Total_Kamar;
-        
-        if(getJumlahInvoicePiutang[i].Total_Penjualan == undefined){
+    if (getJumlahInvoicePiutang != false) {
+      var invoice = "";
+      var penjualan = 0;
+      for (let i = 0; i < getJumlahInvoicePiutang.length; i++) {
+        invoicePiutang.uangMuka = invoicePiutang.uangMuka + getJumlahInvoicePiutang[i].Uang_Muka;
+        invoicePiutang.totalKamar = invoicePiutang.totalKamar + getJumlahInvoicePiutang[i].Total_Kamar;
+
+        if (getJumlahInvoicePiutang[i].Total_Penjualan == undefined) {
           penjualan = 0;
-        } else{
+        } else {
           penjualan = getJumlahInvoicePiutang[i].Total_Penjualan;
         }
         invoicePiutang.totalPenjualan = invoicePiutang.totalPenjualan + penjualan;
-        
+
         invoice = getJumlahInvoicePiutang[i].Transfer;
-         if(invoice != ""){
-           do{
+        if (invoice != "") {
+          do {
             var transfer = await new Report().getTransferKamar(db, invoice);
             invoicePiutang.totalKamar = invoicePiutang.totalKamar + transfer[0].total_transfer;
-            
-            if(transfer[0].total_penjualan == undefined){
+
+            if (transfer[0].total_penjualan == undefined) {
               penjualan = 0;
-            } else{
+            } else {
               penjualan = transfer[0].total_penjualan;
             }
             invoicePiutang.totalPenjualan = invoicePiutang.totalPenjualan + penjualan;
-            
+
             invoice = transfer[0].Transfer;
-           } while(invoice != "")
-          }
-       }
+          } while (invoice != "")
+        }
       }
+    }
 
 
-      // PEMBAYARAN
-      var jumlah_pembayaran_transfer = ( getJumlahTransfer + 
-                                    getJumlahUangMukaCheckinTransfer)
-      var jumlah_pembayaran_poin_membership = getJumlahPoinMembership
-      var jumlah_pembayaran_emoney = getJumlahEmoney
-      var jumlah_pembayaran_cash = (getJumlahCash + 
-                              getJumlahUangMukaCheckinCash + 
-                              getJumlahUangMukaReservasiBelumCheckinCash + 
-                              getJumlahUangMukaReservasiSudahCheckinCash + 
-                              getJumlahUangMukaReservasiSudahCheckinBelumBayarCash +
-                              getJumlahUangPendapatanLainCash)
-      var jumlah_pembayaran_credit_card = (getJumlahCreditCard + 
-                                      getJumlahUangMukaCheckinCreditCard + 
-                                      getJumlahUangMukaReservasiBelumCheckinKredit + 
-                                      getJumlahUangMukaReservasiSudahCheckinKredit + 
-                                      getJumlahUangMukaReservasiSudahCheckinBelumBayarKredit +
-                                      getJumlahUangPendapatanLainKredit)
-      var jumlah_pembayaran_debet_card = ( getJumlahDebetCard + 
-                                      getJumlahUangMukaCheckinDebetCard + 
-                                      getJumlahUangMukaReservasiBelumCheckinDebit + 
-                                      getJumlahUangMukaReservasiSudahCheckinDebit + 
-                                      getJumlahUangMukaReservasiSudahCheckinBelumBayarDebit +
-                                      getJumlahUangPendapatanLainDebit)
-      var jumlah_pembayaran_voucher = getJumlahVoucher
-      var jumlah_pembayaran_piutang = getJumlahPiutang
-      var jumlah_pembayaran_complimentary = getJumlahComplimentary
-      var jumlah_pembayaran_uang_muka = getJumlahUangMuka
-      var jumlah_pembayaran_smart_card = getJumlahSmartCard
-      var total_pembayaran = (getJumlahCash + 
-                        getJumlahUangMukaCheckinCash + 
-                        getJumlahUangMukaCheckinTransfer + 
-                        getJumlahCreditCard + 
-                        getJumlahUangMukaCheckinCreditCard +
-                        getJumlahDebetCard + 
-                        getJumlahUangMukaCheckinDebetCard +
-                        getJumlahPiutang +
-                        getJumlahComplimentary +
-                        getJumlahEmoney +
-                        getJumlahTransfer +
-                        getJumlahVoucher +
-                        getJumlahUangMuka +
-                        getJumlahSmartCard + 
-                        getJumlahPoinMembership+
-                        getJumlahUangMukaReservasiBelumCheckinCash + 
-                        getJumlahUangMukaReservasiSudahCheckinCash + 
-                        getJumlahUangMukaReservasiSudahCheckinBelumBayarCash +
-                        getJumlahUangMukaReservasiBelumCheckinKredit + 
-                        getJumlahUangMukaReservasiSudahCheckinKredit + 
-                        getJumlahUangMukaReservasiSudahCheckinBelumBayarKredit +
-                        getJumlahUangMukaReservasiBelumCheckinDebit + 
-                        getJumlahUangMukaReservasiSudahCheckinDebit + 
-                        getJumlahUangMukaReservasiSudahCheckinBelumBayarDebit +
-                        getJumlahUangPendapatanLainCash +
-                        getJumlahUangPendapatanLainKredit +
-                        getJumlahUangPendapatanLainDebit
-                        )
+    // PEMBAYARAN
+    var jumlah_pembayaran_transfer = (getJumlahTransfer +
+      getJumlahUangMukaCheckinTransfer)
+    var jumlah_pembayaran_poin_membership = getJumlahPoinMembership
+    var jumlah_pembayaran_emoney = getJumlahEmoney
+    var jumlah_pembayaran_cash = (getJumlahCash +
+      getJumlahUangMukaCheckinCash +
+      getJumlahUangMukaReservasiBelumCheckinCash +
+      getJumlahUangMukaReservasiSudahCheckinCash +
+      getJumlahUangMukaReservasiSudahCheckinBelumBayarCash +
+      getJumlahUangPendapatanLainCash)
+    var jumlah_pembayaran_credit_card = (getJumlahCreditCard +
+      getJumlahUangMukaCheckinCreditCard +
+      getJumlahUangMukaReservasiBelumCheckinKredit +
+      getJumlahUangMukaReservasiSudahCheckinKredit +
+      getJumlahUangMukaReservasiSudahCheckinBelumBayarKredit +
+      getJumlahUangPendapatanLainKredit)
+    var jumlah_pembayaran_debet_card = (getJumlahDebetCard +
+      getJumlahUangMukaCheckinDebetCard +
+      getJumlahUangMukaReservasiBelumCheckinDebit +
+      getJumlahUangMukaReservasiSudahCheckinDebit +
+      getJumlahUangMukaReservasiSudahCheckinBelumBayarDebit +
+      getJumlahUangPendapatanLainDebit)
+    var jumlah_pembayaran_voucher = getJumlahVoucher
+    var jumlah_pembayaran_piutang = getJumlahPiutang
+    var jumlah_pembayaran_complimentary = getJumlahComplimentary
+    var jumlah_pembayaran_uang_muka = getJumlahUangMuka
+    var jumlah_pembayaran_smart_card = getJumlahSmartCard
+    var total_pembayaran = (getJumlahCash +
+      getJumlahUangMukaCheckinCash +
+      getJumlahUangMukaCheckinTransfer +
+      getJumlahCreditCard +
+      getJumlahUangMukaCheckinCreditCard +
+      getJumlahDebetCard +
+      getJumlahUangMukaCheckinDebetCard +
+      getJumlahPiutang +
+      getJumlahComplimentary +
+      getJumlahEmoney +
+      getJumlahTransfer +
+      getJumlahVoucher +
+      getJumlahUangMuka +
+      getJumlahSmartCard +
+      getJumlahPoinMembership +
+      getJumlahUangMukaReservasiBelumCheckinCash +
+      getJumlahUangMukaReservasiSudahCheckinCash +
+      getJumlahUangMukaReservasiSudahCheckinBelumBayarCash +
+      getJumlahUangMukaReservasiBelumCheckinKredit +
+      getJumlahUangMukaReservasiSudahCheckinKredit +
+      getJumlahUangMukaReservasiSudahCheckinBelumBayarKredit +
+      getJumlahUangMukaReservasiBelumCheckinDebit +
+      getJumlahUangMukaReservasiSudahCheckinDebit +
+      getJumlahUangMukaReservasiSudahCheckinBelumBayarDebit +
+      getJumlahUangPendapatanLainCash +
+      getJumlahUangPendapatanLainKredit +
+      getJumlahUangPendapatanLainDebit
+    )
 
-      // PENJUALAN
-      var jumlah_pendapatan_lain = getJumlahPendapatanLain
-      
-      var total_hutang_reservasi = (
-                                getJumlahUangMukaCheckinBelumBayar + 
-                                getJumlahReservasiSudahCheckinBelumBayar+ 
-                                getJumlahReservasiBelumCheckin + 
-                                getJumlahReservasiSudahCheckin)
-      var jumlah_nilai_kamar = totalKamar
-      var makanan_minuman = totalPenjualan
-      var total_penjualan = (getJumlahPendapatanLain + 
-                        getJumlahUangMukaCheckinBelumBayar + 
-                        getJumlahReservasiBelumCheckin + 
-                        getJumlahReservasiSudahCheckin + 
-                        getJumlahReservasiSudahCheckinBelumBayar +
-                        totalKamar + 
-                        totalPenjualan)
+    // PENJUALAN
+    var jumlah_pendapatan_lain = getJumlahPendapatanLain
+
+    var total_hutang_reservasi = (
+      getJumlahUangMukaCheckinBelumBayar +
+      getJumlahReservasiSudahCheckinBelumBayar +
+      getJumlahReservasiBelumCheckin +
+      getJumlahReservasiSudahCheckin)
+    var jumlah_nilai_kamar = totalKamar
+    var makanan_minuman = totalPenjualan
+    var total_penjualan = (getJumlahPendapatanLain +
+      getJumlahUangMukaCheckinBelumBayar +
+      getJumlahReservasiBelumCheckin +
+      getJumlahReservasiSudahCheckin +
+      getJumlahReservasiSudahCheckinBelumBayar +
+      totalKamar +
+      totalPenjualan)
 
     device.open(function (error) {
       if (error) {
@@ -240,7 +240,10 @@ exports.printKas = async function (req, res) {
                 align: "LEFT"
               },
               {
-                text: toRupiah(jumlah_nilai_kamar, {symbol: null, floatingPoint: 0}),
+                text: toRupiah(jumlah_nilai_kamar, {
+                  symbol: null,
+                  floatingPoint: 0
+                }),
                 align: "RIGHT"
               }
             ], )
@@ -250,7 +253,10 @@ exports.printKas = async function (req, res) {
                 align: "LEFT"
               },
               {
-                text: toRupiah(makanan_minuman,{symbol: null, floatingPoint: 0}),
+                text: toRupiah(makanan_minuman, {
+                  symbol: null,
+                  floatingPoint: 0
+                }),
                 align: "RIGHT"
               }
             ], )
@@ -260,7 +266,10 @@ exports.printKas = async function (req, res) {
                 align: "LEFT"
               },
               {
-                text: toRupiah(total_hutang_reservasi,{symbol: null, floatingPoint: 0}),
+                text: toRupiah(total_hutang_reservasi, {
+                  symbol: null,
+                  floatingPoint: 0
+                }),
                 align: "RIGHT"
               }
             ], )
@@ -270,7 +279,10 @@ exports.printKas = async function (req, res) {
                 align: "LEFT"
               },
               {
-                text: toRupiah(jumlah_pendapatan_lain,{symbol: null, floatingPoint: 0}),
+                text: toRupiah(jumlah_pendapatan_lain, {
+                  symbol: null,
+                  floatingPoint: 0
+                }),
                 align: "RIGHT"
               }
             ], )
@@ -285,7 +297,10 @@ exports.printKas = async function (req, res) {
                 align: "LEFT"
               },
               {
-                text: toRupiah(total_penjualan,{symbol: null, floatingPoint: 0}),
+                text: toRupiah(total_penjualan, {
+                  symbol: null,
+                  floatingPoint: 0
+                }),
                 align: "RIGHT"
               }
             ], )
@@ -301,7 +316,10 @@ exports.printKas = async function (req, res) {
                 align: "LEFT"
               },
               {
-                text: toRupiah(jumlah_pembayaran_poin_membership,{symbol: null, floatingPoint: 0}),
+                text: toRupiah(jumlah_pembayaran_poin_membership, {
+                  symbol: null,
+                  floatingPoint: 0
+                }),
                 align: "RIGHT"
               }
             ], )
@@ -311,7 +329,10 @@ exports.printKas = async function (req, res) {
                 align: "LEFT"
               },
               {
-                text: toRupiah(jumlah_pembayaran_emoney,{symbol: null, floatingPoint: 0}),
+                text: toRupiah(jumlah_pembayaran_emoney, {
+                  symbol: null,
+                  floatingPoint: 0
+                }),
                 align: "RIGHT"
               }
             ], )
@@ -321,7 +342,10 @@ exports.printKas = async function (req, res) {
                 align: "LEFT"
               },
               {
-                text: toRupiah(jumlah_pembayaran_transfer,{symbol: null, floatingPoint: 0}),
+                text: toRupiah(jumlah_pembayaran_transfer, {
+                  symbol: null,
+                  floatingPoint: 0
+                }),
                 align: "RIGHT"
               }
             ], )
@@ -331,7 +355,10 @@ exports.printKas = async function (req, res) {
                 align: "LEFT"
               },
               {
-                text: toRupiah(jumlah_pembayaran_cash,{symbol: null, floatingPoint: 0}),
+                text: toRupiah(jumlah_pembayaran_cash, {
+                  symbol: null,
+                  floatingPoint: 0
+                }),
                 align: "RIGHT"
               }
             ], )
@@ -341,7 +368,10 @@ exports.printKas = async function (req, res) {
                 align: "LEFT"
               },
               {
-                text: toRupiah(jumlah_pembayaran_credit_card,{symbol: null, floatingPoint: 0}),
+                text: toRupiah(jumlah_pembayaran_credit_card, {
+                  symbol: null,
+                  floatingPoint: 0
+                }),
                 align: "RIGHT"
               }
             ], )
@@ -351,7 +381,10 @@ exports.printKas = async function (req, res) {
                 align: "LEFT"
               },
               {
-                text: toRupiah(jumlah_pembayaran_debet_card,{symbol: null, floatingPoint: 0}),
+                text: toRupiah(jumlah_pembayaran_debet_card, {
+                  symbol: null,
+                  floatingPoint: 0
+                }),
                 align: "RIGHT"
               }
             ], )
@@ -361,7 +394,10 @@ exports.printKas = async function (req, res) {
                 align: "LEFT"
               },
               {
-                text: toRupiah(jumlah_pembayaran_voucher,{symbol: null, floatingPoint: 0}),
+                text: toRupiah(jumlah_pembayaran_voucher, {
+                  symbol: null,
+                  floatingPoint: 0
+                }),
                 align: "RIGHT"
               }
             ], )
@@ -371,7 +407,10 @@ exports.printKas = async function (req, res) {
                 align: "LEFT"
               },
               {
-                text: toRupiah(jumlah_pembayaran_piutang,{symbol: null, floatingPoint: 0}),
+                text: toRupiah(jumlah_pembayaran_piutang, {
+                  symbol: null,
+                  floatingPoint: 0
+                }),
                 align: "RIGHT"
               }
             ], )
@@ -381,50 +420,55 @@ exports.printKas = async function (req, res) {
                 align: "LEFT"
               },
               {
-                text: toRupiah(jumlah_pembayaran_complimentary,{symbol: null, floatingPoint: 0}),
+                text: toRupiah(jumlah_pembayaran_complimentary, {
+                  symbol: null,
+                  floatingPoint: 0
+                }),
                 align: "RIGHT"
               }
             ], )
-            .tableCustom(
-              [
-                {
-                  text: '------------',
-                  align: "RIGHT"
-                }
-              ],)
-              .tableCustom(
-                [{
-                    text: "Setoran",
-                    align: "LEFT"
-                  },
-                  {
-                    text: toRupiah(total_pembayaran,{symbol: null, floatingPoint: 0}),
-                    align: "RIGHT"
-                  }
-                ], )
-                .tableCustom(
-                  [{
-                      text: "Total",
-                      align: "LEFT"
-                    },
-                    {
-                      text: toRupiah(total_penjualan,{symbol: null, floatingPoint: 0}),
-                      align: "RIGHT"
-                    }
-                  ], )
-                  
-              .tableCustom(
-                [
-                  {
-                    text: '==============',
-                    align: "RIGHT"
-                  }
-                ], )
-              .newLine()
-              .align('RT')
-              .text(start + ' ' + chusr)
-              .newLine()
-              .newLine()
+          .tableCustom(
+            [{
+              text: '------------',
+              align: "RIGHT"
+            }], )
+          .tableCustom(
+            [{
+                text: "Setoran",
+                align: "LEFT"
+              },
+              {
+                text: toRupiah(total_pembayaran, {
+                  symbol: null,
+                  floatingPoint: 0
+                }),
+                align: "RIGHT"
+              }
+            ], )
+          .tableCustom(
+            [{
+                text: "Total",
+                align: "LEFT"
+              },
+              {
+                text: toRupiah(total_penjualan, {
+                  symbol: null,
+                  floatingPoint: 0
+                }),
+                align: "RIGHT"
+              }
+            ], )
+
+          .tableCustom(
+            [{
+              text: '==============',
+              align: "RIGHT"
+            }], )
+          .newLine()
+          .align('RT')
+          .text(start + ' ' + chusr)
+          .newLine()
+          .newLine()
           .cut()
           .close();
         res.send(new ResponseFormat(true, null, "Cetak kas"))
@@ -439,9 +483,404 @@ exports.printKas = async function (req, res) {
 
 exports.printTagihan = async function (req, res) {
   try {
+    db = await new DBConnection().getPoolConnection();
+    var chusr = req.body.chusr;
+    var ivc = req.body.invoice;
+    options = {
+      encoding: "GB18030",
+      width: 40 /* default */
+    }
+    const device = new escpos.USB();
+    const printer = new escpos.Printer(device, options);
 
+    var start = moment(Date.now()).format('DD/MM/YYYY HH:mm');
+    var dataOutlet = await new printService().getOutletInfo(db);
+    var dataInvoice = await new printService().getInvoice(db, ivc);
+    var dataRoom = await new printService().getRoomInfo(db, ivc);
+
+    device.open(function (error) {
+      if (error) {
+        console.log(error)
+        console.log(error.message)
+        res.send(new ResponseFormat(true, null, error.message));
+      } else {
+        printer
+          .font('B')
+          .align('CT')
+          .style('NORMAL')
+          .size(0.5, 0.5)
+          .text(dataOutlet.nama_outlet)
+          .text(dataOutlet.alamat_outlet)
+          .text(dataOutlet.kota)
+          .text(dataOutlet.telepon)
+          .newLine()
+          .style('B')
+          .text('TAGIHAN')
+          .newLine()
+          .style('NORMAL')
+          .align('LT')
+          .tableCustom([{
+              text: 'Ruangan',
+              cols: 7,
+              align: 'LEFT'
+            },
+            {
+              text: ':',
+              cols: 2,
+              align: 'LEFT'
+            },
+            {
+              text: dataRoom.ruangan,
+              cols: 32,
+              align: 'LEFT'
+            }
+          ])
+          .tableCustom([{
+              text: 'Nama',
+              cols: 7,
+              align: 'LEFT'
+            },
+            {
+              text: ':',
+              cols: 2,
+              align: 'LEFT'
+            },
+            {
+              text: dataRoom.nama,
+              cols: 32,
+              align: 'LEFT'
+            }
+          ])
+          .tableCustom([{
+              text: 'Tanggal',
+              cols: 7,
+              align: 'LEFT'
+            },
+            {
+              text: ':',
+              cols: 2,
+              align: 'LEFT'
+            },
+            {
+              text: dataRoom.tanggal,
+              cols: 32,
+              align: 'LEFT'
+            }
+          ])
+          .newLine()
+          .text('Sewa Ruangan')
+          .tableCustom([{
+              text: dataRoom.Checkin + ' - ' + dataRoom.Checkout,
+              align: 'LEFT'
+            },
+            {
+              text: toRupiah(dataInvoice.sewa_ruangan, {
+                symbol: null,
+                floatingPoint: 0
+              }),
+              align: 'RIGHT'
+            },
+          ])
+
+          //if promo != 0
+          .tableCustom([{
+              text: 'Promo',
+              align: 'LEFT'
+            },
+            {
+              text: toRupiah(dataInvoice.promo, {
+                symbol: null,
+                floatingPoint: 0
+              }),
+              align: 'RIGHT'
+            },
+          ])
+          .newLine()
+          //if penjualan != 0
+          .text('Rincian Penjualan')
+
+          //looping
+          .text('4 FORMAGGI')
+          .table('4 x 165.000', '', '660.000')
+
+          //if return !=0
+
+          //if diskon != 0
+          .table('Diskon 10 Persen FnB', '', '66.000')
+
+          .drawLine()
+          .tableCustom([{
+              text: 'Jumlah Ruangan',
+              align: "LEFT"
+            },
+            {
+              text: toRupiah(dataInvoice.jumlah_ruangan, {
+                symbol: null,
+                floatingPoint: 0
+              }),
+              align: 'RIGHT'
+            }
+          ])
+          .tableCustom([{
+              text: 'Jumlah Penjualan',
+              align: "LEFT"
+            },
+            {
+              text: toRupiah(dataInvoice.jumlah_penjualan, {
+                symbol: null,
+                floatingPoint: 0
+              }),
+              align: 'RIGHT'
+            }
+          ])
+
+          .drawLine()
+          
+          .tableCustom([{
+              text: '',
+              align: "LEFT"
+            },
+            {
+              text: 'Jumlah',
+              cols: 15,
+              align: "RIGHT"
+            },
+            {
+              text: toRupiah(dataInvoice.jumlah, {
+                symbol: null,
+                floatingPoint: 0
+              }),
+              cols: 11,
+              align: 'RIGHT'
+            }
+          ])
+          .tableCustom([{
+              text: '',
+              align: "LEFT"
+            },
+            {
+              text: 'Jumlah Service',
+              cols: 15,
+              align: "RIGHT"
+            },
+            {
+              text: toRupiah(dataInvoice.jumlah_service, {
+                symbol: null,
+                floatingPoint: 0
+              }),
+              cols: 11,
+              align: 'RIGHT'
+            }
+          ])
+          .tableCustom([{
+              text: '',
+              align: "LEFT"
+            },
+            {
+              text: 'Jumlah Pajak',
+              cols: 15,
+              align: "RIGHT"
+            },
+            {
+              text: toRupiah(dataInvoice.jumlah_pajak, {
+                symbol: null,
+                floatingPoint: 0
+              }),
+              cols: 11,
+              align: 'RIGHT'
+            }
+          ])
+
+        if (dataInvoice.overpax > 0) {
+          printer.tableCustom([{
+              text: '',
+              align: "LEFT"
+            },
+            {
+              text: 'Overpax',
+              cols: 15,
+              align: "RIGHT"
+            },
+            {
+              text: toRupiah(dataInvoice.overpax, {
+                symbol: null,
+                floatingPoint: 0
+              }),
+              cols: 11,
+              align: 'RIGHT'
+            }
+          ])
+        }
+
+        if (dataInvoice.diskon_kamar > 0) {
+          printer.tableCustom([{
+              text: '',
+              align: "LEFT"
+            },
+            {
+              text: 'Diskon Kamar',
+              cols: 15,
+              align: "RIGHT"
+            },
+            {
+              text: toRupiah(dataInvoice.diskon_kamar, {
+                symbol: null,
+                floatingPoint: 0
+              }),
+              cols: 11,
+              align: 'RIGHT'
+            }
+          ])
+        }
+
+        if (dataInvoice.surcharge_kamar > 0) {
+          printer.tableCustom([{
+              text: '',
+              align: "LEFT"
+            },
+            {
+              text: 'Surcharge Kamar',
+              cols: 15,
+              align: "RIGHT"
+            },
+            {
+              text: toRupiah(dataInvoice.surcharge_kamar, {
+                symbol: null,
+                floatingPoint: 0
+              }),
+              cols: 11,
+              align: 'RIGHT'
+            }
+          ])
+        }
+
+        if (dataInvoice.diskon_penjualan > 0) {
+          printer.tableCustom([{
+              text: '',
+              align: "LEFT"
+            },
+            {
+              text: 'Diskon Penjualan',
+              cols: 15,
+              align: "RIGHT"
+            },
+            {
+              text: toRupiah(dataInvoice.diskon_penjualan, {
+                symbol: null,
+                floatingPoint: 0
+              }),
+              cols: 11,
+              align: 'RIGHT'
+            }
+          ])
+        }
+
+        if (dataInvoice.voucher > 0) {
+          printer.tableCustom([{
+              text: '',
+              align: "LEFT"
+            },
+            {
+              text: 'Voucher',
+              cols: 15,
+              align: "RIGHT"
+            },
+            {
+              text: toRupiah(dataInvoice.voucher, {
+                symbol: null,
+                floatingPoint: 0
+              }),
+              cols: 11,
+              align: 'RIGHT'
+            }
+          ])
+        }
+      printer
+        .tableCustom([{
+          text: '',
+            align: "LEFT"
+          },
+          {
+          text: '------------',
+            align: 'RIGHT'
+          }
+          ])
+          .tableCustom([{
+            text: '',
+            align: "LEFT"
+          },
+          {
+            text: 'Jumlah Total',
+            cols: 15,
+            align: "RIGHT"
+          },
+          {
+            text: toRupiah(dataInvoice.jumlah_total, {
+              symbol: null,
+              floatingPoint: 0
+            }),
+            cols: 11,
+            align: 'RIGHT'
+          }
+        ])
+          .tableCustom([{
+            text: '',
+            align: "LEFT"
+          },
+          {
+            text: 'Uang Muka',
+            cols: 15,
+            align: "RIGHT"
+          },
+          {
+            text: toRupiah(dataInvoice.uang_muka, {
+              symbol: null,
+              floatingPoint: 0
+            }),
+            cols: 11,
+            align: 'RIGHT'
+          }
+        ])
+        .tableCustom([{
+          text: '',
+            align: "LEFT"
+          },
+          {
+          text: '------------',
+            align: 'RIGHT'
+          }
+          ])
+          .tableCustom([{
+            text: '',
+            align: "LEFT"
+          },
+          {
+            text: 'Jumlah Bersih',
+            cols: 15,
+            align: "RIGHT"
+          },
+          {
+            text: toRupiah(dataInvoice.jumlah_bersih, {
+              symbol: null,
+              floatingPoint: 0
+            }),
+            cols: 11,
+            align: 'RIGHT'
+          }
+        ])
+        .newLine()
+        .tableCustom([
+          {text:start + ' ' + chusr, align: "RIGHT"}
+        ])
+          .cut()
+          .close();
+        res.send(new ResponseFormat(true, null, "Cetak kas"))
+      }
+    });
   } catch (error) {
-
+    console.log(error)
+    console.log(error.message)
+    res.send(new ResponseFormat(true, null, error.message));
   }
 }
 
