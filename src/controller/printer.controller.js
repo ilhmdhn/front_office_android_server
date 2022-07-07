@@ -1,7 +1,7 @@
 var ResponseFormat = require('../util/response');
 var toRupiah = require('@develoka/angka-rupiah-js');
 var DBConnection = require('../util/db.pool');
-var printService = require('../services/print.js');
+var PrintService = require('../services/print');
 const Report = require('../services/report');
 var moment = require('moment');
 const escpos = require('escpos');
@@ -19,7 +19,7 @@ exports.printKas = async function (req, res) {
     var tanggal = req.body.tanggal;
     var shift = req.body.shift;
     var chusr = req.body.chusr;
-    var dataOutlet = await new printService().getOutletInfo(db);
+    var dataOutlet = await new PrintService().getOutletInfo(db);
     const device = new escpos.USB();
     const printer = new escpos.Printer(device, options);
 
@@ -471,21 +471,21 @@ exports.printKas = async function (req, res) {
           .newLine()
           .cut()
           .close();
-        res.send(new ResponseFormat(true, null, "Cetak kas"))
+        res.send(new ResponseFormat(true, null, "Berhasil Cetak"))
       }
     });
   } catch (error) {
     console.log(error)
     console.log(error.message)
-    res.send(new ResponseFormat(true, null, error.message));
+    res.send(new ResponseFormat(false, null, "Gagal Cetak " + error.message));
   }
 }
 
 exports.printTagihan = async function (req, res) {
+  db = await new DBConnection().getPoolConnection();
   try {
-    db = await new DBConnection().getPoolConnection();
     var chusr = req.body.chusr;
-    var ivc = req.body.invoice;
+    var rcp = req.body.rcp;
     options = {
       encoding: "GB18030",
       width: 40 /* default */
@@ -493,12 +493,16 @@ exports.printTagihan = async function (req, res) {
     const device = new escpos.USB();
     const printer = new escpos.Printer(device, options);
 
+    var ivc = await new PrintService().getInvoiceCode(db, rcp);
     var start = moment(Date.now()).format('DD/MM/YYYY HH:mm');
-    var dataOutlet = await new printService().getOutletInfo(db);
-    var dataInvoice = await new printService().getInvoice(db, ivc);
-    var dataRoom = await new printService().getRoomInfo(db, ivc);
+    var dataOutlet = await new PrintService().getOutletInfo(db);
+    var dataInvoice = await new PrintService().getInvoice(db, ivc);
+    var dataRoom = await new PrintService().getRoomInfo(db, ivc);
+    var orderData = await new PrintService().getOrder(db, rcp);
+    var cancelOrderData = await new PrintService().getCancelOrder(db, rcp);
+    var promoOrder = await new PrintService().getPromoOrder(db, rcp);
 
-    device.open(function (error) {
+    device.open(async function (error) {
       if (error) {
         console.log(error)
         console.log(error.message)
@@ -582,7 +586,6 @@ exports.printTagihan = async function (req, res) {
             },
           ])
 
-          //if promo != 0
           .tableCustom([{
               text: 'Promo',
               align: 'LEFT'
@@ -595,19 +598,47 @@ exports.printTagihan = async function (req, res) {
               align: 'RIGHT'
             },
           ])
+
           .newLine()
-          //if penjualan != 0
-          .text('Rincian Penjualan')
 
-          //looping
-          .text('4 FORMAGGI')
-          .table('4 x 165.000', '', '660.000')
+          if(orderData.length > 0){
+            printer
+            .text('Rincian Penjualan')
+            for(var i = 0; i<orderData.length; i++){
+              printer
+              .tableCustom([
+                {text:orderData[i].nama_item, align:"LEFT"},
+              ])
+              .tableCustom([
+                {text: `   ${orderData[i].jumlah} x ${toRupiah(orderData[i].harga, {symbol: null, floatingPoint: 0})}`, align:"LEFT"},
+                {text:toRupiah(orderData[i].total, {symbol: null, floatingPoint: 0}), align:"RIGHT"}
+              ])
+            }
+          }
 
-          //if return !=0
+          if(cancelOrderData.length > 0){
+            for(var i = 0; i<cancelOrderData.length; i++){
+              printer
+              .tableCustom([
+                {text:'RETURN '+cancelOrderData[i].nama_item, align:"LEFT"},
+              ])
+              .tableCustom([
+                {text: `   ${cancelOrderData[i].jumlah} x ${toRupiah(cancelOrderData[i].harga, {symbol: null, floatingPoint: 0})}`, align:"LEFT"},
+                {text:toRupiah(cancelOrderData[i].total, {symbol: null, floatingPoint: 0}), align:"RIGHT"}
+              ])
+            }
+          }
 
-          //if diskon != 0
-          .table('Diskon 10 Persen FnB', '', '66.000')
+          if(promoOrder != false){
+            printer
+            .newLine()
+            .tableCustom([
+              {text: promoOrder.promo, align: "LEFT"},
+              {text: toRupiah(promoOrder.total_promo, {symbol: null,floatingPoint: 0}),align: 'RIGHT'}
+            ])
+          }
 
+          printer
           .drawLine()
           .tableCustom([{
               text: 'Jumlah Ruangan',
@@ -634,6 +665,24 @@ exports.printTagihan = async function (req, res) {
             }
           ])
 
+          var isTransfer = dataInvoice.transfer
+          if(isTransfer != ''){
+            printer
+            .text('Transfer Ruangan')
+            do{
+              var transferData = await new PrintService().getTransfer(db, isTransfer);
+              printer
+                .tableCustom([
+                  {text: '   Room ' + transferData.kamar, align:"LEFT"},
+                  {text: toRupiah(transferData.total, {
+                    symbol: null,
+                    floatingPoint: 0
+                  }), align:"RIGHT"}
+                ])
+                isTransfer = transferData.transfer
+            } while(isTransfer != '')
+          }
+          printer
           .drawLine()
           
           .tableCustom([{
@@ -795,6 +844,27 @@ exports.printTagihan = async function (req, res) {
             }
           ])
         }
+
+        if (dataInvoice.charge_lain > 0) {
+          printer.tableCustom([{
+              text: '',
+              align: "LEFT"
+            },
+            {
+              text: 'Charge Lain',
+              cols: 15,
+              align: "RIGHT"
+            },
+            {
+              text: toRupiah(dataInvoice.charge_lain, {
+                symbol: null,
+                floatingPoint: 0
+              }),
+              cols: 11,
+              align: 'RIGHT'
+            }
+          ])
+        }
       printer
         .tableCustom([{
           text: '',
@@ -805,7 +875,7 @@ exports.printTagihan = async function (req, res) {
             align: 'RIGHT'
           }
           ])
-          .tableCustom([{
+        .tableCustom([{
             text: '',
             align: "LEFT"
           },
@@ -823,7 +893,11 @@ exports.printTagihan = async function (req, res) {
             align: 'RIGHT'
           }
         ])
-          .tableCustom([{
+
+
+        .newLine()
+        printer
+        .tableCustom([{
             text: '',
             align: "LEFT"
           },
@@ -869,25 +943,34 @@ exports.printTagihan = async function (req, res) {
           }
         ])
         .newLine()
+        .size(1,0.5)
+        .align('LT')
+        .text(toRupiah(dataInvoice.jumlah_bersih, {
+          symbol: 'Rp',
+          floatingPoint: 0
+        }))
+        .newLine()
+        .size(0.5, 0.5)
+        .font('B')
         .tableCustom([
           {text:start + ' ' + chusr, align: "RIGHT"}
         ])
           .cut()
           .close();
-        res.send(new ResponseFormat(true, null, "Cetak kas"))
+        res.send(new ResponseFormat(true, null, "Berhasil Cetak Bill " +dataRoom.ruangan))
       }
     });
   } catch (error) {
     console.log(error)
     console.log(error.message)
-    res.send(new ResponseFormat(true, null, error.message));
+    res.send(new ResponseFormat(false, null, error.message));
   }
 }
 
 exports.printInvoice = async function (req, res) {
   db = await new DBConnection().getPoolConnection();
   try {
-    var dataOutlet = await new printService().getOutletInfo(db);
+    var dataOutlet = await new PrintService().getOutletInfo(db);
 
     const device = new escpos.USB();
     const printer = new escpos.Printer(device, options);

@@ -1,11 +1,46 @@
 var sql = require('mssql');
-const { resolveContent } = require('nodemailer/lib/shared');
 var db;
 var logger = require ('../util/logger');
 var isiQuery;
 
 class PrintService{
     constructor() { }
+
+    getInvoiceCode(db_, rcp_){
+        return new Promise((resolve) => {
+
+        try{
+            db = db_;
+            var rcp = rcp_;
+
+            isiQuery = `
+            SELECT [Invoice] as ivc FROM [HP112new].[dbo].[IHP_Ivc] WHERE [Reception] = '${rcp}'
+                `
+            db.request().query(isiQuery, function (error, dataReturn){
+                if(error){
+                    sql.close();
+                    console.log(error + '\n' + error.message + '\n error get ivc code \n' + isiQuery);
+                    logger.error(error + '\n' + error.message + '\n error get ivc code \n' + isiQuery);
+                    resolve(false)
+                } else{
+                    sql.close();
+                    if(dataReturn.recordset.length>0){
+                        resolve(dataReturn.recordset[0].ivc);
+                    } else{
+                        resolve(false);
+                        console.log('kode invoice tidak ada');
+                        logger.warn('kode invoice tidak ada');
+                    }
+                }
+            })
+            } catch(error){
+                sql.close();
+                console.log(error + '\n' + error.message + '\n error get ivc code \n' + isiQuery);
+                logger.error(error + '\n' + error.message + '\n error get ivc code \n' + isiQuery);
+                resolve(false)
+            }
+        })
+    }
 
     getOutletInfo(db_){
         return new Promise((resolve) => {
@@ -55,26 +90,28 @@ class PrintService{
 
                 isiQuery = `
                         SELECT 
-                            (Sewa_Kamar_Sebelum_Diskon + Total_Extend_Sebelum_Diskon) as sewa_ruangan, 
-                            (Diskon_Sewa_Kamar + Diskon_Extend_Kamar) as promo,
+                            (isnull(Sewa_Kamar_Sebelum_Diskon,0) + isnull(Total_Extend_Sebelum_Diskon,0)) as sewa_ruangan, 
+                            (isnull(Diskon_Sewa_Kamar,0) + isnull(Diskon_Extend_Kamar,0)) as promo,
                             
-                            (Sewa_Kamar + Total_Extend) as jumlah_ruangan,
-                            (Charge_Penjualan - Total_Cancelation) as jumlah_penjualan,
+                            (isnull(Sewa_Kamar,0) + isnull(Total_Extend,0)) as jumlah_ruangan,
+                            (isnull(Charge_Penjualan,0) - isnull(Total_Cancelation,0)) as jumlah_penjualan,
                             
-                            (Sewa_Kamar + Total_Extend + Charge_Penjualan - Total_Cancelation) as jumlah,
-                            (Service_Kamar + Service_Penjualan) as jumlah_service,
-                            (Tax_Kamar + Tax_Penjualan) as jumlah_pajak,
+                            (isnull(Sewa_Kamar,0) + isnull(Total_Extend,0) + isnull(Charge_Penjualan,0) - isnull(Total_Cancelation,0)) as jumlah,
+                            (isnull(Service_Kamar,0) + isnull(Service_Penjualan,0)) as jumlah_service,
+                            (isnull(Tax_Kamar,0) + isnull(Tax_Penjualan,0)) as jumlah_pajak,
+                            Transfer as transfer,
                             
                             --opsional
-                            Overpax as overpax,
-                            Discount_kamar as diskon_kamar,
-                            Surcharge_Kamar as surcharge_kamar,
-                            Discount_Penjualan as diskon_penjualan,
-                            Uang_Voucher as voucher,
+                            isnull(Overpax,0) as overpax,
+                            isnull(Discount_kamar,0) as diskon_kamar,
+                            isnull(Surcharge_Kamar,0) as surcharge_kamar,
+                            isnull(Discount_Penjualan,0) as diskon_penjualan,
+                            isnull(Uang_Voucher,0) as voucher,
+                            isnull(Charge_Lain,0) as charge_lain,
                                 
-                            Total_All as jumlah_total,
-                            Uang_Muka as uang_muka,
-                            (Total_All - Uang_Muka) as jumlah_bersih
+                            isnull(Total_All,0) as jumlah_total,
+                            isnull(Uang_Muka,0) as uang_muka,
+                            (isnull(Total_All,0) - isnull(Uang_Muka,0)) as jumlah_bersih
                         FROM [IHP_Ivc] WHERE Invoice = '${ivc}'
                         `
                     db.request().query(isiQuery, function (error, dataReturn){
@@ -141,6 +178,188 @@ class PrintService{
                 sql.close();
                 console.log(error + '\n' + error.message + '\n error get room data \n' + isiQuery);
                 logger.error(error + '\n' + error.message + '\n error get room data \n' + isiQuery);
+                resolve(false)
+            }
+        })
+    }
+
+    getOrder(db_, rcp_){
+        return new Promise((resolve) =>{
+            try{
+                db = db_;
+                var rcp = rcp_;
+
+                isiQuery = `
+                SELECT DISTINCT
+                okd.nama as nama_item,
+                okd.Qty as jumlah,
+                inventory.Price as harga,
+                okd.qty * inventory.price as total
+                from 
+                ihp_sol sol, 
+                ihp_okl okl, 
+                ihp_okd okd,
+                IHP_Inventory inventory
+                where
+                sol.SlipOrder = okd.SlipOrder
+                and okl.orderpenjualan = okd.orderpenjualan
+                and inventory.Inventory = okd.Inventory
+                and sol.Reception = '${rcp}'
+                `
+
+                db.request().query(isiQuery, function (error, dataReturn){
+                    if(error){
+                        sql.close();
+                        console.log(error + '\n' + error.message + '\n error get order data \n' + isiQuery);
+                        logger.error(error + '\n' + error.message + '\n error get order data \n' + isiQuery);
+                        resolve(false)
+                    } else{
+                        sql.close();
+                        if(dataReturn.recordset.length>0){
+                            resolve(dataReturn.recordset);
+                        } else{
+                            resolve(false);
+                            console.log('data order empty');
+                            logger.warn('data order empty');
+                            }
+                        }
+                    })
+            }catch(error){
+                sql.close();
+                console.log(error + '\n' + error.message + '\n error get order data \n' + isiQuery);
+                logger.error(error + '\n' + error.message + '\n error get order data \n' + isiQuery);
+                resolve(false)
+            }
+        })
+    }
+    
+    getCancelOrder(db_, rcp_){
+        return new Promise((resolve) =>{
+            try{
+                db = db_;
+                var rcp = rcp_;
+
+                isiQuery = `
+                    SELECT DISTINCT
+                        ocd.nama as nama_item,
+                        ocd.Qty as jumlah,
+                        inventory.Price as harga,
+                        ocd.qty * inventory.price as total
+                    from 
+                        ihp_sol sol, 
+                        ihp_ocd ocd,
+                        IHP_Inventory inventory
+                    where
+                        ocd.SlipOrder = sol.SlipOrder
+                        and inventory.Inventory = ocd.Inventory
+                        and sol.Reception = '${rcp}'
+                `
+
+                db.request().query(isiQuery, function (error, dataReturn){
+                    if(error){
+                        sql.close();
+                        console.log(error + '\n' + error.message + '\n error get cancel order data \n' + isiQuery);
+                        logger.error(error + '\n' + error.message + '\n error get cancel order data \n' + isiQuery);
+                        resolve(false)
+                    } else{
+                        sql.close();
+                        if(dataReturn.recordset.length>0){
+                            resolve(dataReturn.recordset);
+                        } else{
+                            resolve(false);
+                            console.log('data cancel order empty');
+                            logger.warn('data cancel order empty');
+                            }
+                        }
+                    })
+            }catch(error){
+                sql.close();
+                console.log(error + '\n' + error.message + '\n error get cancel order data \n' + isiQuery);
+                logger.error(error + '\n' + error.message + '\n error get cancel order data \n' + isiQuery);
+                resolve(false)
+            }
+        })
+    }
+
+    getTransfer(db_, ivc_){
+        return new Promise((resolve) =>{
+            try{
+                db = db_;
+                var ivc = ivc_;
+
+                isiQuery = `
+                SELECT  Kamar as kamar, 
+                        isnull(Total_All,0) as total, 
+                        [Transfer] as transfer
+                FROM [IHP_Ivc] WHERE Invoice = '${ivc}'
+                `
+
+                db.request().query(isiQuery, function (error, dataReturn){
+                    if(error){
+                        sql.close();
+                        console.log(error + '\n' + error.message + '\n error get transfer data \n' + isiQuery);
+                        logger.error(error + '\n' + error.message + '\n error get transfer data \n' + isiQuery);
+                        resolve(false)
+                    } else{
+                        sql.close();
+                        if(dataReturn.recordset.length>0){
+                            resolve(dataReturn.recordset[0]);
+                        } else{
+                            resolve(false);
+                            console.log('data transfer empty');
+                            logger.info('data transfer empty');
+                            }
+                        }
+                    })
+            }catch(error){
+                sql.close();
+                console.log(error + '\n' + error.message + '\n error get transfer data \n' + isiQuery);
+                logger.error(error + '\n' + error.message + '\n error get transfer data \n' + isiQuery);
+                resolve(false)
+            }
+        })
+    }
+
+    getPromoOrder(db_, rcp_){
+        return new Promise((resolve) =>{
+            try{
+                db = db_;
+                var rcp = rcp_;
+
+                isiQuery = `
+                SELECT 
+                    okdp.Promo_Food as promo, 
+                    SUM(okdp.Harga_Promo) as total_promo
+                FROM 
+                    IHP_Okd_Promo okdp,
+                    IHP_Okl okl
+                where 
+                    okdp.OrderPenjualan = okl.OrderPenjualan
+                    and okl.Reception = '${rcp}'
+                Group By okdp.Promo_Food
+                `
+
+                db.request().query(isiQuery, function (error, dataReturn){
+                    if(error){
+                        sql.close();
+                        console.log(error + '\n' + error.message + '\n error get promo order data \n' + isiQuery);
+                        logger.error(error + '\n' + error.message + '\n error get promo order data \n' + isiQuery);
+                        resolve(false)
+                    } else{
+                        sql.close();
+                        if(dataReturn.recordset.length>0){
+                            resolve(dataReturn.recordset[0]);
+                        } else{
+                            resolve(false);
+                            console.log('data promo order empty');
+                            logger.warn('data promo order empty');
+                            }
+                        }
+                    })
+            }catch(error){
+                sql.close();
+                console.log(error + '\n' + error.message + '\n error get promo order data \n' + isiQuery);
+                logger.error(error + '\n' + error.message + '\n error get promo order data \n' + isiQuery);
                 resolve(false)
             }
         })
