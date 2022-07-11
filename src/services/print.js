@@ -82,7 +82,7 @@ class PrintService{
         })
     }
 
-    getInvoice(db_, ivc_){
+    getBillInvoice(db_, ivc_){
         return new Promise((resolve) =>{
             try{
                 db = db_;
@@ -360,6 +360,104 @@ class PrintService{
                 sql.close();
                 console.log(error + '\n' + error.message + '\n error get promo order data \n' + isiQuery);
                 logger.error(error + '\n' + error.message + '\n error get promo order data \n' + isiQuery);
+                resolve(false)
+            }
+        })
+    }
+
+    getInvoice(db_, ivc_){
+        return new Promise((resolve) =>{
+            try{
+                db = db_;
+                var ivc = ivc_;
+
+                isiQuery = `
+                        SELECT 
+                            (isnull(Sewa_Kamar_Sebelum_Diskon,0) + isnull(Total_Extend_Sebelum_Diskon,0)) as sewa_ruangan, 
+                            (isnull(Diskon_Sewa_Kamar,0) + isnull(Diskon_Extend_Kamar,0)) as promo,
+                            
+                            (isnull(Sewa_Kamar,0) + isnull(Total_Extend,0)) as jumlah_ruangan,
+                            (isnull(Charge_Penjualan,0) - isnull(Total_Cancelation,0)) as jumlah_penjualan,
+                            
+                            (isnull(Sewa_Kamar,0) + isnull(Total_Extend,0) + isnull(Charge_Penjualan,0) - isnull(Total_Cancelation,0)) as jumlah,
+                            (isnull(Service_Kamar,0) + isnull(Service_Penjualan,0)) as jumlah_service,
+                            (isnull(Tax_Kamar,0) + isnull(Tax_Penjualan,0)) as jumlah_pajak,
+                            Transfer as transfer,
+                            
+                            --opsional
+                            isnull(Overpax,0) as overpax,
+                            isnull(Discount_kamar,0) as diskon_kamar,
+                            isnull(Surcharge_Kamar,0) as surcharge_kamar,
+                            isnull(Discount_Penjualan,0) as diskon_penjualan,
+                            isnull(Uang_Voucher,0) as voucher,
+                            isnull(Charge_Lain,0) as charge_lain,
+                                
+                            isnull(Total_All,0) as jumlah_total,
+                            isnull(Total_All,0) as jumlah_bersih
+                        FROM [IHP_Ivc] WHERE Invoice = '${ivc}'
+                        `
+                    db.request().query(isiQuery, function (error, dataReturn){
+                        if(error){
+                            sql.close();
+                            console.log(error + '\n' + error.message + '\n error get data invoice \n' + isiQuery);
+                            logger.error(error + '\n' + error.message + '\n error get data invoice \n' + isiQuery);
+                            resolve(false)
+                        } else{
+                            sql.close();
+                            if(dataReturn.recordset.length>0){
+                                resolve(dataReturn.recordset[0]);
+                            } else{
+                                resolve(false);
+                                console.log('data invoice kosong');
+                                logger.warn('data invoice kosong');
+                                }
+                            }
+                        })
+            } catch(error){
+                sql.close();
+                console.log(error + '\n' + error.message + '\n error get data invoice \n' + isiQuery);
+                logger.error(error + '\n' + error.message + '\n error get data invoice \n' + isiQuery);
+                resolve(false)
+            }
+        })
+    }
+
+    getSud(db_, rcp_){
+        return new Promise((resolve) =>{
+            try{
+                db = db_;
+                var rcp = rcp_;
+
+                isiQuery = `
+                SELECT	sud.[Nama_Payment] as nama_payment,
+                		sud.[Pay_Value] as total
+                FROM	[IHP_Sul] sul, 
+		                [IHP_Sud] sud
+                WHERE   sud.Summary = sul.Summary
+                        and sul.reception = '${rcp}'
+                `
+
+                db.request().query(isiQuery, function (error, dataReturn){
+                    if(error){
+                        sql.close();
+                        console.log(error + '\n' + error.message + '\n error get data payment \n' + isiQuery);
+                        logger.error(error + '\n' + error.message + '\n error get data payment \n' + isiQuery);
+                        resolve(false)
+                    } else{
+                        sql.close();
+                        if(dataReturn.recordset.length>0){
+                            resolve(dataReturn.recordset);
+                        } else{
+                            resolve(false);
+                            console.log('data payment kosong');
+                            logger.warn('data payment kosong');
+                            }
+                        }
+                    })
+            }catch(error){
+                sql.close();
+                console.log(error + '\n' + error.message + '\n error get data payment \n' + isiQuery);
+                logger.error(error + '\n' + error.message + '\n error get data payment \n' + isiQuery);
                 resolve(false)
             }
         })

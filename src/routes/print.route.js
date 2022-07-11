@@ -9,5 +9,6 @@ router.route('/print-tagihan')
     .post(controller.printTagihan)
 
 router.route('/print-invoice')
-    .get(controller.printInvoice);
+    .post(controller.printInvoice);
+
 module.exports = router;
