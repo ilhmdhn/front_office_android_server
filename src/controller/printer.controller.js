@@ -589,6 +589,7 @@ exports.printTagihan = async function (req, res) {
           .cut()
           .close();
         res.send(new ResponseFormat(true, null, "Berhasil Cetak Bill " +dataRoom.ruangan))
+        await new PrintService().updateStatusPrintedIvc(db, rcp, "1");
       }
     });
   } catch (error) {
@@ -599,9 +600,8 @@ exports.printTagihan = async function (req, res) {
 }
 
 exports.printInvoice = async function (req, res) {
-  db = await new DBConnection().getPoolConnection();
     try {
-    var chusr = req.body.chusr;
+    db = await new DBConnection().getPoolConnection();
     var rcp = req.body.rcp;
     const device = new escpos.USB();
     const printer = new escpos.Printer(device, options);
@@ -870,4 +870,25 @@ exports.printInvoice = async function (req, res) {
     logger.error(error + '\n' + error.message + '\n error get data payment \n' + isiQuery);
     res.send(new ResponseFormat(false, null, "Gagal Invoice " +dataRoom.ruangan))
   }
+}
+
+exports.cekPrintStatus = async function(req, res){
+
+    try{
+      db = await new DBConnection().getPoolConnection();
+      var rcp = req.query.rcp;
+
+      var printStatus = await new PrintService().getPrintStatus(db, rcp);
+      if(printStatus != false){
+        res.send(new ResponseFormat(true, printStatus));
+      } else{
+        res.send(new ResponseFormat(false, null, "Gagal cek print status"))
+      }
+
+    } catch(error){
+      sql.close();
+      console.log(error + '\n' + error.message + '\n error get data print \n' + isiQuery);
+      logger.error(error + '\n' + error.message + '\n error get data print \n' + isiQuery);
+      res.send(new ResponseFormat(false, null, "Gagal  cek print status "))
+    }
 }

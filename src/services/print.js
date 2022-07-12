@@ -462,5 +462,83 @@ class PrintService{
             }
         })
     }
+
+    getPrintStatus(db_, rcp_){
+        return new Promise((resolve) =>{
+            try{
+                db = db_;
+                var rcp = rcp_;
+
+                isiQuery = `
+                SELECT [Printed] as [print]
+                FROM [IHP_Ivc] 
+                WHERE Reception = '${rcp}'
+                `
+
+                db.request().query(isiQuery, function (error, dataReturn){
+                    if(error){
+                        sql.close();
+                        console.log(error + '\n' + error.message + '\n error cek printed status \n' + isiQuery);
+                        logger.error(error + '\n' + error.message + '\n error cek printed status \n' + isiQuery);
+                        resolve(false)
+                    } else{
+                        sql.close();
+                        if(dataReturn.recordset.length>0){
+                            resolve(dataReturn.recordset[0]);
+                        } else{
+                            resolve(false);
+                            console.log('data payment kosong');
+                            logger.warn('data payment kosong');
+                            }
+                        }
+                    })
+            }catch(error){
+                sql.close();
+                console.log(error + '\n' + error.message + '\n error cek printed status \n' + isiQuery);
+                logger.error(error + '\n' + error.message + '\n error cek printed status \n' + isiQuery);
+                resolve(false)
+            }
+        })
+    }
+
+    updateStatusPrintedIvc(db_, rcp_, value_){
+        return new Promise((resolve) => {
+            try{
+                db = db_;
+                var rcp = rcp_;
+                var value = value_;
+
+                isiQuery = `
+                UPDATE IHP_Ivc
+                SET Printed = '${value}'
+                WHERE Reception = '${rcp}'
+                `
+                db.request().query(isiQuery, function (error, dataReturn){
+                    if(error){
+                        sql.close();
+                        console.log(error + '\n' + error.message + '\n error update printed status \n' + isiQuery);
+                        logger.error(error + '\n' + error.message + '\n error update printed status \n' + isiQuery);
+                        resolve(false)
+                    } else{
+                        sql.close();
+                        if(dataReturn.rowsAffected>0){
+                            resolve(true);
+                            console.log('Succes Updated Printed Status');
+                            logger.info('Succes Updated Printed Status');
+                        } else{
+                            resolve(false);
+                            console.log('Failed Update Printed Status');
+                            logger.warn('Failed Update Printed Status');
+                            }
+                        }
+                    })
+            }catch(error){
+                sql.close();
+                console.log(error + '\n' + error.message + '\n error Update Printed Status \n' + isiQuery);
+                logger.error(error + '\n' + error.message + '\n error Update Printed Status \n' + isiQuery);
+                resolve(false)
+            }
+        })
+    }
 }
 module.exports = PrintService;

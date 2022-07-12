@@ -11,4 +11,6 @@ router.route('/print-tagihan')
 router.route('/print-invoice')
     .post(controller.printInvoice);
 
+router.route('/print-status')
+    .get(controller.cekPrintStatus)
 module.exports = router;
