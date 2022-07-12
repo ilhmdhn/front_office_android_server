@@ -605,7 +605,7 @@ exports.printInvoice = async function (req, res) {
     var rcp = req.body.rcp;
     const device = new escpos.USB();
     const printer = new escpos.Printer(device, options);
-
+    totalPayment = 0;
     var ivc = await new PrintService().getInvoiceCode(db, rcp);
     var start = moment(Date.now()).format('DD/MM/YYYY HH:mm');
     var dataOutlet = await new PrintService().getOutletInfo(db);
