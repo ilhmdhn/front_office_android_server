@@ -236,7 +236,7 @@ exports.printKas = async function (req, res) {
           .font('b')
           .align('CT')
           .style('NORMAL')
-          .size(0.5, 0.5)
+          .size(1,1)
           .text(dataOutlet.nama_outlet)
           .text(dataOutlet.alamat_outlet)
           .text(dataOutlet.kota)
@@ -366,7 +366,7 @@ exports.printTagihan = async function (req, res) {
           .font('B')
           .align('CT')
           .style('NORMAL')
-          .size(0.5, 0.5)
+          .size(1,1)
           .text(dataOutlet.nama_outlet)
           .text(dataOutlet.alamat_outlet)
           .text(dataOutlet.kota)
@@ -380,17 +380,17 @@ exports.printTagihan = async function (req, res) {
           .tableCustom([
             {text: 'Ruangan', cols: 7, align: 'LEFT'},
             {text: ':', cols: 2, align: 'LEFT'},
-            {text: dataRoom.ruangan, cols: 32, align: 'LEFT'}
+            {text: dataRoom.ruangan, cols: 30, align: 'LEFT'}
           ])
           .tableCustom([
             {text: 'Nama', cols: 7, align: 'LEFT'},
             {text: ':', cols: 2, align: 'LEFT'},
-            {text: dataRoom.nama, cols: 32, align: 'LEFT'}
+            {text: dataRoom.nama, cols: 30, align: 'LEFT'}
           ])
           .tableCustom([
             {text: 'Tanggal', cols: 7, align: 'LEFT'},
             {text: ':', cols : 2, align: 'LEFT'},
-            {text: dataRoom.tanggal,cols: 32,align: 'LEFT'}
+            {text: dataRoom.tanggal,cols: 30,align: 'LEFT'}
           ])
           .newLine()
           .text('Sewa Ruangan')
@@ -401,21 +401,21 @@ exports.printTagihan = async function (req, res) {
 
           .tableCustom([
             {text: 'Promo', align: 'LEFT'},
-            {text: toRupiah(dataInvoice.promo, {symbol: null,floatingPoint: 0}), align: 'RIGHT'},
+            {text:'('+ toRupiah(dataInvoice.promo, {symbol: null,floatingPoint: 0}) + ')', align: 'RIGHT'},
           ])
 
           .newLine()
 
-          if(cancelOrderData.length > 0 ){
-            for (let i = 0; i<cancelOrderData.length;  i++){
-              for(let j = 0; j<orderData.length;  j++){
-                if(cancelOrderData[i].nama_item == orderData[j].nama_item){
-                    orderData[j].jumlah = orderData[j].jumlah - cancelOrderData[i].jumlah;
-                    orderData[j].total = orderData[j].total - cancelOrderData[i].total;
-                }
-              }
-            }
-          }
+          // if(cancelOrderData.length > 0 ){
+          //   for (let i = 0; i<cancelOrderData.length;  i++){
+          //     for(let j = 0; j<orderData.length;  j++){
+          //       if(cancelOrderData[i].nama_item == orderData[j].nama_item){
+          //           orderData.splice(j, 1);
+          //           cancelOrderData.splice(i,1);
+          //       }
+          //     }
+          //   }
+          // }
 
           if(orderData.length > 0){
             printer
@@ -434,18 +434,18 @@ exports.printTagihan = async function (req, res) {
             }
           }
 
-          // if(cancelOrderData.length > 0){
-          //   for(var i = 0; i<cancelOrderData.length; i++){
-          //     printer
-          //     .tableCustom([
-          //       {text:'RETURN '+cancelOrderData[i].nama_item, align:"LEFT"},
-          //     ])
-          //     .tableCustom([
-          //       {text: `   ${cancelOrderData[i].jumlah} x ${toRupiah(cancelOrderData[i].harga, {symbol: null, floatingPoint: 0})}`, align:"LEFT"},
-          //       {text:toRupiah(cancelOrderData[i].total, {symbol: null, floatingPoint: 0}), align:"RIGHT"}
-          //     ])
-          //   }
-          // }
+          if(cancelOrderData.length > 0){
+            for(var i = 0; i<cancelOrderData.length; i++){
+              printer
+              .tableCustom([
+                {text:'RETURN '+cancelOrderData[i].nama_item, align:"LEFT"},
+              ])
+              .tableCustom([
+                {text: `   ${cancelOrderData[i].jumlah} x ${toRupiah(cancelOrderData[i].harga, {symbol: null, floatingPoint: 0})}`, align:"LEFT"},
+                {text:'('+toRupiah(cancelOrderData[i].total, {symbol: null, floatingPoint: 0})+')', align:"RIGHT"}
+              ])
+            }
+          }
 
           if(promoOrder != false){
             printer
@@ -583,20 +583,24 @@ exports.printTagihan = async function (req, res) {
           {text: toRupiah(jumlah_bersih, {symbol: null, floatingPoint: 0}), cols: 11, align: 'RIGHT'}
         ])
         .newLine()
-        .size(1,0.5)
+        .size(2,2)
+        .style('B')
         .align('LT')
         .text(toRupiah(jumlah_bersih, {
           symbol: 'Rp',
           floatingPoint: 0
         }))
         .newLine()
-        .size(0.5, 0.5)
+        .size(1,1)
         .font('B')
+        .style('NORMAL')
         .tableCustom([
           {text:start + ' ' + chusr, align: "RIGHT"}
         ])
-          .cut()
-          .close();
+        .newLine()
+        .newLine()
+        .cut()
+        .close();
         res.send(new ResponseFormat(true, null, "Berhasil Cetak Bill " +dataRoom.ruangan))
         await new PrintService().updateStatusPrintedIvc(db, rcp, "1");
       }
@@ -635,7 +639,7 @@ exports.printInvoice = async function (req, res) {
           .font('B')
           .align('CT')
           .style('NORMAL')
-          .size(0.5, 0.5)
+          .size(1,1)
           .text(dataOutlet.nama_outlet)
           .text(dataOutlet.alamat_outlet)
           .text(dataOutlet.kota)
@@ -649,17 +653,17 @@ exports.printInvoice = async function (req, res) {
           .tableCustom([
             {text: 'Ruangan', cols: 7, align: 'LEFT'},
             {text: ':', cols: 2, align: 'LEFT'},
-            {text: dataRoom.ruangan, cols: 32, align: 'LEFT'}
+            {text: dataRoom.ruangan, cols: 30, align: 'LEFT'}
           ])
           .tableCustom([
             {text: 'Nama', cols: 7, align: 'LEFT'},
             {text: ':', cols: 2, align: 'LEFT'},
-            {text: dataRoom.nama, cols: 32, align: 'LEFT'}
+            {text: dataRoom.nama, cols: 30, align: 'LEFT'}
           ])
           .tableCustom([
             {text: 'Tanggal', cols: 7, align: 'LEFT'},
             {text: ':', cols : 2, align: 'LEFT'},
-            {text: dataRoom.tanggal,cols: 32,align: 'LEFT'}
+            {text: dataRoom.tanggal,cols: 30,align: 'LEFT'}
           ])
           .newLine()
           .text('Sewa Ruangan')
@@ -675,16 +679,16 @@ exports.printInvoice = async function (req, res) {
 
           .newLine()
 
-          if(cancelOrderData.length > 0 ){
-            for (let i = 0; i<cancelOrderData.length;  i++){
-              for(let j = 0; j<orderData.length;  j++){
-                if(cancelOrderData[i].nama_item == orderData[j].nama_item){
-                    orderData[j].jumlah = orderData[j].jumlah - cancelOrderData[i].jumlah;
-                    orderData[j].total = orderData[j].total - cancelOrderData[i].total;
-                }
-              }
-            }
-          }
+          // if(cancelOrderData.length > 0 ){
+          //   for (let i = 0; i<cancelOrderData.length;  i++){
+          //     for(let j = 0; j<orderData.length;  j++){
+          //       if(cancelOrderData[i].nama_item == orderData[j].nama_item){
+          //           orderData[j].jumlah = orderData[j].jumlah - cancelOrderData[i].jumlah;
+          //           orderData[j].total = orderData[j].total - cancelOrderData[i].total;
+          //       }
+          //     }
+          //   }
+          // }
 
           if(orderData.length > 0){
             printer
@@ -703,18 +707,18 @@ exports.printInvoice = async function (req, res) {
             }
           }
 
-          // if(cancelOrderData.length > 0){
-          //   for(var i = 0; i<cancelOrderData.length; i++){
-          //     printer
-          //     .tableCustom([
-          //       {text:'RETURN '+cancelOrderData[i].nama_item, align:"LEFT"},
-          //     ])
-          //     .tableCustom([
-          //       {text: `   ${cancelOrderData[i].jumlah} x ${toRupiah(cancelOrderData[i].harga, {symbol: null, floatingPoint: 0})}`, align:"LEFT"},
-          //       {text:toRupiah(cancelOrderData[i].total, {symbol: null, floatingPoint: 0}), align:"RIGHT"}
-          //     ])
-          //   }
-          // }
+          if(cancelOrderData.length > 0){
+            for(var i = 0; i<cancelOrderData.length; i++){
+              printer
+              .tableCustom([
+                {text:'RETURN '+cancelOrderData[i].nama_item, align:"LEFT"},
+              ])
+              .tableCustom([
+                {text: `   ${cancelOrderData[i].jumlah} x ${toRupiah(cancelOrderData[i].harga, {symbol: null, floatingPoint: 0})}`, align:"LEFT"},
+                {text:'('+toRupiah(cancelOrderData[i].total, {symbol: null, floatingPoint: 0}) + ')', align:"RIGHT"}
+              ])
+            }
+          }
 
           if(promoOrder != false){
             printer
@@ -862,11 +866,13 @@ exports.printInvoice = async function (req, res) {
           {text: '', align: "LEFT"},
           {text: '------------', align: 'RIGHT'}
           ])
+        .size(2,2)
         .tableCustom([
           {text: '', align: "LEFT"},
           {text: 'Kembali', cols: 15, align: "RIGHT"},
           {text: toRupiah(totalPayment - jumlah_bersih, {symbol:null, floatingPoint:0}), cols: 11, align: 'RIGHT'}
           ])
+        .newLine()
         .newLine()
           .cut()
           .close();

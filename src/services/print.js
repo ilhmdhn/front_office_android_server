@@ -196,7 +196,7 @@ class PrintService{
                 var rcp = rcp_;
 
                 isiQuery = `
-                SELECT DISTINCT
+                SELECT
                 okd.nama as nama_item,
                 okd.Qty as jumlah,
                 inventory.Price as harga,
@@ -246,7 +246,7 @@ class PrintService{
                 var rcp = rcp_;
 
                 isiQuery = `
-                    SELECT DISTINCT
+                    SELECT 
                         ocd.nama as nama_item,
                         ocd.Qty as jumlah,
                         inventory.Price as harga,
