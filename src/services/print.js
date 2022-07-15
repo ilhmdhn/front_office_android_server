@@ -14,7 +14,7 @@ class PrintService{
             var rcp = rcp_;
 
             isiQuery = `
-            SELECT [Invoice] as ivc FROM [HP112new].[dbo].[IHP_Ivc] WHERE [Reception] = '${rcp}'
+            SELECT [Invoice] as ivc FROM [IHP_Ivc] WHERE [Reception] = '${rcp}'
                 `
             db.request().query(isiQuery, function (error, dataReturn){
                 if(error){

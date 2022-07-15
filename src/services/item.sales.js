@@ -439,8 +439,8 @@ class ItemSales {
 		            ${time}
                     AND
                     sol.SlipOrder = ocd.SlipOrder and
-                    sol.CHusr = '${chusr}'
-                    and.ocd.Nama = '${item_name}' and
+                    sol.CHusr = '${chusr}' and
+                    ocd.Nama = '${item_name}' and
                     ocl.ordercancelation = ocd.ordercancelation
                     order by ocd.Nama asc
                 `

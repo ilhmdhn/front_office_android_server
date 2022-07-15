@@ -725,7 +725,7 @@ class Report{
                 var jamAkhir = jamAkhir_;
                 var shift = shift_;
 
-                    isiQuery = `set dateformat dmy
+                isiQuery = `set dateformat dmy
                     SELECT DISTINCT isnull(SUM(Sud.pay_value), 0) as jumlah
                     FROM IHP_Sul Sul, IHP_Sud Sud
                     WHERE 
@@ -744,11 +744,13 @@ class Report{
                     } else{
                         sql.close()
                         if(dataReturn.recordset.length > 0){
-                            var jumlah = dataReturn.recordset[0].jumlah;
+
+                        var jumlah = dataReturn.recordset[0].jumlah;
                         
                         console.log("Data Pembayaran UANG MUKA "+ jumlah);
                         logger.info("Data Pembayaran UANG MUKA "+ jumlah);
-                        resolve(jumlah);
+                        // dibikin nol karena pembayaran uang muka id payment bukan 6 tetapi 0
+                        resolve(0);
                         } else{
                         console.log("Data Pembayaran UANG MUKA 0 ");
                         logger.info("Data Pembayaran UANG MUKA 0 ");
