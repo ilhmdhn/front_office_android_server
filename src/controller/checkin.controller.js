@@ -637,8 +637,8 @@ exports.getCheckinResult = async function (req, res) {
             let time = data[7]
             let eTimeRcp = {
                 checkin: time[0].Checkin,
-                durasi: 'sementara dihilangkan',
-                checkout: time[0].Checkout
+                durasi: time[0].hours + " Jam, " +(time[0].minutes %60)+" Menit.",
+                checkout: time[0].checkout
             };
             let summaryOrderInventory = _orderInventoryService.getSummaryOrderInventory(
                 _orderInventoryService.getSummaryProgressOrderInventory(eOrderPenjualan),
@@ -746,14 +746,47 @@ function getTimeRcp(ivc) {
     return new Promise((resolve, reject) => {
         try {
 
-             var isiQuery = `
+            //  var isiQuery = `
+            //     SELECT Reception, 
+            //         convert(varchar(5), Checkin, 8) as Checkin,
+            //         convert(varchar(5),DATEADD(HH, () 
+            //         convert(varchar(5),DATEADD(HH,Jam_Sewa + isnull((SELECT SUM(Jam_Extend) FROM [IHP_Ext] WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}')),0), convert(varchar(5), Checkin, 8)), 8) as Checkout,
+            //         DATEDIFF(MINUTE, convert(varchar(5), Checkin, 8) , convert(varchar(5),DATEADD(HH,Jam_Sewa + isnull((SELECT SUM(Jam_Extend) FROM [IHP_Ext] WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}')),0), convert(varchar(5), Checkin, 8)), 8)) AS hours,
+            //         DATEDIFF(MINUTE, convert(varchar(5), Checkin, 8) , convert(varchar(5),DATEADD(HH,Jam_Sewa + isnull((SELECT SUM(Jam_Extend) FROM [IHP_Ext] WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}')),0), convert(varchar(5), Checkin, 8)), 8)) AS minute
+            //     FROM 
+            //         IHP_Rcp 
+            //     WHERE 
+            //         Invoice = '${ivc}'
+            //     `
+
+                var isiQuery = `
                 SELECT Reception, 
-                    convert(varchar(5), Checkin, 8) as Checkin, 
-                    convert(varchar(5),DATEADD(HH,Jam_Sewa + isnull((SELECT SUM(Jam_Extend) FROM [IHP_Ext] WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}')),0), convert(varchar(5), Checkin, 8)), 8) as Checkout 
-                FROM 
-                    IHP_Rcp 
-                WHERE 
-                    Invoice = '${ivc}'
+convert(varchar(5), Checkin, 8) as Checkin,
+
+convert(varchar(5),
+DATEADD(minute,
+isnull((Jam_Sewa*60),0) + isnull(Menit_Sewa,0) + 
+isnull((SELECT SUM(Jam_Extend) FROM [IHP_Ext] WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}')) * 60, 0)
+, Checkin) ,8) as checkout
+
+,DATEDIFF(hour, convert(varchar(5), Checkin, 8), convert(varchar(5),
+DATEADD(minute,
+isnull((Jam_Sewa*60),0) + isnull(Menit_Sewa,0) + 
+isnull((SELECT SUM(Jam_Extend) FROM [IHP_Ext] WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}')) * 60, 0)
+, Checkin)
+,8)) AS hours
+
+,DATEDIFF(minute, convert(varchar(5), Checkin, 8), convert(varchar(5),
+DATEADD(minute,
+isnull((Jam_Sewa*60),0) + isnull(Menit_Sewa,0) + 
+isnull((SELECT SUM(Jam_Extend) FROM [IHP_Ext] WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}')) * 60, 0)
+, Checkin)
+,8)) AS minutes
+
+FROM 
+	IHP_Rcp 
+WHERE 
+	Invoice = '${ivc}'
                 `
 
             db.request().query(isiQuery, function (err, dataReturn) {

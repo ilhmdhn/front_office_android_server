@@ -152,8 +152,14 @@ class PrintService{
                     ,[Nama] as nama
                     ,isnull((select kamar_alias FROM [IHP_room] WHERE Kamar = (select Kamar from [IHP_Rcp] WHERE Invoice = '${ivc}')), Kamar) as ruangan,
                     convert(varchar(5), Checkin, 8) as Checkin,
-                    convert(varchar(5),DATEADD(HH,Jam_Sewa + isnull((SELECT SUM(Jam_Extend) FROM [IHP_Ext] WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}')),0), convert(varchar(5), Checkin, 8)), 8) as Checkout
-                FROM [IHP_Rcp]
+
+                    convert(varchar(5),
+                    DATEADD(minute,
+                    isnull((Jam_Sewa*60),0) + isnull(Menit_Sewa,0) + 
+                    isnull((SELECT SUM(Jam_Extend) FROM [IHP_Ext] WHERE Reception = (SELECT Reception FROM IHP_Rcp WHERE Invoice = '${ivc}')) * 60, 0)
+                    , Checkin) ,8) as Checkout
+                
+                    FROM [IHP_Rcp]
                 where Invoice = '${ivc}'
                 `
 

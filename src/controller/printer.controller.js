@@ -2,6 +2,7 @@ var ResponseFormat = require('../util/response');
 var toRupiah = require('@develoka/angka-rupiah-js');
 var DBConnection = require('../util/db.pool');
 var PrintService = require('../services/print');
+var CashService = require('../services/cash.summary.js')
 const Report = require('../services/report');
 var moment = require('moment');
 const escpos = require('escpos');
@@ -216,6 +217,15 @@ exports.printKas = async function (req, res) {
       getJumlahReservasiSudahCheckinBelumBayar +
       totalKamar +
       totalPenjualan)
+
+      var jumlahUang = await new CashService().sumCash(db,jamMulai, shift)
+
+      var selisih = jumlahUang - jumlah_pembayaran_cash;
+      console.log('selisih  '+selisih)
+    if(selisih > 1000 || selisih < 0){
+      res.send(new ResponseFormat(false, null, "Cek pecahan uang"))
+      return
+    }
 
     device.open(function (error) {
       if (error) {

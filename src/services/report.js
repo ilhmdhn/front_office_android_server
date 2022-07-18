@@ -716,7 +716,6 @@ class Report{
       })
     }
 
-
     getJumlahUangMuka(db_, jamMulai_, jamAkhir_, shift_){
         return new Promise((resolve, reject) =>{
             try{
@@ -816,7 +815,6 @@ class Report{
     }
 
     // akhir pembayaran
-
 
     getJumlahPendapatanLain(db_, jamMulai_, jamAkhir_, shift_){
         return new Promise((resolve, reject) =>{
@@ -1200,7 +1198,6 @@ class Report{
             }
         })
     }
-
 
     // cari uang muka
 
