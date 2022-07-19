@@ -221,7 +221,6 @@ exports.printKas = async function (req, res) {
       var jumlahUang = await new CashService().sumCash(db,jamMulai, shift)
 
       var selisih = jumlahUang - jumlah_pembayaran_cash;
-      console.log('selisih  '+selisih)
     if(selisih > 1000 || selisih < 0){
       res.send(new ResponseFormat(false, null, "Cek pecahan uang"))
       return
@@ -875,10 +874,8 @@ exports.printInvoice = async function (req, res) {
       }
     });
   } catch (error) {
-    sql.close();
-    console.log(error + '\n' + error.message + '\n error get data payment \n' + isiQuery);
-    logger.error(error + '\n' + error.message + '\n error get data payment \n' + isiQuery);
-    res.send(new ResponseFormat(false, null, "Gagal Invoice " +dataRoom.ruangan))
+    console.log(error + '\n' + error.message + '\n error print invoice');
+    res.send(new ResponseFormat(false, null, "Gagal Print Invoice " +error.message))
   }
 }
 
@@ -896,9 +893,7 @@ exports.cekPrintStatus = async function(req, res){
       }
 
     } catch(error){
-      sql.close();
-      console.log(error + '\n' + error.message + '\n error get data print \n' + isiQuery);
-      logger.error(error + '\n' + error.message + '\n error get data print \n' + isiQuery);
+      console.log(error + '\n' + error.message + '\n error get data print  status \n');
       res.send(new ResponseFormat(false, null, "Gagal  cek print status "))
     }
 }
