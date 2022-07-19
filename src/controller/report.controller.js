@@ -2019,7 +2019,6 @@ exports.updateCashDetail = async function(req, res){
       } else{
         if(response.rowsAffected = 1){
           res.send(new ResponseFormat(true, null, "Berhasil"))
-          console.log(`querynyah ${query}`);
         } else{
           res.send(new ResponseFormat(false, null, "Gagal update data"))
         }
@@ -2096,7 +2095,7 @@ exports.getCashDetail =  async function(req, res){
           } else{
               console.log("Pecahan Cash 0");
               logger.info("Pecahan Cash 0");
-              res.send(new ResponseFormat(false, null, "Data Kosong")); 
+              res.send(new ResponseFormat(true, null, "Data Kosong")); 
           }
       }
   })

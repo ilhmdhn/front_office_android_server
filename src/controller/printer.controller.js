@@ -222,7 +222,7 @@ exports.printKas = async function (req, res) {
 
       var selisih = jumlahUang - jumlah_pembayaran_cash;
     if(selisih > 1000 || selisih < 0){
-      res.send(new ResponseFormat(false, null, "Cek pecahan uang"))
+      res.send(new ResponseFormat(false, null, "Pecahan tunai belum lengkap"))
       return
     }
 
