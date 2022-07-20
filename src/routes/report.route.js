@@ -3,9 +3,6 @@ var router = express.Router();
 var Ctrl = require('./../controller/report.controller');
 var mysalesController = require('./../controller/report_mysales.controller');
 
-router.route('/cash')
-    .post(Ctrl.getCash);
-
 router.route('/user')
     .get(Ctrl.getUser);
 

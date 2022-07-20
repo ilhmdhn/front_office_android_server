@@ -15,7 +15,7 @@ class ItemSales {
 
                 query = `SELECT
                 datename(dw,convert(char, sol.Date_Trans, 111)) as display_waktu,
-                isNull(SUM(okd.Total),0) as total
+                ROUND(isNull(SUM(okd.Total),0),0) as total
                 from
                 ihp_sol sol,
                 ihp_okl okl,
@@ -59,7 +59,7 @@ class ItemSales {
 
                 query = `SELECT
                 datename(dw,convert(char, sol.Date_Trans, 111)) as display_waktu,
-                isnull(SUM(ocd.Total), 0) as total
+                ROUND(isnull(SUM(ocd.Total), 0),0) as total
             from
                 ihp_sol sol,
                 ihp_ocl ocl,
@@ -102,7 +102,7 @@ class ItemSales {
 
                 query = `SELECT
                 datename(dw,convert(char, sol.Date_Trans, 111)) as display_waktu,
-                isNull(SUM(okd.Total),0) as total
+                ROUND(isNull(SUM(okd.Total),0),0) as total
                 from
                 ihp_sol sol,
                 ihp_okl okl,
@@ -147,7 +147,7 @@ class ItemSales {
 
                 query = `SELECT
                 datename(dw,convert(char, sol.Date_Trans, 111)) as display_waktu,
-                isnull(SUM(ocd.Total), 0) as total
+                ROUND(isnull(SUM(ocd.Total), 0),0) as total
             from
                 ihp_sol sol,
                 ihp_ocl ocl,
@@ -191,7 +191,7 @@ class ItemSales {
 
                 query = `SELECT
                 convert(varchar(7), sol.Date_Trans, 111) as display_waktu,
-                isNull(SUM(okd.Total),0) as total
+                ROUND(isNull(SUM(okd.Total),0),0) as total
                 from
                 ihp_sol sol,
                 ihp_okl okl,
@@ -236,7 +236,7 @@ class ItemSales {
 
                 query = `SELECT
                 convert(varchar(7), sol.Date_Trans, 111) as display_waktu,
-                isnull(SUM(ocd.Total), 0) as total
+                ROUND(isnull(SUM(ocd.Total), 0),0) as total
             from
                 ihp_sol sol,
                 ihp_ocl ocl,
@@ -285,7 +285,7 @@ class ItemSales {
                 okd.inventory as inventory,
                 okd.nama as nama_item,
                 SUM(okd.Qty) as Qty,
-                isNull(SUM(okd.Total),0) as Total
+                ROUND(isNull(SUM(okd.Total),0),0) as Total
                 from 
                 ihp_sol sol, 
                 ihp_okl okl, 
@@ -331,7 +331,7 @@ class ItemSales {
                     select distinct
                     ocd.Inventory as inventory,
                     ocd.nama as nama_item,
-                    SUM(ocd.Qty) as Qty,
+                    ROUND(SUM(ocd.Qty),0) as Qty,
                     isnull(SUM(ocd.Total), 0) as Total
                 from
                     ihp_sol sol,
@@ -430,7 +430,7 @@ class ItemSales {
 	                sol.SlipOrder as so,
                     ocd.nama as nama_item,
                     ocd.Qty as jumlah,
-                    ocd.Total as Total
+                    ROUND(ocd.Total,0) as Total
                 from
                     ihp_sol sol,
                     ihp_ocl ocl,
