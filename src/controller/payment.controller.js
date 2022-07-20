@@ -9,6 +9,9 @@ var nodemailer = require("nodemailer");
 var convertRupiah = require('../util/format-rupiah.js');
 var logger;
 var fs = require('fs');
+
+var configServer = JSON.parse(fs.readFileSync('setup.json'));
+
 var db;
 var dgram = require('dgram');
 var PDFDocument = require('pdfkit');
@@ -797,6 +800,8 @@ async function _procSubmitPayment(req, res) {
     //if (isEmailSend) {
     hasil_order_penjualan = [];
     hasil_nilai_invoice = [];
+    var email_sender = configServer.email;
+    var email_sender_pass = configServer.email_pass;
     var email_bcc = "adm.blackholektvsub@gmail.com";
     var email_bcc2 = "noreply_receipt@blackholektv.com"
     var email_to = "adm.blackholektvsub@gmail.com";
@@ -896,8 +901,8 @@ async function _procSubmitPayment(req, res) {
             port: 587,
             secure: false, // true for 465, false for other ports
             auth: {
-              user: "noreply_receipt@blackholektv.com", // generated ethereal user
-              pass: "Masainul123", // generated ethereal password
+              user: email_sender, // generated ethereal user
+              pass: email_sender_pass, // generated ethereal password
             },
             tls: {
               rejectUnauthorized: false
@@ -906,7 +911,7 @@ async function _procSubmitPayment(req, res) {
             debug: false // include SMTP traffic in the logs
           });
           let info = await transporter.sendMail({
-            from: '"Blackhole KTV Receipts " <noreply_receipt@blackholektv.com>',
+            from: '"Blackhole KTV Receipts " <'+email_sender+'>',
             to: email_address,
             bcc: email_bcc,
             bcc: email_bcc2,
@@ -1422,8 +1427,8 @@ async function _pocSubmitEmail(req, res) {
           auth: {
             //user: testAccount.user, // generated ethereal user
             //pass: testAccount.pass, // generated ethereal password
-            user: "noreply_receipt@blackholektv.com", // generated ethereal user
-            pass: "Masainul123", // generated ethereal password
+            user: email_sender, // generated ethereal user
+            pass: email_sender_pass, // generated ethereal password
           },
           tls: {
             rejectUnauthorized: false
@@ -1436,7 +1441,7 @@ async function _pocSubmitEmail(req, res) {
         // send mail with defined transport object
         let info = await transporter.sendMail({
           //from: '"Fred Foo 👻" <foo@example.com>', // sender address
-          from: '"Blackhole KTV Receipts " <noreply_receipt@blackholektv.com>', // sender address
+          from: '"Blackhole KTV Receipts " <'+email_sender+'>', // sender address
           //to: "bar@example.com, baz@example.com", // list of receivers
           to: email_address, // list of receivers
           bcc: email_bcc,
