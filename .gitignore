@@ -4,6 +4,7 @@
 /src/public
 *.log
 setup.json
+setup_bak.json
 setupLan.json
 PictureBarcode
 PictureFnb
